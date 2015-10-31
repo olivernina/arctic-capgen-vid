@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1,'coco-caption')
+
 from pycocoevalcap.bleu.bleu import Bleu
 from pycocoevalcap.rouge.rouge import Rouge
 from pycocoevalcap.cider.cider import Cider

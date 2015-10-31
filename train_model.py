@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1,'coco-caption')
+
 import numpy
 import os, sys, socket
 import time

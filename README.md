@@ -31,3 +31,11 @@ In the paper, we never mentioned the use of uni-directional/bi-directional LSTMs
 
 If you have any questions, drop us email at li.yao@umontreal.ca.
 
+#####Known Issues
+After about 40 or so epochs on youtube2text, the train_model _runs out of memory. 
+
+This is a known problem in COCO evaluation script (their code) where METEOR are computed by creating another subprocess, which does not get killed automatically. As METEOR is called more and more, it eats up mem gradually. 
+
+To fix the problem, add this line after line https://github.com/tylin/coco-caption/blob/master/pycocoevalcap/meteor/meteor.py#L44
+'self.meteor_p.kill()'
+

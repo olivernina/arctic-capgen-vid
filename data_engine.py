@@ -137,7 +137,8 @@ class Movie2Caption(object):
     def load_data(self):
         if self.signature == 'youtube2text':
             print 'loading youtube2text %s features'%self.video_feature
-            dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
+            # dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
+            dataset_path = common.get_rab_dataset_base_path()
             self.train = common.load_pkl(dataset_path + 'train.pkl')
             self.valid = common.load_pkl(dataset_path + 'valid.pkl')
             self.test = common.load_pkl(dataset_path + 'test.pkl')
@@ -146,6 +147,18 @@ class Movie2Caption(object):
             self.train_ids = ['vid%s'%i for i in range(1,1201)]
             self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
             self.test_ids = ['vid%s'%i for i in range(1301,1971)]
+        elif self.signature == 'lsmdc':
+            print 'loading lsmdc %s features'%self.video_feature
+            # dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
+            dataset_path = common.get_rab_dataset_base_path()
+            self.train = common.load_pkl(dataset_path + 'train.pkl')
+            self.valid = common.load_pkl(dataset_path + 'valid.pkl')
+            self.test = common.load_pkl(dataset_path + 'test.pkl')
+            self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
+            self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+            self.train_ids = ['vid%s'%i for i in range(1,100)]
+            self.valid_ids = ['vid%s'%i for i in range(101,200)]
+            self.test_ids = ['vid%s'%i for i in range(201,300)]
         else:
             raise NotImplementedError()
                 
@@ -183,6 +196,7 @@ def prepare_data(engine, IDs):
     
     for i, ID in enumerate(IDs):
         #print 'processed %d/%d caps'%(i,len(IDs))
+        print ID
         if engine.signature == 'youtube2text':
             # load GNet feature
             vidID, capID = ID.split('_')

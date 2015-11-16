@@ -7,7 +7,9 @@ import theano.tensor as tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # the dir where there should be a subdir named 'youtube2text_iccv15'
-RAB_DATASET_BASE_PATH = 'data/'
+# RAB_DATASET_BASE_PATH = 'data/'
+RAB_DATASET_BASE_PATH = '/media/sea2/datasets/challenge/'
+
 # the dir where all the experiment data is dumped.
 RAB_EXP_PATH = 'results/'
 

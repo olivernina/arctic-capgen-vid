@@ -12,7 +12,7 @@ config = DD({
         'reload_': False,
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'from_dir': '',
-        'dataset': 'youtube2text', 
+        'dataset': 'lsmdc',
         'video_feature': 'googlenet',
         'dim_word':468, # 474
         'ctx_dim':-1,# auto set 

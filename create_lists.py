@@ -18,7 +18,9 @@ def create_pickle(filename,annotations):
 
             if len(row)>5:
                 tokenized = row[5].replace('.','')
-                tokenized = tokenized.replace(',',' , ')
+                tokenized = tokenized.replace(',','')
+                tokenized = tokenized.replace('\n','')
+                tokenized = tokenized.replace('\t','')
                 tokenized = tokenized.lower()
 
                 if vids_names.has_key(vid_name):
@@ -27,7 +29,7 @@ def create_pickle(filename,annotations):
                 else:
                     vids_names[vid_name]=1
 
-                annotations.append({'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':row[5]})
+                annotations[vid_name]={'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':row[5]}
 
 
 

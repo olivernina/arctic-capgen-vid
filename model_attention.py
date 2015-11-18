@@ -607,7 +607,7 @@ class Attention(object):
             [ctx0, ctx_mask],
             [ctx0]+init_state+init_memory, name='f_init',
             on_unused_input='ignore',
-            profile=False, mode=mode)
+            profile=False, mode=mode,allow_input_downcast=True)
         print 'Done'
 
         x = tensor.vector('x_sampler', dtype='int64')
@@ -960,7 +960,7 @@ class Attention(object):
         f_alpha = theano.function([x, mask, ctx, mask_ctx],
                                   [alphas, alpha_reg_2],
                                   name='f_alpha',
-                                  on_unused_input='ignore')
+                                  on_unused_input='ignore',allow_input_downcast=True)
 
         print 'compute grad'
         grads = tensor.grad(cost, wrt=itemlist(tparams))

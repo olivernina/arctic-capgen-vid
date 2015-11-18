@@ -10,36 +10,36 @@ data_dir = '/media/sea2/datasets/challenge'
 
 dst_dir = '/media/sea2/datasets/frames_chal'
 
-annotations = []
+annotations = {}
 
 all_vids = []
 
-# training_file = os.path.join(data_dir,'LSMDC15_annos_training_small.csv')
-training_file = os.path.join(data_dir,'LSMDC15_annos_training.csv')
+training_file = os.path.join(data_dir,'LSMDC15_annos_training_small.csv')
+# training_file = os.path.join(data_dir,'LSMDC15_annos_training.csv')
 annotations,vids_names = create_pickle(training_file,annotations,)
 training_list = vids_names.keys()
 train_out = open(os.path.join(data_dir,'train.pkl'), 'wb')
 pickle.dump(training_list,train_out)
 all_vids = all_vids + training_list
 
-# valid_file = os.path.join(data_dir,'LSMDC15_annos_val_small.csv')
-valid_file = os.path.join(data_dir,'LSMDC15_annos_val.csv')
+valid_file = os.path.join(data_dir,'LSMDC15_annos_val_small.csv')
+# valid_file = os.path.join(data_dir,'LSMDC15_annos_val.csv')
 valid_out = open(os.path.join(data_dir,'valid.pkl'), 'wb')
 annotations,vids_names = create_pickle(valid_file,annotations)
 valid_list = vids_names.keys()
 pickle.dump(valid_list,valid_out)
 all_vids = all_vids + valid_list
 
-# test_file = os.path.join(data_dir,'LSMDC15_annos_test_small.csv')
-test_file = os.path.join(data_dir,'LSMDC15_annos_test.csv')
+test_file = os.path.join(data_dir,'LSMDC15_annos_test_small.csv')
+# test_file = os.path.join(data_dir,'LSMDC15_annos_test.csv')
 test_out = open(os.path.join(data_dir,'test.pkl'), 'wb')
 annotations,vids_names = create_pickle(test_file,annotations)
 test_list = vids_names.keys()
 pickle.dump(test_list,test_out)
 all_vids = all_vids + test_list
 
-# blindtest_file = os.path.join(data_dir,'LSMDC15_annos_blindtest_small.csv')
-blindtest_file = os.path.join(data_dir,'LSMDC15_annos_blindtest.csv')
+blindtest_file = os.path.join(data_dir,'LSMDC15_annos_blindtest_small.csv')
+# blindtest_file = os.path.join(data_dir,'LSMDC15_annos_blindtest.csv')
 blindtest_out = open(os.path.join(data_dir,'blindtest.pkl'), 'wb')
 annotations,vids_names = create_pickle(blindtest_file,annotations)
 blindtest_list = vids_names.keys()
@@ -51,12 +51,14 @@ pickle.dump(annotations,cap_out)
 
 worddict = {}
 word_idx = 2
-for ann in annotations:
+for a in annotations:
+    ann = annotations[a]
     tokens = ann['tokenized'].split()
     for token in tokens:
-        if not worddict.has_key(token):
-            worddict[token]=word_idx
-            word_idx+=1
+        if token not in ['','\t','\n']:
+            if not worddict.has_key(token):
+                worddict[token]=word_idx
+                word_idx+=1
 
 worddict_out = open(os.path.join(data_dir,'worddict.pkl'), 'wb')
 pickle.dump(worddict,worddict_out)

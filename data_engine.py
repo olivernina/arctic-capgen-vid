@@ -144,6 +144,7 @@ class Movie2Caption(object):
             self.test = common.load_pkl(dataset_path + 'test.pkl')
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
             self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+
             self.train_ids = ['vid%s'%i for i in range(1,1201)]
             self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
             self.test_ids = ['vid%s'%i for i in range(1301,1971)]
@@ -185,31 +186,48 @@ def prepare_data(engine, IDs):
     seqs = []
     feat_list = []
     def get_words(vidID, capID):
-        caps = engine.CAP[vidID]
         rval = None
-        for cap in caps:
-            if cap['cap_id'] == capID:
-                rval = cap['tokenized'].split(' ')
-                break
+        if engine.signature == 'youtube2text':
+            caps = engine.CAP[vidID]
+            for cap in caps:
+                if cap['cap_id'] == capID:
+                    rval = cap['tokenized'].split(' ')
+                    break
+        elif engine.signature == 'lsmdc':
+            cap = engine.CAP[vidID]
+
+            # for cap in caps:
+            #     if cap['cap_id'] == capID:
+            #         rval = cap['tokenized'].split(' ')
+            #         break
+
+            # cap = caps[0]
+            # if cap['cap_id'] == capID:
+            caption = cap['tokenized']
+            rval = cap['tokenized'].split(' ')
+
         assert rval is not None
         return rval
     
     for i, ID in enumerate(IDs):
         #print 'processed %d/%d caps'%(i,len(IDs))
-        print ID
+        # print ID
         if engine.signature == 'youtube2text':
             # load GNet feature
             vidID, capID = ID.split('_')
         elif engine.signature == 'lsmdc':
-            t = ID.split('_')
-            vidID = '_'.join(t[:-1])
-            capID = t[-1]
+            # t = ID.split('_')
+            # vidID = '_'.join(t[:-1])
+            # capID = t[-1]
+            vidID = ID
+            capID = 1
         else:
             raise NotImplementedError()
         
         feat = engine.get_video_features(vidID)
         feat_list.append(feat)
         words = get_words(vidID, capID)
+        # print words
         seqs.append([engine.worddict[w]
                      if engine.worddict[w] < engine.n_words else 1 for w in words])
 

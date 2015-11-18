@@ -7,8 +7,9 @@ import theano.tensor as tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams
 
 # the dir where there should be a subdir named 'youtube2text_iccv15'
-# RAB_DATASET_BASE_PATH = 'data/'
-RAB_DATASET_BASE_PATH = '/media/sea2/datasets/challenge/'
+
+# RAB_DATASET_BASE_PATH = 'data/youtube2text_iccv15/'
+RAB_DATASET_BASE_PATH = '/media/SSD/projects/datasets/challenge/'
 
 # the dir where all the experiment data is dumped.
 RAB_EXP_PATH = 'results/'
@@ -181,7 +182,7 @@ def adadelta(lr, tparams, grads, inp, cost, extra):
     rg2up = [(rg2, 0.95 * rg2 + 0.05 * (g ** 2)) for rg2, g in zip(running_grads2, grads)]
 
     f_grad_shared = theano.function(inp, [cost] + extra, updates=zgup+rg2up,
-                                    profile=False, on_unused_input='ignore')
+                                    profile=False, on_unused_input='ignore',allow_input_downcast=True)
     
     updir = [-tensor.sqrt(ru2 + 1e-6) / tensor.sqrt(rg2 + 1e-6) * zg for zg, ru2, rg2 in zip(zipped_grads, running_up2, running_grads2)]
     ru2up = [(ru2, 0.95 * ru2 + 0.05 * (ud ** 2)) for ru2, ud in zip(running_up2, updir)]

@@ -65,8 +65,8 @@ def get_frames(src_dir,dst_dir,video_file):
             command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
             print command
             os.system(command)
-        else:
-            print('frames already extracted')
+        # else:
+        #     print('frames already extracted')
         return dst_path
     else:
         print('video: '+src_path+' doesn\'t exist')

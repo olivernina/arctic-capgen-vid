@@ -204,7 +204,8 @@ def prepare_data(engine, IDs):
             # cap = caps[0]
             # if cap['cap_id'] == capID:
             caption = cap['tokenized']
-            rval = cap['tokenized'].split(' ')
+            rval = cap['tokenized'].split()
+
 
         assert rval is not None
         return rval

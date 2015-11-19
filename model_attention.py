@@ -661,7 +661,7 @@ class Attention(object):
         f_next = theano.function(
             [x, ctx0, ctx_mask]+init_state+init_memory,
             [next_probs, next_sample]+next_state+next_memory,
-            name='f_next', profile=False, mode=mode, on_unused_input='ignore')
+            name='f_next', profile=False, mode=mode, on_unused_input='ignore',allow_input_downcast=True)
         print 'Done'
         return f_init, f_next
 
@@ -932,7 +932,7 @@ class Attention(object):
         # before any regularizer
         print 'building f_log_probs'
         f_log_probs = theano.function([x, mask, ctx, mask_ctx], -cost,
-                                      profile=False, on_unused_input='ignore')
+                                      profile=False, on_unused_input='ignore',allow_input_downcast=True)
 
         cost = cost.mean()
         if decay_c > 0.:

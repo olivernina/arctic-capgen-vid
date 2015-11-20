@@ -11,7 +11,7 @@ import argparse
 
 def main(params):
 
-    sys.stdout = open('out.log','w')
+    # sys.stdout = open('out.log','w')
 
     data_root = params['data_dir']
     data_dir =os.path.join(params['data_dir'],'challenge')
@@ -34,7 +34,7 @@ def main(params):
     pickle.dump(training_list,train_out)
     all_vids = all_vids + training_list
 
-    sys.stdout.flush()
+    # sys.stdout.flush()
 
     if test_mode:
         valid_file = os.path.join(data_dir,'LSMDC15_annos_val_small.csv')
@@ -86,7 +86,7 @@ def main(params):
     worddict_out = open(os.path.join(data_dir,'worddict.pkl'), 'wb')
     pickle.dump(worddict,worddict_out)
 
-    sys.stdout.flush()
+    # sys.stdout.flush()
 
     vid_frames = []
 

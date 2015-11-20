@@ -86,12 +86,12 @@ def batch_predict(filenames, net):
     return allftrs
 
 
-def get_features(src_dir,dst_dir,video_dir):
+def get_features(src_dir,dst_dir,video_dir,net):
     if not os.path.exists(dst_dir):
         os.mkdir(dst_dir)
     src_path =  os.path.join(src_dir,video_dir)
     if os.path.exists(src_path):
-        dst_path = os.path.join(dst_dir, video_dir.split('.')[0])
+        dst_path = os.path.join(dst_dir, video_dir.split('.avi')[0])
         if not os.path.exists(dst_path):
 
             # base_dir = os.path.dirname(files)
@@ -132,22 +132,23 @@ def run(vid_frames,data_dir):
 
     for i,files in enumerate(vid_frames):
         feats_dir =os.path.join(data_dir,'features_chal')
-        feat_filename = files.split('/')[-1].split('.')[0]
+        feat_filename = files.split('/')[-1].split('.avi')[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
         if os.path.exists(feat_file_path):
             feat = np.load(feat_file_path)
             feats[feat_filename]=feat
+            print('features already extracted '+feat_file_path)
         else:
             frames_dir = os.path.join(data_dir,'frames_chal')
-            feat = get_features(frames_dir,feats_dir,files.split('/')[-1])
+            feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
             feats[feat_filename]=feat
 
-        sys.stdout.flush()
+        # sys.stdout.flush()
 
 
 
-    feats_out = open(os.path.join(data_dir,'FEAT_key_vidID_value_features.pkl'), 'wb')
+    feats_out = open(os.path.join(data_dir,'challenge','FEAT_key_vidID_value_features.pkl'), 'wb')
     pickle.dump(feats,feats_out)
 
 

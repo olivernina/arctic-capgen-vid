@@ -16,6 +16,7 @@ def main(params):
     data_root = params['data_dir']
     data_dir =os.path.join(params['data_dir'],'challenge')
     dst_dir = os.path.join(params['data_dir'],'frames_chal')
+    pkl_dir = params['pkl_dir']
 
     test_mode = params['test']
 
@@ -30,7 +31,7 @@ def main(params):
 
     annotations,vids_names = create_pickle(training_file,annotations,)
     training_list = vids_names.keys()
-    train_out = open(os.path.join(data_dir,'train.pkl'), 'wb')
+    train_out = open(os.path.join(pkl_dir,'train.pkl'), 'wb')
     pickle.dump(training_list,train_out)
     all_vids = all_vids + training_list
 
@@ -41,7 +42,7 @@ def main(params):
     else:
         valid_file = os.path.join(data_dir,'LSMDC15_annos_val.csv')
 
-    valid_out = open(os.path.join(data_dir,'valid.pkl'), 'wb')
+    valid_out = open(os.path.join(pkl_dir,'valid.pkl'), 'wb')
     annotations,vids_names = create_pickle(valid_file,annotations)
     valid_list = vids_names.keys()
     pickle.dump(valid_list,valid_out)
@@ -52,7 +53,7 @@ def main(params):
     else:
         test_file = os.path.join(data_dir,'LSMDC15_annos_test.csv')
 
-    test_out = open(os.path.join(data_dir,'test.pkl'), 'wb')
+    test_out = open(os.path.join(pkl_dir,'test.pkl'), 'wb')
     annotations,vids_names = create_pickle(test_file,annotations)
     test_list = vids_names.keys()
     pickle.dump(test_list,test_out)
@@ -63,19 +64,19 @@ def main(params):
     else:
         blindtest_file = os.path.join(data_dir,'LSMDC15_annos_blindtest.csv')
 
-    blindtest_out = open(os.path.join(data_dir,'blindtest.pkl'), 'wb')
+    blindtest_out = open(os.path.join(pkl_dir,'blindtest.pkl'), 'wb')
     annotations,vids_names = create_pickle(blindtest_file,annotations)
     blindtest_list = vids_names.keys()
     pickle.dump(blindtest_list,blindtest_out)
     all_vids = all_vids + test_list
 
-    cap_out = open(os.path.join(data_dir,'CAP.pkl'), 'wb')
+    cap_out = open(os.path.join(pkl_dir,'CAP.pkl'), 'wb')
     pickle.dump(annotations,cap_out)
 
     worddict = {}
     word_idx = 2
     for a in annotations:
-        ann = annotations[a]
+        ann = annotations[a][0]
         tokens = ann['tokenized'].split()
         for token in tokens:
             if token not in ['','\t','\n',' ']:
@@ -83,7 +84,7 @@ def main(params):
                     worddict[token]=word_idx
                     word_idx+=1
 
-    worddict_out = open(os.path.join(data_dir,'worddict.pkl'), 'wb')
+    worddict_out = open(os.path.join(pkl_dir,'worddict.pkl'), 'wb')
     pickle.dump(worddict,worddict_out)
 
     # sys.stdout.flush()
@@ -99,7 +100,7 @@ def main(params):
         vid_frames.append(frames_dir)
 
 
-    process_features.run(vid_frames,data_root)
+    process_features.run(vid_frames,data_root,pkl_dir)
 
 
 if __name__=='__main__':
@@ -107,6 +108,7 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/sea2/datasets')
     parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='/media/sea2/datasets/challenge')
     args = parser.parse_args()
     params = vars(args)
 

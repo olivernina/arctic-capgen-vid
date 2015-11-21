@@ -29,7 +29,7 @@ def create_pickle(filename,annotations):
                 else:
                     vids_names[vid_name]=1
 
-                annotations[vid_name]={'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':row[5]}
+                annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':row[5]}]
 
 
 

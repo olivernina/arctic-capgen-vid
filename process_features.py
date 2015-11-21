@@ -115,7 +115,7 @@ def get_features(src_dir,dst_dir,video_dir,net):
         return False
 
 
-def run(vid_frames,data_dir):
+def run(vid_frames,data_dir, pkl_dir):
 
     caffe.set_mode_gpu()
 
@@ -148,7 +148,7 @@ def run(vid_frames,data_dir):
 
 
 
-    feats_out = open(os.path.join(data_dir,'challenge','FEAT_key_vidID_value_features.pkl'), 'wb')
+    feats_out = open(os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl'), 'wb')
     pickle.dump(feats,feats_out)
 
 

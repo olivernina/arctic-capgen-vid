@@ -157,9 +157,12 @@ class Movie2Caption(object):
             self.test = common.load_pkl(dataset_path + 'test.pkl')
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
             self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
-            self.train_ids = ['vid%s'%i for i in range(1,100)]
-            self.valid_ids = ['vid%s'%i for i in range(101,200)]
-            self.test_ids = ['vid%s'%i for i in range(201,300)]
+            # self.train_ids = ['vid%s'%i for i in range(1,100)]
+            # self.valid_ids = ['vid%s'%i for i in range(101,200)]
+            # self.test_ids = ['vid%s'%i for i in range(201,300)]
+            self.train_ids = self.train
+            self.valid_ids = self.valid
+            self.test_ids = self.test
         else:
             raise NotImplementedError()
                 
@@ -194,7 +197,7 @@ def prepare_data(engine, IDs):
                     rval = cap['tokenized'].split(' ')
                     break
         elif engine.signature == 'lsmdc':
-            cap = engine.CAP[vidID]
+            cap = engine.CAP[vidID][0]
 
             # for cap in caps:
             #     if cap['cap_id'] == capID:

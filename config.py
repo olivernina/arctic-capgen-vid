@@ -33,13 +33,14 @@ config = DD({
         'maxlen':30, # max length of the descprition
         'optimizer':'adadelta',
         'clip_c': 10.,
-        # 'batch_size': 64, # for trees use 25
-        'batch_size': 5, # for trees use 25
-        # 'valid_batch_size':200,
-        'valid_batch_size':5,
+        'batch_size': 64, # for trees use 25
+        # 'batch_size': 5, # for trees use 25
+        'valid_batch_size':200,
+        # 'valid_batch_size':5,
         # in the unit of minibatches
         'dispFreq':10,
         'validFreq':2000,
+        # 'validFreq':20,
         'saveFreq':-1, # this is disabled, now use sampleFreq instead
         'sampleFreq':100,
         # blue, meteor, or both

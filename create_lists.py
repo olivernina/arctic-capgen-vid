@@ -27,6 +27,8 @@ def create_pickle(filename,annotations):
                     vids_names[vid_name] += 1
                     print 'other annots'
                 else:
+                    if not os.path.exists('/media/onina/sea2/datasets/features_chal/'+vid_name):
+                        print 'features not found'
                     vids_names[vid_name]=1
 
                 annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':row[5]}]

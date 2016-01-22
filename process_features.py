@@ -145,6 +145,7 @@ def run(vid_frames,data_dir, pkl_dir):
             feats[feat_filename]=feat
 
         # sys.stdout.flush()
+        print str(i)+'/'+str(len(vid_frames))
 
 
 

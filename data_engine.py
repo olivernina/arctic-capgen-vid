@@ -9,6 +9,7 @@ import tables
 import theano
 import theano.tensor as T
 import common
+import numpy as np
 
 from multiprocessing import Process, Queue, Manager
 
@@ -38,10 +39,26 @@ class Movie2Caption(object):
         feat = self.FEAT[vidID]
         feat = self.get_sub_frames(feat)
         return feat
-    
+
+    def _load_feat_file(self, vidID):
+        data_dir = '/media/onina/sea2/datasets'
+        feats_dir =os.path.join(data_dir,'features_chal')
+        feat_filename = vidID#files.split('/')[-1].split('.avi')[0]
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+        if os.path.exists(feat_file_path):
+            feat = np.load(feat_file_path)
+        else:
+            print 'error feature file doesnt exist'
+
+        # feat = self.FEAT[vidID]
+        feat = self.get_sub_frames(feat)
+        return feat
+
     def get_video_features(self, vidID):
         if self.video_feature == 'googlenet':
-            y = self._filter_googlenet(vidID)
+            # y = self._filter_googlenet(vidID)
+            y = self._load_feat_file(vidID)
         else:
             raise NotImplementedError()
         return y
@@ -137,8 +154,8 @@ class Movie2Caption(object):
     def load_data(self):
         if self.signature == 'youtube2text':
             print 'loading youtube2text %s features'%self.video_feature
-            # dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
-            dataset_path = common.get_rab_dataset_base_path()
+            dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
+            # dataset_path = common.get_rab_dataset_base_path()
             self.train = common.load_pkl(dataset_path + 'train.pkl')
             self.valid = common.load_pkl(dataset_path + 'valid.pkl')
             self.test = common.load_pkl(dataset_path + 'test.pkl')
@@ -151,7 +168,7 @@ class Movie2Caption(object):
         elif self.signature == 'lsmdc':
             print 'loading lsmdc %s features'%self.video_feature
             # dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
-            dataset_path = common.get_rab_dataset_base_path()
+            dataset_path = common.get_rab_dataset_base_path()+'lsmdc/'
             self.train = common.load_pkl(dataset_path + 'train.pkl')
             self.valid = common.load_pkl(dataset_path + 'valid.pkl')
             self.test = common.load_pkl(dataset_path + 'test.pkl')

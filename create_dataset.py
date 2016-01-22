@@ -106,9 +106,9 @@ def main(params):
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/sea2/datasets')
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets')
     parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='/media/sea2/datasets/challenge')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='/media/onina/sea2/datasets/challenge')
     args = parser.parse_args()
     params = vars(args)
 

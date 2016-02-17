@@ -14,7 +14,7 @@ def main(params):
     # sys.stdout = open('out.log','w')
 
     data_root = params['data_dir']
-    data_dir =os.path.join(params['data_dir'],'challenge')
+    data_dir =params['data_dir']
     dst_dir = os.path.join(params['data_dir'],'frames_chal')
     pkl_dir = params['pkl_dir']
 
@@ -25,7 +25,7 @@ def main(params):
     all_vids = []
 
     if test_mode:
-        training_file = os.path.join(data_dir,'LSMDC15_annos_training_small.csv')
+        training_file = os.path.join(data_dir,'list/smaller/LSMDC15_annos_training_small.csv')
     else:
         training_file = os.path.join(data_dir,'LSMDC15_annos_training.csv')
 
@@ -38,7 +38,7 @@ def main(params):
     # sys.stdout.flush()
 
     if test_mode:
-        valid_file = os.path.join(data_dir,'LSMDC15_annos_val_small.csv')
+        valid_file = os.path.join(data_dir,'list/smaller/LSMDC15_annos_val_small.csv')
     else:
         valid_file = os.path.join(data_dir,'LSMDC15_annos_val.csv')
 
@@ -49,7 +49,7 @@ def main(params):
     all_vids = all_vids + valid_list
 
     if test_mode:
-        test_file = os.path.join(data_dir,'LSMDC15_annos_test_small.csv')
+        test_file = os.path.join(data_dir,'list/smaller/LSMDC15_annos_test_small.csv')
     else:
         test_file = os.path.join(data_dir,'LSMDC15_annos_test.csv')
 
@@ -60,7 +60,7 @@ def main(params):
     all_vids = all_vids + test_list
 
     if test_mode:
-        blindtest_file = os.path.join(data_dir,'LSMDC15_annos_blindtest_small.csv')
+        blindtest_file = os.path.join(data_dir,'list/smaller/LSMDC15_annos_blindtest_small.csv')
     else:
         blindtest_file = os.path.join(data_dir,'LSMDC15_annos_blindtest.csv')
 
@@ -95,7 +95,7 @@ def main(params):
         k = file.rfind("_")
         movie_dir = file[:k]
         video_name = file+'.avi'
-        src_dir = os.path.join(data_dir,movie_dir)
+        src_dir = os.path.join(data_dir,'videos',movie_dir)
         frames_dir = process_frames.get_frames(src_dir,dst_dir,video_name)
         vid_frames.append(frames_dir)
 
@@ -106,9 +106,9 @@ def main(params):
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets')
-    parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='/media/onina/sea2/datasets/challenge')
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/lsmdc')
+    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/out_pkl')
     args = parser.parse_args()
     params = vars(args)
 

@@ -32,8 +32,10 @@ class Movie2Caption(object):
         self.mb_size_train = mb_size_train
         self.mb_size_test = mb_size_test
         self.non_pickable = []
-        
+
+        self.test_mode = 0
         self.load_data()
+
         
     def _filter_googlenet(self, vidID):
         feat = self.FEAT[vidID]
@@ -57,8 +59,8 @@ class Movie2Caption(object):
 
     def get_video_features(self, vidID):
         if self.video_feature == 'googlenet':
-            # y = self._filter_googlenet(vidID)
-            y = self._load_feat_file(vidID)
+            y = self._filter_googlenet(vidID)
+            # y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better
         else:
             raise NotImplementedError()
         return y
@@ -162,13 +164,21 @@ class Movie2Caption(object):
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
             self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
 
-            self.train_ids = ['vid%s'%i for i in range(1,1201)]
-            self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
-            self.test_ids = ['vid%s'%i for i in range(1301,1971)]
+
+
+            if self.test_mode:
+                self.train_ids = ['vid%s'%i for i in range(1,120)]
+                self.valid_ids = ['vid%s'%i for i in range(120,130)]
+                self.test_ids = ['vid%s'%i for i in range(130,197)]
+            else:
+                self.train_ids = ['vid%s'%i for i in range(1,1201)]
+                self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
+                self.test_ids = ['vid%s'%i for i in range(1301,1971)]
+
         elif self.signature == 'lsmdc':
             print 'loading lsmdc %s features'%self.video_feature
             # dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
-            dataset_path = common.get_rab_dataset_base_path()+'lsmdc/'
+            dataset_path = common.get_rab_dataset_base_path()
             self.train = common.load_pkl(dataset_path + 'train.pkl')
             self.valid = common.load_pkl(dataset_path + 'valid.pkl')
             self.test = common.load_pkl(dataset_path + 'test.pkl')
@@ -204,6 +214,7 @@ class Movie2Caption(object):
         
 def prepare_data(engine, IDs):
     seqs = []
+    z_seqs = []
     feat_list = []
     def get_words(vidID, capID):
         rval = None
@@ -249,28 +260,43 @@ def prepare_data(engine, IDs):
         feat_list.append(feat)
         words = get_words(vidID, capID)
         # print words
-        seqs.append([engine.worddict[w]
-                     if engine.worddict[w] < engine.n_words else 1 for w in words])
+        seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
+        caps = engine.CAP[vidID]
+        num_caps = len(caps)
+        import random
+        r = range(1,int(capID)) + range(int(capID)+1,num_caps)
+        rand_cap = random.choice(r)
+        z_words = get_words(vidID, str(rand_cap))
+        z_seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
 
     lengths = [len(s) for s in seqs]
+    z_lengths = [len(s) for s in z_seqs]
     if engine.maxlen != None:
         new_seqs = []
+        new_zseqs = []
         new_feat_list = []
         new_lengths = []
         new_caps = []
-        for l, s, y, c in zip(lengths, seqs, feat_list, IDs):
+        new_zlengths = []
+        for l,z_l, s, y, c in zip(lengths,z_lengths, seqs, feat_list, IDs):
             # sequences that have length >= maxlen will be thrown away 
-            if l < engine.maxlen:
+            if l < engine.maxlen and z_l < engine.maxlen :
                 new_seqs.append(s)
+                new_zseqs.append(s)
                 new_feat_list.append(y)
                 new_lengths.append(l)
                 new_caps.append(c)
         lengths = new_lengths
         feat_list = new_feat_list
         seqs = new_seqs
+        z_seqs = new_zseqs
+
         if len(lengths) < 1:
             return None, None, None, None
-    
+
+
+
+
     y = numpy.asarray(feat_list)
     y_mask = engine.get_ctx_mask(y)
     n_samples = len(seqs)
@@ -281,8 +307,14 @@ def prepare_data(engine, IDs):
     for idx, s in enumerate(seqs):
         x[:lengths[idx],idx] = s
         x_mask[:lengths[idx]+1,idx] = 1.
+
+    z = numpy.zeros((maxlen, n_samples)).astype('int64')  #This is the other label
+    z_mask = numpy.zeros((maxlen, n_samples)).astype('float32')
+    for idx, s in enumerate(z_seqs):
+        z[:lengths[idx],idx] = s
+        z_mask[:lengths[idx]+1,idx] = 1.
     
-    return x, x_mask, y, y_mask
+    return x, x_mask, y, y_mask,z,z_mask
     
 def test_data_engine():
     from sklearn.cross_validation import KFold

@@ -27,7 +27,7 @@ def create_pickle(filename,annotations):
                     vids_names[vid_name] += 1
                     print 'other annots'
                 else:
-                    if not os.path.exists('/media/onina/sea2/datasets/features_chal/'+vid_name):
+                    if not os.path.exists('/media/onina/sea2/datasets/lsmdc/features_chal/'+vid_name):
                         print 'features not found'
                     vids_names[vid_name]=1
 
@@ -36,24 +36,3 @@ def create_pickle(filename,annotations):
 
 
     return annotations,vids_names
-
-
-# data_dir = '/media/sea2/datasets/challenge'
-#
-# annotaions = []
-# vids_names = {}
-#
-# training_file = os.path.join(data_dir,'LSMDC15_annos_training.csv')
-# train_out = open(os.path.join(data_dir,'train.pkl'), 'wb')
-# annotations,vids_names = create_pickle(training_file,annotaions)
-#
-# valid_file = os.path.join(data_dir,'LSMDC15_annos_val.csv')
-# valid_out = open(os.path.join(data_dir,'valid.pkl'), 'wb')
-# annotations,vids_names = create_pickle(valid_file,annotaions)
-#
-# test_file = os.path.join(data_dir,'LSMDC15_annos_test.csv')
-# test_out = open(os.path.join(data_dir,'test.pkl'), 'wb')
-# annotations,vids_names = create_pickle(test_file,annotaions)
-#
-# cap_out = open(os.path.join(data_dir,'CAP.pkl'), 'wb')
-# pickle.dump(annotations,cap_out)

@@ -1193,7 +1193,7 @@ class Attention(object):
 
                 if validFreq != -1 and numpy.mod(uidx, validFreq) == 0:
                     t0_valid = time.time()
-                    alphas,_ = f_alpha(x, x_mask, ctx, ctx_mask)
+                    alphas,_ = f_alpha(x, x_mask, ctx, ctx_mask,y,y_mask)
                     ratio = alphas.min(-1).mean()/(alphas.max(-1)).mean()
                     alphas_ratio.append(ratio)
                     numpy.savetxt(save_model_dir+'alpha_ratio.txt',alphas_ratio)

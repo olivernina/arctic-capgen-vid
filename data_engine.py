@@ -298,7 +298,9 @@ def prepare_data(engine, IDs):
 
 
     y = numpy.asarray(feat_list)
+    print len(y[1,1])
     y_mask = engine.get_ctx_mask(y)
+
     n_samples = len(seqs)
     maxlen = numpy.max(lengths)+1
 

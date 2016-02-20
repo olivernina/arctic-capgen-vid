@@ -19,6 +19,7 @@ def set_config(conf, args, add_new_key=False):
             if isinstance(v, DD):
                 set_config(conf[key], v)
             else:
+                print conf.keys()
                 if conf.has_key(key):
                     conf[key] = convert_from_string(v)
                 elif add_new_key:
@@ -41,6 +42,7 @@ def convert_from_string(x):
 def train_from_scratch(config, state, channel):    
     # Model options
     save_model_dir = config[config.model].save_model_dir
+
     if save_model_dir == 'current':
         config[config.model].save_model_dir = './'
         save_model_dir = './'
@@ -70,6 +72,7 @@ def train_from_scratch(config, state, channel):
     if config.erase_history:
         print 'erasing everything in ',save_model_dir
         os.system('rm %s/*'%save_model_dir)
+
     # for stdout file logging
     #sys.stdout = Unbuffered(sys.stdout, state.save_model_path + 'stdout.log')
     print 'saving model config into %s'%save_path

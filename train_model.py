@@ -9,6 +9,7 @@ from config import config
 from jobman import DD, expand
 import common
 import model_attention
+import model_clstm
 
     
 def set_config(conf, args, add_new_key=False):
@@ -19,7 +20,6 @@ def set_config(conf, args, add_new_key=False):
             if isinstance(v, DD):
                 set_config(conf[key], v)
             else:
-                print conf.keys()
                 if conf.has_key(key):
                     conf[key] = convert_from_string(v)
                 elif add_new_key:
@@ -86,6 +86,8 @@ def train_from_scratch(config, state, channel):
     print 'Command: %s' % ' '.join(sys.argv)
     if config.model == 'attention':
         model_attention.train_from_scratch(state, channel)
+    elif config.model == 'clstm':
+        model_clstm.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

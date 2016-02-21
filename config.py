@@ -97,7 +97,7 @@ config = DD({
     'svectors': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'reload_': False,
-        'encoder': 'lstm_uni'
+     #   'encoder': 'lstm_uni'
         }),
 
     })

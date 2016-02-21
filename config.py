@@ -52,7 +52,6 @@ config = DD({
         'debug': False,
         }),
     'clstm': DD({
-        'reload_': False,
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'from_dir': '',
         'dataset': 'youtube2text',#'youtube2text',#'lsmdc',
@@ -94,4 +93,10 @@ config = DD({
         'verbose': True,
         'debug': False,
         }),
+    'svectors': DD({
+        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
+        'reload_': False,
+        'encoder': 'lstm_uni'
+        }),
+
     })

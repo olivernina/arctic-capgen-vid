@@ -1095,10 +1095,10 @@ class Attention(object):
                 use_noise.set_value(1.)
 
                 pd_start = time.time()
-                print 'preparing data ...'
+
                 x, x_mask, ctx, ctx_mask, y, y_mask = data_engine.prepare_data(
                     self.engine, tags)
-                print 'done prep data'
+
 
                 pd_duration = time.time() - pd_start
                 if x is None:

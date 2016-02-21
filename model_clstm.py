@@ -616,11 +616,11 @@ class CLSTM(object):
             tparams, logit, options, prefix='ff_logit', activ='linear')
         logit_shp = logit.shape
         # (t*m, n_words)
-        probs_z = tensor.nnet.softmax(
+        probs_y = tensor.nnet.softmax(
             logit.reshape([logit_shp[0]*logit_shp[1], logit_shp[2]]))
         # cost
         y_flat = y.flatten() # (t*m,)
-        cost = -tensor.log(probs[T.arange(y_flat.shape[0]), y_flat] + 1e-8)
+        cost = -tensor.log(probs_y[T.arange(y_flat.shape[0]), y_flat] + 1e-8)
         cost = cost.reshape([y.shape[0], y.shape[1]])
         cost_y = (cost * y_mask).sum(0)
 

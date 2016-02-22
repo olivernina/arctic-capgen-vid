@@ -11,9 +11,9 @@ import theano.tensor as T
 import common
 import numpy as np
 
-sys.path.append('skip-thoughts')
-import skipthoughts
-from scipy import spatial
+# sys.path.append('skip-thoughts')
+# import skipthoughts
+# from scipy import spatial
 
 from multiprocessing import Process, Queue, Manager
 

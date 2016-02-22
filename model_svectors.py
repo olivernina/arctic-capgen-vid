@@ -626,7 +626,7 @@ class SVectors(object):
 
         cost_dec = tensor.sqr(probs - probs_y)
         # total cost
-        cost = cost_x + cost_y + cost_dec
+        cost = cost_x + cost_y + cost_dec.sum(0)
 
         extra = [probs, alphas]
         return trng, use_noise, x, x_mask, ctx, mask_ctx, alphas, cost, extra,y,y_mask

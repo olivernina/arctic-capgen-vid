@@ -11,9 +11,9 @@ import theano.tensor as T
 import common
 import numpy as np
 
-# sys.path.append('skip-thoughts')
-# import skipthoughts
-# from scipy import spatial
+sys.path.append('skip-thoughts')
+import skipthoughts
+from scipy import spatial
 
 from multiprocessing import Process, Queue, Manager
 
@@ -275,31 +275,31 @@ def prepare_data(engine, IDs):
             rand_cap = random.choice(r)
             z_words = get_words(vidID, str(rand_cap))
             z_seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words])
-        # else:
-        #
-            # # common.dump_pkl(caps,'/media/onina/SSD/projects/skip-thoughts/caps')
-            # cap_distances = {}
-            # if not cap_distances.has_key('vidID'):
-            #
-            #     captions = ["" for x in range(num_caps)]
-            #     for i in range(0,num_caps):
-            #         cap = caps[i]
-            #         id = int(cap['cap_id'])
-            #         caption = cap['caption']
-            #         captions[id] = caption
-            #
-            #     model = skipthoughts.load_model()
-            #     vectors = skipthoughts.encode(model,captions)
-            #     caps_dist = spatial.distance.cdist(vectors, vectors, 'cosine')
-            #     cap_distances[vidID] = caps_dist
-            #
-            # cap_dist = cap_distances[vidID]
-            # query_id = int(capID)
-            # js =range(0, query_id) + range(query_id+1,num_caps)
-            # most_distant = np.argmax(caps_dist[query_id,js])
-            #
-            # z_words = get_words(vidID, str(most_distant))
-            # z_seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
+        else:
+
+            # common.dump_pkl(caps,'/media/onina/SSD/projects/skip-thoughts/caps')
+            cap_distances = {}
+            if not cap_distances.has_key('vidID'):
+
+                captions = ["" for x in range(num_caps)]
+                for i in range(0,num_caps):
+                    cap = caps[i]
+                    id = int(cap['cap_id'])
+                    caption = cap['caption']
+                    captions[id] = caption
+
+                model = skipthoughts.load_model()
+                vectors = skipthoughts.encode(model,captions)
+                caps_dist = spatial.distance.cdist(vectors, vectors, 'cosine')
+                cap_distances[vidID] = caps_dist
+
+            caps_dist = cap_distances[vidID]
+            query_id = int(capID)
+            js =range(0, query_id) + range(query_id+1,num_caps)
+            most_distant = np.argmax(caps_dist[query_id,js])
+
+            z_words = get_words(vidID, str(most_distant))
+            z_seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words])
 
     lengths = [len(s) for s in seqs]
     z_lengths = [len(s) for s in z_seqs]

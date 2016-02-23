@@ -297,7 +297,7 @@ def prepare_data(engine, IDs):
                         if i>0:
                             captions[id] = captions[0]
 
-
+                common.dump_pkl(captions,'captions')
                 vectors = skipthoughts.encode(engine.st_model,captions)
                 caps_dist = spatial.distance.cdist(vectors, vectors, 'cosine')
                 cap_distances[vidID] = caps_dist

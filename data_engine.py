@@ -39,6 +39,7 @@ class Movie2Caption(object):
 
         self.test_mode = 1
         self.load_data()
+        self.st_model = skipthoughts.load_model()
 
         
     def _filter_googlenet(self, vidID):
@@ -268,7 +269,7 @@ def prepare_data(engine, IDs):
         caps = engine.CAP[vidID]
         num_caps = len(caps)
 
-        type = 'random'
+        type = 'skdist'
         if type == 'random':
             import random
             r = range(1,int(capID)) + range(int(capID)+1,num_caps)
@@ -288,8 +289,8 @@ def prepare_data(engine, IDs):
                     caption = cap['caption']
                     captions[id] = caption
 
-                model = skipthoughts.load_model()
-                vectors = skipthoughts.encode(model,captions)
+
+                vectors = skipthoughts.encode(engine.st_model,captions)
                 caps_dist = spatial.distance.cdist(vectors, vectors, 'cosine')
                 cap_distances[vidID] = caps_dist
 

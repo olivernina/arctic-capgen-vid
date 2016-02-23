@@ -150,7 +150,7 @@ class CLSTM(object):
 
             if forget:
                 f = T.zeros_like(f)
-            c = (1-i) * c_ + i * c
+            c = f * c_ + i * c
             h = o * tensor.tanh(c)
             if m_.ndim == 0:
                 # when using this for minibatchsize=1
@@ -329,7 +329,7 @@ class CLSTM(object):
             o = tensor.nnet.sigmoid(o)
             c = tensor.tanh(_slice(preact, 3, dim))
 
-            c = (1-i) * c_ + i * c
+            c = f * c_ + i * c
             c = m_[:,None] * c + (1. - m_)[:,None] * c_
 
             h = o * tensor.tanh(c)

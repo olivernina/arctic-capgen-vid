@@ -287,7 +287,7 @@ def prepare_data(engine, IDs):
                     cap = caps[i]
                     id = int(cap['cap_id'])
                     caption = cap['caption']
-                    captions[id] = caption
+                    captions[id] = caption.encode("ascii","ignore")
 
 
                 vectors = skipthoughts.encode(engine.st_model,captions)

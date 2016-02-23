@@ -293,9 +293,8 @@ def prepare_data(engine, IDs):
                     udata=caption.decode("utf-8")
                     captions[id] = udata.encode("ascii","ignore")
                     print captions[id]
-                    if captions[id]== "":
-                        if i>0:
-                            captions[id] = captions[0]
+                    if captions[id].isspace():
+                        captions[id] = captions[0]
 
                 common.dump_pkl(captions,'captions')
                 vectors = skipthoughts.encode(engine.st_model,captions)

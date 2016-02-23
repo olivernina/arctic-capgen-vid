@@ -41,8 +41,10 @@ class Movie2Caption(object):
         self.test_mode = 1
         self.load_data()
 
+
         if multidec=='stdist':
             self.st_model = skipthoughts.load_model()
+            self.cap_distances = {}
 
         
     def _filter_googlenet(self, vidID):
@@ -282,8 +284,8 @@ def prepare_data(engine, IDs):
         else: #'stdist'
 
             # common.dump_pkl(caps,'/media/onina/SSD/projects/skip-thoughts/caps')
-            cap_distances = {}
-            if not cap_distances.has_key('vidID'):
+
+            if not engine.cap_distances.has_key('vidID'):
 
                 captions = ["" for x in range(num_caps)]
                 for i in range(0,num_caps):
@@ -292,16 +294,16 @@ def prepare_data(engine, IDs):
                     caption = cap['caption']
                     udata=caption.decode("utf-8")
                     captions[id] = udata.encode("ascii","ignore")
-                    print captions[id]
+                    # print captions[id]
                     if captions[id].isspace():
                         captions[id] = captions[0]
 
                 common.dump_pkl(captions,'captions')
                 vectors = skipthoughts.encode(engine.st_model,captions)
                 caps_dist = spatial.distance.cdist(vectors, vectors, 'cosine')
-                cap_distances[vidID] = caps_dist
+                engine.cap_distances[vidID] = caps_dist
 
-            caps_dist = cap_distances[vidID]
+            caps_dist = engine.cap_distances[vidID]
             query_id = int(capID)
             js =range(0, query_id) + range(query_id+1,num_caps)
             most_distant = np.argmax(caps_dist[query_id,js])

@@ -22,7 +22,7 @@ hostname = socket.gethostname()
 class Movie2Caption(object):
             
     def __init__(self, model_type, signature, video_feature,
-                 mb_size_train, mb_size_test, maxlen, n_words,
+                 mb_size_train, mb_size_test, maxlen, n_words,multidec,
                  n_frames=None, outof=None
                  ):
         self.signature = signature
@@ -32,6 +32,7 @@ class Movie2Caption(object):
         self.n_words = n_words
         self.K = n_frames
         self.OutOf = outof
+        self.multidec = multidec
 
         self.mb_size_train = mb_size_train
         self.mb_size_test = mb_size_test
@@ -269,14 +270,14 @@ def prepare_data(engine, IDs):
         caps = engine.CAP[vidID]
         num_caps = len(caps)
 
-        type = 'skdist'
-        if type == 'random':
+
+        if engine.multidec == 'random':
             import random
             r = range(1,int(capID)) + range(int(capID)+1,num_caps)
             rand_cap = random.choice(r)
             z_words = get_words(vidID, str(rand_cap))
             z_seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words])
-        else:
+        else: #'stdist'
 
             # common.dump_pkl(caps,'/media/onina/SSD/projects/skip-thoughts/caps')
             cap_distances = {}
@@ -287,7 +288,9 @@ def prepare_data(engine, IDs):
                     cap = caps[i]
                     id = int(cap['cap_id'])
                     caption = cap['caption']
-                    captions[id] = caption.encode("ascii","ignore")
+                    udata=caption.decode("utf-8")
+                    captions[id] = udata.encode("ascii","ignore")
+                    print captions[id]
 
 
                 vectors = skipthoughts.encode(engine.st_model,captions)

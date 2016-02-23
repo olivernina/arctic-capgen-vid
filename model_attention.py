@@ -961,7 +961,8 @@ class Attention(object):
               K=10,
               OutOf=240,
               verbose=True,
-              debug=True
+              debug=True,
+              multidec='random'
               ):
         self.rng_numpy, self.rng_theano = common.get_two_rngs()
 
@@ -976,7 +977,7 @@ class Attention(object):
         self.engine = data_engine.Movie2Caption('attention', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
-                                           maxlen, n_words,
+                                           maxlen, n_words,multidec,
                                            K, OutOf)
         model_options['ctx_dim'] = self.engine.ctx_dim
 

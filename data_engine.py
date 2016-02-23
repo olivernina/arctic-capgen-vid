@@ -269,7 +269,7 @@ def prepare_data(engine, IDs):
         caps = engine.CAP[vidID]
         num_caps = len(caps)
 
-        type = 'skdist'
+        type = 'random'
         if type == 'random':
             import random
             r = range(1,int(capID)) + range(int(capID)+1,num_caps)

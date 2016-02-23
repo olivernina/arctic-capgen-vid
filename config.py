@@ -7,7 +7,7 @@ config = DD({
     'model': 'attention',
     'random_seed': 1234,
     # ERASE everything under save_model_path
-    'erase_history': False,
+    'erase_history': True,
     'attention': DD({
         'reload_': False,
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

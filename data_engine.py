@@ -40,7 +40,9 @@ class Movie2Caption(object):
 
         self.test_mode = 1
         self.load_data()
-        self.st_model = skipthoughts.load_model()
+
+        if multidec=='stdist':
+            self.st_model = skipthoughts.load_model()
 
         
     def _filter_googlenet(self, vidID):

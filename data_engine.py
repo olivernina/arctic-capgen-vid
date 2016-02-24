@@ -38,7 +38,7 @@ class Movie2Caption(object):
         self.mb_size_test = mb_size_test
         self.non_pickable = []
 
-        self.test_mode = 1
+        self.test_mode = 0
         self.load_data()
 
 

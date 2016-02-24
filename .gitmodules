@@ -1,3 +1,6 @@
 [submodule "caffe"]
 	path = caffe
 	url = https://github.com/BVLC/caffe.git
+[submodule "skip-thoughts"]
+	path = skip-thoughts
+	url = https://github.com/ryankiros/skip-thoughts.git

@@ -12,7 +12,7 @@ config = DD({
         'reload_': False,
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'from_dir': '',
-        'dataset': 'youtube2text',#'youtube2text',#'lsmdc',
+        'dataset': 'mvad',#'youtube2text',#'lsmdc',mvad
         'video_feature': 'googlenet',
         'dim_word':468, # 474
         'ctx_dim':-1,# auto set 
@@ -38,9 +38,8 @@ config = DD({
         'valid_batch_size':200,
         # 'valid_batch_size':5,
         # in the unit of minibatches
-        # 'dispFreq':10,
+        'dispFreq':10,
         'validFreq':2000,
-        # 'validFreq':20,
         'saveFreq':-1, # this is disabled, now use sampleFreq instead
         'sampleFreq':100,
         # blue, meteor, or both
@@ -50,7 +49,8 @@ config = DD({
         'OutOf':None, # used to be 240, for motionfeature use 26
         'verbose': True,
         'debug': False,
-        'multidec':'stdist'
+        # 'dec':'multi-random'
+        'dec':'standard'
         }),
     'clstm': DD({
         'reload_': False,

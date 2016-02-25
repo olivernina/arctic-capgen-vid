@@ -7,7 +7,7 @@ import subprocess
 from multiprocessing import Process, Queue, Manager
 from collections import OrderedDict
 
-import model_attention
+import model_attention_mod
 import data_engine
 from cocoeval import COCOScorer
 import common

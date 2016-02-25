@@ -112,10 +112,11 @@ def get_features(src_dir,dst_dir,video_dir,net):
         return dst_path
     else:
         print('video: '+src_path+' doesn\'t exist')
+        sys.exit(0)
         return False
 
 
-def run(vid_frames,data_dir, pkl_dir):
+def run(vid_frames,feats_dir,frames_dir):
 
     caffe.set_mode_gpu()
 
@@ -131,7 +132,7 @@ def run(vid_frames,data_dir, pkl_dir):
     feats = {}
 
     for i,files in enumerate(vid_frames):
-        feats_dir =os.path.join(data_dir,'features_chal')
+         # =os.path.join(data_dir,'features_chal')
         feat_filename = files.split('/')[-1].split('.avi')[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
@@ -140,18 +141,14 @@ def run(vid_frames,data_dir, pkl_dir):
             feats[feat_filename]=feat
             print('features already extracted '+feat_file_path)
         else:
-            frames_dir = os.path.join(data_dir,'frames_chal')
+            # frames_dir = os.path.join(data_dir,'frames_chal')
             feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
-            feats[feat_filename]=feat
+            # feats[feat_filename]=feat
 
         # sys.stdout.flush()
         print str(i)+'/'+str(len(vid_frames))
 
 
 
-    feats_out = open(os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl'), 'wb')
-    pickle.dump(feats,feats_out)
-
-
-    print('done')
+    return feats
 

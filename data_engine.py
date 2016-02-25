@@ -22,7 +22,7 @@ hostname = socket.gethostname()
 class Movie2Caption(object):
             
     def __init__(self, model_type, signature, video_feature,
-                 mb_size_train, mb_size_test, maxlen, n_words,multidec,
+                 mb_size_train, mb_size_test, maxlen, n_words,dec,
                  n_frames=None, outof=None
                  ):
         self.signature = signature
@@ -32,17 +32,17 @@ class Movie2Caption(object):
         self.n_words = n_words
         self.K = n_frames
         self.OutOf = outof
-        self.multidec = multidec
+        self.dec = dec
 
         self.mb_size_train = mb_size_train
         self.mb_size_test = mb_size_test
         self.non_pickable = []
 
-        self.test_mode = 0
+        self.test_mode = 0 #don't chage this when in production
         self.load_data()
 
 
-        if multidec=='stdist':
+        if dec=='multi-stdist':
             self.st_model = skipthoughts.load_model()
             self.cap_distances = {}
 
@@ -53,8 +53,9 @@ class Movie2Caption(object):
         return feat
 
     def _load_feat_file(self, vidID):
-        data_dir = '/media/onina/sea2/datasets'
-        feats_dir =os.path.join(data_dir,'features_chal')
+        # data_dir = '/media/onina/sea2/datasets'
+        # feats_dir =os.path.join(data_dir,'features_chal')
+        feats_dir = '/media/onina/sea2/datasets/lsmdc/features_chal'
         feat_filename = vidID#files.split('/')[-1].split('.avi')[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
@@ -69,8 +70,10 @@ class Movie2Caption(object):
 
     def get_video_features(self, vidID):
         if self.video_feature == 'googlenet':
-            y = self._filter_googlenet(vidID)
-            # y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better
+            if self.signature == 'youtube2text':
+                y = self._filter_googlenet(vidID)
+            else:
+                y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better
         else:
             raise NotImplementedError()
         return y
@@ -200,6 +203,26 @@ class Movie2Caption(object):
             self.train_ids = self.train
             self.valid_ids = self.valid
             self.test_ids = self.test
+
+        elif self.signature == 'mvad':
+            print 'loading mvad %s features'%self.video_feature
+            dataset_path = common.get_rab_dataset_base_path()+'mvad/'
+            # dataset_path = common.get_rab_dataset_base_path()
+            self.train = common.load_pkl(dataset_path + 'train.pkl')
+            self.valid = common.load_pkl(dataset_path + 'valid.pkl')
+            self.test = common.load_pkl(dataset_path + 'test.pkl')
+            self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
+            # self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+
+            # self.train_ids = ['vid%s'%i for i in range(1,100)]
+            # self.valid_ids = ['vid%s'%i for i in range(101,200)]
+            # self.test_ids = ['vid%s'%i for i in range(201,300)]
+            self.train_ids = self.train
+            self.valid_ids = self.valid
+            self.test_ids = self.test
+
+
+
         else:
             raise NotImplementedError()
                 
@@ -226,6 +249,7 @@ def prepare_data(engine, IDs):
     seqs = []
     z_seqs = []
     feat_list = []
+
     def get_words(vidID, capID):
         rval = None
         if engine.signature == 'youtube2text':
@@ -246,42 +270,26 @@ def prepare_data(engine, IDs):
             # if cap['cap_id'] == capID:
             caption = cap['tokenized']
             rval = cap['tokenized'].split()
-
+        elif engine.signature == 'mvad':
+            cap = engine.CAP[vidID][0]
+            caption = cap['tokenized']
+            rval = cap['tokenized'].split()
 
         assert rval is not None
         return rval
-    
-    for i, ID in enumerate(IDs):
-        #print 'processed %d/%d caps'%(i,len(IDs))
-        # print ID
-        if engine.signature == 'youtube2text':
-            # load GNet feature
-            vidID, capID = ID.split('_')
-        elif engine.signature == 'lsmdc':
-            # t = ID.split('_')
-            # vidID = '_'.join(t[:-1])
-            # capID = t[-1]
-            vidID = ID
-            capID = 1
-        else:
-            raise NotImplementedError()
-        
-        feat = engine.get_video_features(vidID)
-        feat_list.append(feat)
-        words = get_words(vidID, capID)
-        # print words
-        seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
+
+    def get_z_seq():
         caps = engine.CAP[vidID]
         num_caps = len(caps)
 
-
-        if engine.multidec == 'random':
+        if engine.dec == 'multi-random':
             import random
             r = range(1,int(capID)) + range(int(capID)+1,num_caps)
             rand_cap = random.choice(r)
             z_words = get_words(vidID, str(rand_cap))
-            z_seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words])
-        else: #'stdist'
+            z_seq = [engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words]
+
+        elif engine.dec == 'multi-stdist': #'stdist'
 
             # common.dump_pkl(caps,'/media/onina/SSD/projects/skip-thoughts/caps')
 
@@ -309,38 +317,97 @@ def prepare_data(engine, IDs):
             most_distant = np.argmax(caps_dist[query_id,js])
 
             z_words = get_words(vidID, str(most_distant))
-            z_seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words])
+            z_seq = [engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words]
 
-    lengths = [len(s) for s in seqs]
-    z_lengths = [len(s) for s in z_seqs]
-    if engine.maxlen != None:
-        new_seqs = []
-        new_zseqs = []
-        new_feat_list = []
-        new_lengths = []
-        new_caps = []
-        new_zlengths = []
-        for l,z_l, s, y, c in zip(lengths,z_lengths, seqs, feat_list, IDs):
-            # sequences that have length >= maxlen will be thrown away 
-            if l < engine.maxlen and z_l < engine.maxlen :
-                new_seqs.append(s)
-                new_zseqs.append(s)
-                new_feat_list.append(y)
-                new_lengths.append(l)
-                new_caps.append(c)
-        lengths = new_lengths
-        feat_list = new_feat_list
-        seqs = new_seqs
-        z_seqs = new_zseqs
+    def clean_sequences(seqs,z_seqs,feat_list):
 
-        if len(lengths) < 1:
-            return None, None, None, None
+        if  engine.dec=="standard":
+
+            lengths = [len(s) for s in seqs]
+            if engine.maxlen != None:
+                new_seqs = []
+                new_feat_list = []
+                new_lengths = []
+                new_caps = []
+                for l, s, y, c in zip(lengths, seqs, feat_list, IDs):
+                    # sequences that have length >= maxlen will be thrown away
+                    if l < engine.maxlen:
+                        new_seqs.append(s)
+                        new_feat_list.append(y)
+                        new_lengths.append(l)
+                        new_caps.append(c)
+                lengths = new_lengths
+                feat_list = new_feat_list
+                seqs = new_seqs
+
+            return seqs,None,feat_list,lengths
+
+        else:
+            lengths = [len(s) for s in seqs]
+            z_lengths = [len(s) for s in z_seqs]
+            if engine.maxlen != None:
+                new_seqs = []
+                new_zseqs = []
+                new_feat_list = []
+                new_lengths = []
+                new_caps = []
+                new_zlengths = []
+                for l,z_l, s, y, c in zip(lengths,z_lengths, seqs, feat_list, IDs):
+                    # sequences that have length >= maxlen will be thrown away
+                    if l < engine.maxlen and z_l < engine.maxlen :
+                        new_seqs.append(s)
+                        new_zseqs.append(s)
+                        new_feat_list.append(y)
+                        new_lengths.append(l)
+                        new_caps.append(c)
+                lengths = new_lengths
+                feat_list = new_feat_list
+                seqs = new_seqs
+                z_seqs = new_zseqs
+
+            return seqs,z_seqs,feat_list,lengths
 
 
+    for i, ID in enumerate(IDs):
+        #print 'processed %d/%d caps'%(i,len(IDs))
+        # print ID
+        if engine.signature == 'youtube2text':
+            # load GNet feature
+            vidID, capID = ID.split('_')
+        elif engine.signature == 'lsmdc':
+            # t = ID.split('_')
+            # vidID = '_'.join(t[:-1])
+            # capID = t[-1]
+            vidID = ID
+            capID = 1
+        elif engine.signature == 'mvad':
+            # t = ID.split('_')
+            # vidID = '_'.join(t[:-1])
+            # capID = t[-1]
+            vidID = ID
+            capID = 1
+        else:
+            raise NotImplementedError()
+        
+        feat = engine.get_video_features(vidID)
+        feat_list.append(feat)
+        words = get_words(vidID, capID)
+        # print words
+        seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
+
+        if engine.dec != "standard":
+            z_seq = get_z_seq()
+            z_seqs.append(z_seq)
+
+
+    seqs,z_seqs,feat_list,lengths = clean_sequences(seqs,z_seqs,feat_list)
+
+    if len(lengths) < 1:
+        return None, None, None, None
 
 
     y = numpy.asarray(feat_list)
-    print len(y[1,1])
+    # print len(y[1,1])
     y_mask = engine.get_ctx_mask(y)
 
     n_samples = len(seqs)
@@ -352,13 +419,16 @@ def prepare_data(engine, IDs):
         x[:lengths[idx],idx] = s
         x_mask[:lengths[idx]+1,idx] = 1.
 
-    z = numpy.zeros((maxlen, n_samples)).astype('int64')  #This is the other label
-    z_mask = numpy.zeros((maxlen, n_samples)).astype('float32')
-    for idx, s in enumerate(z_seqs):
-        z[:lengths[idx],idx] = s
-        z_mask[:lengths[idx]+1,idx] = 1.
-    
-    return x, x_mask, y, y_mask,z,z_mask
+    if engine.dec=="standard":
+        return x, x_mask, y, y_mask
+    else:
+        z = numpy.zeros((maxlen, n_samples)).astype('int64')  #This is the other label
+        z_mask = numpy.zeros((maxlen, n_samples)).astype('float32')
+        for idx, s in enumerate(z_seqs):
+            z[:lengths[idx],idx] = s
+            z_mask[:lengths[idx]+1,idx] = 1.
+
+        return x, x_mask, y, y_mask,z,z_mask
     
 def test_data_engine():
     from sklearn.cross_validation import KFold

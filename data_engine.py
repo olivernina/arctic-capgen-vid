@@ -405,6 +405,7 @@ def prepare_data(engine, IDs):
         # print words
         seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
 
+        print engine.dec
         if engine.dec != "standard":
             z_seq = get_z_seq()
             z_seqs.append(z_seq)

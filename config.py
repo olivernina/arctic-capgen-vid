@@ -4,7 +4,7 @@ import common
 exp_path = common.get_rab_exp_path()
 
 config = DD({
-    'model': 'attention',
+    'model': 'attention_mod',
     'random_seed': 1234,
     # ERASE everything under save_model_path
     'erase_history': True,

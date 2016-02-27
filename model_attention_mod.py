@@ -962,7 +962,7 @@ class Attention(object):
               OutOf=240,
               verbose=True,
               debug=True,
-              dec='standard'
+              dec='multi-stdist'
               ):
         self.rng_numpy, self.rng_theano = common.get_two_rngs()
 
@@ -974,7 +974,7 @@ class Attention(object):
             pkl.dump(model_options, f)
 
         print 'Loading data'
-        self.engine = data_engine.Movie2Caption('attention', dataset,
+        self.engine = data_engine.Movie2Caption('attention_mod', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
                                            maxlen, n_words,dec,
@@ -1384,6 +1384,6 @@ def train_from_scratch(state, channel):
     t0 = time.time()
     print 'training an attention model'
     model = Attention(channel)
-    model.train(**state.attention)
+    model.train(**state.attention_mod)
     print 'training time in total %.4f sec'%(time.time()-t0)
 

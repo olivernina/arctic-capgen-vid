@@ -17,6 +17,7 @@ caffepath = 'caffe/python'
 sys.path.append(caffepath)
 
 import caffe
+import download
 
 def predict(in_data, net):
     """
@@ -91,7 +92,7 @@ def get_features(src_dir,dst_dir,video_dir,net):
         os.mkdir(dst_dir)
     src_path =  os.path.join(src_dir,video_dir)
     if os.path.exists(src_path):
-        dst_path = os.path.join(dst_dir, video_dir.split('.avi')[0])
+        dst_path = os.path.join(dst_dir, video_dir.split('.')[0])
         if not os.path.exists(dst_path):
 
             # base_dir = os.path.dirname(files)
@@ -112,7 +113,10 @@ def get_features(src_dir,dst_dir,video_dir,net):
         return dst_path
     else:
         print('video: '+src_path+' doesn\'t exist')
-        sys.exit(0)
+        # sys.exit(0)
+
+
+
         return False
 
 
@@ -137,11 +141,10 @@ def run(vid_frames,feats_dir,frames_dir):
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
         if os.path.exists(feat_file_path):
-            feat = np.load(feat_file_path)
-            feats[feat_filename]=feat
+            # feat = np.load(feat_file_path)
+            # feats[feat_filename]=feat
             print('features already extracted '+feat_file_path)
         else:
-            # frames_dir = os.path.join(data_dir,'frames_chal')
             feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
             # feats[feat_filename]=feat
 

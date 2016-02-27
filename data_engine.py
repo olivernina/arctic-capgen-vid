@@ -38,7 +38,7 @@ class Movie2Caption(object):
         self.mb_size_test = mb_size_test
         self.non_pickable = []
 
-        self.test_mode = 0 #don't chage this when in production
+        # self.test_mode = 0 #don't chage this when in production
         self.load_data()
 
 
@@ -179,14 +179,14 @@ class Movie2Caption(object):
 
 
 
-            if self.test_mode:
-                self.train_ids = ['vid%s'%i for i in range(1,120)]
-                self.valid_ids = ['vid%s'%i for i in range(120,130)]
-                self.test_ids = ['vid%s'%i for i in range(130,197)]
-            else:
-                self.train_ids = ['vid%s'%i for i in range(1,1201)]
-                self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
-                self.test_ids = ['vid%s'%i for i in range(1301,1971)]
+            # if self.test_mode:
+            #     self.train_ids = ['vid%s'%i for i in range(1,120)]
+            #     self.valid_ids = ['vid%s'%i for i in range(120,130)]
+            #     self.test_ids = ['vid%s'%i for i in range(130,197)]
+            # else:
+            self.train_ids = ['vid%s'%i for i in range(1,1201)]
+            self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
+            self.test_ids = ['vid%s'%i for i in range(1301,1971)]
 
         elif self.signature == 'lsmdc':
             print 'loading lsmdc %s features'%self.video_feature
@@ -197,9 +197,7 @@ class Movie2Caption(object):
             self.test = common.load_pkl(dataset_path + 'test.pkl')
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
             self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
-            # self.train_ids = ['vid%s'%i for i in range(1,100)]
-            # self.valid_ids = ['vid%s'%i for i in range(101,200)]
-            # self.test_ids = ['vid%s'%i for i in range(201,300)]
+
             self.train_ids = self.train
             self.valid_ids = self.valid
             self.test_ids = self.test
@@ -214,13 +212,25 @@ class Movie2Caption(object):
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
             # self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
 
-            # self.train_ids = ['vid%s'%i for i in range(1,100)]
-            # self.valid_ids = ['vid%s'%i for i in range(101,200)]
-            # self.test_ids = ['vid%s'%i for i in range(201,300)]
+
             self.train_ids = self.train
             self.valid_ids = self.valid
             self.test_ids = self.test
 
+        elif self.signature == 'ysvd':
+            print 'loading mvad %s features'%self.video_feature
+            dataset_path = common.get_rab_dataset_base_path()+'ysvd/'
+
+            self.all = common.load_pkl(dataset_path + 'all.pkl')
+            self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
+
+            self.train = self.all[0:500]
+            self.valid = self.all[501:750]
+            self.test = self.all[751:1000]
+
+            self.train_ids = self.train
+            self.valid_ids = self.valid
+            self.test_ids = self.test
 
 
         else:
@@ -293,7 +303,7 @@ def prepare_data(engine, IDs):
 
             # common.dump_pkl(caps,'/media/onina/SSD/projects/skip-thoughts/caps')
 
-            if not engine.cap_distances.has_key('vidID'):
+            if not engine.cap_distances.has_key(vidID):
 
                 captions = ["" for x in range(num_caps)]
                 for i in range(0,num_caps):

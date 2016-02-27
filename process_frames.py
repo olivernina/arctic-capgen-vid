@@ -4,7 +4,8 @@ import argparse
 import pandas as pd
 import re
 import numpy as np
- 
+import download
+
 def main(argv):
  
     arg_parser = argparse.ArgumentParser()
@@ -53,24 +54,25 @@ def main(argv):
 
 
 
-def get_frames(src_dir,dst_dir,video_file):
+def get_frames(vid_dir,movie_dir,dst_dir,video_file):
+    src_dir = os.path.join(vid_dir,movie_dir)
     if not os.path.exists(dst_dir):
         os.mkdir(dst_dir)
     src_path =  os.path.join(src_dir,video_file)
-    if os.path.exists(src_path):
-        dst_path = os.path.join(dst_dir, video_file)
-        if not os.path.isdir(dst_path) or len(os.listdir(dst_path))==0:
-            if not os.path.isdir(dst_path):
-                os.mkdir(dst_path)
-            command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
-            print command
-            os.system(command)
-        # else:
-        #     print('frames already extracted')
-        return dst_path
-    else:
-        print('video: '+src_path+' doesn\'t exist')
-        return False
+    if not os.path.exists(src_path):
+        download.video(vid_dir,movie_dir,video_file)
+
+    dst_path = os.path.join(dst_dir, video_file)
+    if not os.path.isdir(dst_path) or len(os.listdir(dst_path))==0:
+        if not os.path.isdir(dst_path):
+            os.mkdir(dst_path)
+        command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
+        print command
+        os.system(command)
+    # else:
+    #     print('frames already extracted')
+    return dst_path
+
 
 def sample_frames(src_dir,video_name,num_samples,rate=-1): #TODO: currently it samples number of frames with same distance, could be done more consecutive ones
 #Venugopalan sample every 10 frames

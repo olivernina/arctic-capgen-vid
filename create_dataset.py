@@ -8,6 +8,11 @@ import pickle
 import process_features
 import argparse
 import nltk
+import common
+import socket
+import json
+import subprocess
+import re
 
 def get_annots_mvad(list,corpus,annotations):
     vids_names = {}
@@ -152,11 +157,10 @@ def create_dictionary(annotations,pkl_dir):
                     worddict[token]=word_idx
                     word_idx+=1
 
-    worddict_out = open(os.path.join(pkl_dir,'worddict.pkl'), 'wb')
-    pickle.dump(worddict,worddict_out)
+    return worddict
 
 
-def get_frames(all_vids,vid_dir,dst_dir):
+def get_frames_mvad(all_vids,vid_dir,dst_dir):
     vid_frames = []
 
     for file in all_vids:
@@ -164,8 +168,22 @@ def get_frames(all_vids,vid_dir,dst_dir):
         movie_dir = file[:k]
         video_name = file+'.avi'
 
-        src_dir = os.path.join(vid_dir,movie_dir)
-        frames_dir = process_frames.get_frames(src_dir,dst_dir,video_name)
+
+        frames_dir = process_frames.get_frames(vid_dir,movie_dir,dst_dir,video_name)
+        vid_frames.append(frames_dir)
+
+    return vid_frames
+
+def get_frames_ysvd(all_vids,vid_dir,dst_dir):
+    vid_frames = []
+
+    for file in all_vids:
+
+        movie_dir = file
+        video_name = file+'.mp4'
+
+
+        frames_dir = process_frames.get_frames(vid_dir,'',dst_dir,video_name)
         vid_frames.append(frames_dir)
 
     return vid_frames
@@ -183,16 +201,16 @@ def mvad(params):
     if test_mode:
         train_list_path = 'small/TrainList.txt'
         train_corpus_path = 'small/TrainCorpus.txt'
-        valid_path = 'small/ValidList.txt'
+        valid_list_path = 'small/ValidList.txt'
         valid_corpus_path = 'small/ValidCorpus.txt'
-        test_path = 'small/TestList.txt'
+        test_list_path = 'small/TestList.txt'
         test_corpus_path = 'small/TestCorpus.txt'
     else:
         train_list_path = 'TrainList.txt'
         train_corpus_path = 'TrainCorpus.txt'
-        valid_path = 'ValidList.txt'
+        valid_list_path = 'ValidList.txt'
         valid_corpus_path = 'ValidCorpus.txt'
-        test_path = 'TestList.txt'
+        test_list_path = 'TestList.txt'
         test_corpus_path = 'TestCorpus.txt'
 
     annotations = {}
@@ -202,72 +220,168 @@ def mvad(params):
 
     all_vids = []
 
-    train_file = os.path.join(data_dir,train_list_path)
-    train_corpus = os.path.join(data_dir,train_corpus_path)
-    annotations,vids_names = get_annots_mvad(train_file,train_corpus,annotations)
-    training_list = vids_names.keys()
+
     train_path = os.path.join(pkl_dir,'train.pkl')
     if not os.path.exists(train_path):
-        train_out = open(train_path, 'wb')
-        pickle.dump(training_list,train_out)
+        train_file = os.path.join(data_dir,train_list_path)
+        train_corpus = os.path.join(data_dir,train_corpus_path)
+        annotations,vids_names = get_annots_mvad(train_file,train_corpus,annotations)
+        training_list = vids_names.keys()
+        common.dump_pkl(training_list,train_path)
+    else:
+        training_list = common.load_pkl(train_path)
 
     all_vids = all_vids + training_list
 
 
-    valid_file = os.path.join(data_dir,valid_path)
-    valid_corpus = os.path.join(data_dir,valid_corpus_path)
-    annotations,vids_names = get_annots_mvad(valid_file,valid_corpus,annotations)
-    valid_list = vids_names.keys()
     valid_path = os.path.join(pkl_dir,'valid.pkl')
     if not os.path.exists(valid_path):
-        valid_out = open(valid_path, 'wb')
-        pickle.dump(valid_list,valid_out)
+        valid_file = os.path.join(data_dir,valid_list_path)
+        valid_corpus = os.path.join(data_dir,valid_corpus_path)
+        annotations,vids_names = get_annots_mvad(valid_file,valid_corpus,annotations)
+        valid_list = vids_names.keys()
+        common.dump_pkl(valid_list,valid_path)
+    else:
+        valid_list = common.load_pkl(valid_path)
 
     all_vids = all_vids + valid_list
 
-    test_file = os.path.join(data_dir,test_path)
-    test_corpus = os.path.join(data_dir,test_corpus_path)
-    annotations,vids_names = get_annots_mvad(test_file,test_corpus,annotations)
-    test_list = vids_names.keys()
+
     test_path = os.path.join(pkl_dir,'test.pkl')
     if not os.path.exists(test_path):
-        test_out = open(test_path, 'wb')
-        pickle.dump(test_list,test_out)
-
+        test_file = os.path.join(data_dir,test_list_path)
+        test_corpus = os.path.join(data_dir,test_corpus_path)
+        annotations,vids_names = get_annots_mvad(test_file,test_corpus,annotations)
+        test_list = vids_names.keys()
+        common.dump_pkl(test_list,test_path)
+    else:
+        test_list = common.load_pkl(test_path)
 
     all_vids = all_vids + test_list
 
     cap_path = os.path.join(pkl_dir,'CAP.pkl')
     if not os.path.exists(cap_path):
-        cap_out = open(cap_path, 'wb')
-        pickle.dump(annotations,cap_out)
+       common.dump_pkl(annotations,cap_path)
 
     dict_path = os.path.join(pkl_dir,'worddict.pkl')
     if not os.path.exists(dict_path):
-        create_dictionary(annotations,pkl_dir)
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
 
-    all_vids = all_vids[30000:-1]
-    vid_frames = get_frames(all_vids,video_dir,frames_dir)
+    # all_vids = all_vids[46000:-1]
+    vid_frames = get_frames_mvad(all_vids,video_dir,frames_dir)
 
     features = process_features.run(vid_frames,feats_dir,frames_dir)
 
 
-    # feats_out = open(os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl'), 'wb')
-    # pickle.dump(features,feats_out)
+    host = socket.gethostname()
+    if host != 'moroni':
+        feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+        common.dump_pkl(features,feats_path)
+
 
 
     print('done creating dataset')
 
+
+def ysvd(params):
+
+    data_root = params['data_dir']
+    data_dir =params['data_dir']
+    video_dir = params['video_dir']
+    frames_dir = params['frames_dir']
+    pkl_dir = params['pkl_dir']
+    feats_dir = params['feats_dir']
+
+
+    desc_path = os.path.join(data_dir,'description')
+
+    if not os.path.exists(pkl_dir):
+        os.mkdir(pkl_dir)
+
+
+    annotations = {}
+
+    vids_names = {}
+
+    for file in os.listdir(video_dir):
+
+        vid_name = file.split('.')[0]
+
+        desc_file = os.path.join(desc_path,vid_name+'.description')
+        f = open(desc_file,'r')
+        desc = f.read()
+
+
+        caption = desc.split('.')[0]
+        # caption = desc[0:100]
+
+
+        udata=caption.decode("utf-8")
+        caption = udata.encode("ascii","ignore")
+
+        tokens = nltk.word_tokenize(caption)
+        tokenized = ' '.join(tokens)
+        tokenized = tokenized.lower()
+
+        if vids_names.has_key(vid_name):
+            vids_names[vid_name] += 1
+            print 'other annots, there should be only 1. TODO'
+            sys.exit(0)
+        else:
+            # if not os.path.exists('/media/onina/sea2/datasets/lsmdc/features_chal/'+vid_name):
+            #     print 'features not found'
+            vids_names[vid_name]=1
+
+        annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':caption}]
+
+
+    all_vids = vids_names.keys()
+
+    vids_list_path = os.path.join(pkl_dir,'all_vids.pkl')
+    if not os.path.exists(vids_list_path):
+       common.dump_pkl(all_vids,vids_list_path)
+
+    cap_path = os.path.join(pkl_dir,'CAP.pkl')
+    if not os.path.exists(cap_path):
+       common.dump_pkl(annotations,cap_path)
+
+    # all_vids = all_vids[901:-1]
+
+    vid_frames = get_frames_ysvd(all_vids,video_dir,frames_dir)
+
+
+    features = process_features.run(vid_frames,feats_dir,frames_dir)
+    # feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+    # common.dump_pkl(features,feats_path)
+
+
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
-    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
-    parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
+
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
+    # parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
+
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
+    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
+    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
+
+
+
     args = parser.parse_args()
     params = vars(args)
 
-    mvad(params)
+    if params['dbname'] == 'mvad':
+        mvad(params)
+    if params['dbname'] == 'ysvd':
+        ysvd(params)

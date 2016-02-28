@@ -81,4 +81,9 @@ config = DD({
         'reload_': False,
         'dec':'multi-random'
         }),
+    'noinput': DD({
+        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
+        'reload_': False,
+        'dec':'multi-random'
+        }),
     })

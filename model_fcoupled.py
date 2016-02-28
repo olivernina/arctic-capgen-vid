@@ -150,7 +150,7 @@ class Attention(object):
 
             if forget:
                 f = T.zeros_like(f)
-            c = f * c_ + i * c
+            c = f * c_ + (1-f) * c
             h = o * tensor.tanh(c)
             if m_.ndim == 0:
                 # when using this for minibatchsize=1
@@ -329,7 +329,7 @@ class Attention(object):
             o = tensor.nnet.sigmoid(o)
             c = tensor.tanh(_slice(preact, 3, dim))
 
-            c = f * c_ + i * c
+            c = f * c_ + (1-f) * c
             c = m_[:,None] * c + (1. - m_)[:,None] * c_
 
             h = o * tensor.tanh(c)
@@ -1384,6 +1384,6 @@ def train_from_scratch(state, channel):
     t0 = time.time()
     print 'training an attention model'
     model = Attention(channel)
-    model.train(**state.attention_mod)
+    model.train(**state.fcoupled)
     print 'training time in total %.4f sec'%(time.time()-t0)
 

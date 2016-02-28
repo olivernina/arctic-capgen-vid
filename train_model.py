@@ -14,6 +14,7 @@ import model_svectors
 import model_attention
 import model_same_word
 import model_fcoupled
+import model_noinput
     
 def set_config(conf, args, add_new_key=False):
     # add_new_key: if conf does not contain the key, creates it
@@ -99,6 +100,8 @@ def train_from_scratch(config, state, channel):
         model_icoupled.train_from_scratch(state, channel)
     elif config.model == 'fcoupled':
         model_fcoupled.train_from_scratch(state, channel)
+    elif config.model == 'noinput':
+        model_noinput.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

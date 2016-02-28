@@ -625,7 +625,7 @@ class Attention(object):
         cost_y = (cost * y_mask).sum(0)
 
         # total cost
-        cost = cost_x + cost_y
+        cost = cost_x + cost_y + abs(proj[0] - projf[0])
 
         extra = [probs, alphas]
         return trng, use_noise, x, x_mask, ctx, mask_ctx, alphas, cost, extra,y,y_mask

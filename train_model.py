@@ -12,6 +12,7 @@ import model_attention_mod
 import model_clstm
 import model_svectors
 import model_attention
+import model_same_word
 
     
 def set_config(conf, args, add_new_key=False):
@@ -94,6 +95,8 @@ def train_from_scratch(config, state, channel):
         model_clstm.train_from_scratch(state, channel)
     elif config.model == 'svectors':
         model_svectors.train_from_scratch(state, channel)
+    elif config.model == 'same_word':
+        model_same_word.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

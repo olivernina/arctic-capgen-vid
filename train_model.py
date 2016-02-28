@@ -9,7 +9,7 @@ from config import config
 from jobman import DD, expand
 import common
 import model_attention_mod
-import model_clstm
+import model_icoupled
 import model_svectors
 import model_attention
 import model_same_word
@@ -91,12 +91,12 @@ def train_from_scratch(config, state, channel):
         model_attention.train_from_scratch(state, channel)
     elif config.model == 'attention_mod':
         model_attention_mod.train_from_scratch(state, channel)
-    elif config.model == 'clstm':
-        model_clstm.train_from_scratch(state, channel)
     elif config.model == 'svectors':
         model_svectors.train_from_scratch(state, channel)
     elif config.model == 'same_word':
         model_same_word.train_from_scratch(state, channel)
+    elif config.model == 'icoupled':
+        model_icoupled.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

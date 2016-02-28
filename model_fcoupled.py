@@ -39,7 +39,7 @@ def validate_options(options):
         warnings.warn('dim_word should only be as large as dim.')
     return options
 
-class CLSTM(object):
+class Attention(object):
     def __init__(self, channel=None):
         # layers: 'name': ('parameter initializer', 'feedforward')
         self.layers = {
@@ -925,43 +925,44 @@ class CLSTM(object):
 
     def train(self,
               random_seed=1234,
-              dim_word=256, # word vector dimensionality
+              dim_word=468, # word vector dimensionality
               ctx_dim=-1, # context vector dimensionality, auto set
-              dim=1000, # the number of LSTM units
+              dim=3518, # the number of LSTM units
               n_layers_out=1,
-              n_layers_init=1,
+              n_layers_init=0,
               encoder='none',
-              encoder_dim=100,
-              prev2out=False,
-              ctx2out=False,
-              patience=10,
-              max_epochs=5000,
+              encoder_dim=300,
+              prev2out=True,
+              ctx2out=True,
+              patience=20,
+              max_epochs=500,
               dispFreq=100,
-              decay_c=0.,
-              alpha_c=0.,
+              decay_c=1e-4,
+              alpha_c=0.70602,
               alpha_entropy_r=0.,
-              lrate=0.01,
-              selector=False,
-              n_words=100000,
-              maxlen=100, # maximum length of the description
+              lrate=0.0001,
+              selector=True,
+              n_words=20000,
+              maxlen=30, # maximum length of the description
               optimizer='adadelta',
-              clip_c=2.,
+              clip_c=10.,
               batch_size = 64,
-              valid_batch_size = 64,
+              valid_batch_size = 200,
               save_model_dir='/data/lisatmp3/yaoli/exp/capgen_vid/attention/test/',
-              validFreq=10,
-              saveFreq=10, # save the parameters after every saveFreq updates
-              sampleFreq=10, # generate some samples after every sampleFreq updates
-              metric='blue',
+              validFreq=2000,
+              saveFreq=-1, # save the parameters after every saveFreq updates
+              sampleFreq=100, # generate some samples after every sampleFreq updates
+              metric='everything',
               dataset='youtube2text',
               video_feature='googlenet',
-              use_dropout=False,
+              use_dropout=True,
               reload_=False,
-              from_dir=None,
-              K=10,
-              OutOf=240,
+              from_dir='',
+              K=28,
+              OutOf=None,
               verbose=True,
-              debug=True
+              debug=False,
+              dec='multi-stdist'
               ):
         self.rng_numpy, self.rng_theano = common.get_two_rngs()
 
@@ -973,10 +974,10 @@ class CLSTM(object):
             pkl.dump(model_options, f)
 
         print 'Loading data'
-        self.engine = data_engine.Movie2Caption('attention', dataset,
+        self.engine = data_engine.Movie2Caption('attention_mod', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
-                                           maxlen, n_words,
+                                           maxlen, n_words,dec,
                                            K, OutOf)
         model_options['ctx_dim'] = self.engine.ctx_dim
 
@@ -1382,7 +1383,7 @@ class CLSTM(object):
 def train_from_scratch(state, channel):
     t0 = time.time()
     print 'training an attention model'
-    model = CLSTM(channel)
-    model.train(**state.clstm)
+    model = Attention(channel)
+    model.train(**state.attention_mod)
     print 'training time in total %.4f sec'%(time.time()-t0)
 

@@ -10,12 +10,12 @@ from jobman import DD, expand
 import common
 import model_attention_mod
 import model_icoupled
-import model_svectors
 import model_attention
 import model_same_word
 import model_fcoupled
 import model_noinput
-    
+import model_stv_cost
+
 def set_config(conf, args, add_new_key=False):
     # add_new_key: if conf does not contain the key, creates it
     for key in args:
@@ -92,8 +92,8 @@ def train_from_scratch(config, state, channel):
         model_attention.train_from_scratch(state, channel)
     elif config.model == 'attention_mod':
         model_attention_mod.train_from_scratch(state, channel)
-    elif config.model == 'svectors':
-        model_svectors.train_from_scratch(state, channel)
+    elif config.model == 'stv_cost':
+        model_stv_cost.train_from_scratch(state, channel)
     elif config.model == 'same_word':
         model_same_word.train_from_scratch(state, channel)
     elif config.model == 'icoupled':

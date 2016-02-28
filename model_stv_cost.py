@@ -39,7 +39,7 @@ def validate_options(options):
         warnings.warn('dim_word should only be as large as dim.')
     return options
 
-class SVectors(object):
+class Attention(object):
     def __init__(self, channel=None):
         # layers: 'name': ('parameter initializer', 'feedforward')
         self.layers = {
@@ -624,9 +624,8 @@ class SVectors(object):
         cost = cost.reshape([y.shape[0], y.shape[1]])
         cost_y = (cost * y_mask).sum(0)
 
-        cost_dec = tensor.sqr(probs - probs_y)
         # total cost
-        cost = cost_x + cost_y + cost_dec.sum(0)
+        cost = cost_x + cost_y
 
         extra = [probs, alphas]
         return trng, use_noise, x, x_mask, ctx, mask_ctx, alphas, cost, extra,y,y_mask
@@ -939,11 +938,11 @@ class SVectors(object):
               max_epochs=500,
               dispFreq=100,
               decay_c=1e-4,
-              alpha_c= 0.,
+              alpha_c=0.70602,
               alpha_entropy_r=0.,
               lrate=0.0001,
-              selector=False,
-              n_words=100000,
+              selector=True,
+              n_words=20000,
               maxlen=30, # maximum length of the description
               optimizer='adadelta',
               clip_c=10.,
@@ -958,11 +957,12 @@ class SVectors(object):
               video_feature='googlenet',
               use_dropout=True,
               reload_=False,
-              from_dir=None,
+              from_dir='',
               K=28,
               OutOf=None,
               verbose=True,
-              debug=True
+              debug=False,
+              dec='multi-stdist'
               ):
         self.rng_numpy, self.rng_theano = common.get_two_rngs()
 
@@ -974,10 +974,10 @@ class SVectors(object):
             pkl.dump(model_options, f)
 
         print 'Loading data'
-        self.engine = data_engine.Movie2Caption('attention', dataset,
+        self.engine = data_engine.Movie2Caption('attention_mod', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
-                                           maxlen, n_words,
+                                           maxlen, n_words,dec,
                                            K, OutOf)
         model_options['ctx_dim'] = self.engine.ctx_dim
 
@@ -1383,7 +1383,7 @@ class SVectors(object):
 def train_from_scratch(state, channel):
     t0 = time.time()
     print 'training an attention model'
-    model = SVectors(channel)
-    model.train(**state.svectors)
+    model = Attention(channel)
+    model.train(**state.stv_cost)
     print 'training time in total %.4f sec'%(time.time()-t0)
 

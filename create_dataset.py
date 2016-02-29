@@ -286,7 +286,7 @@ def mvad(params):
                 feats[feat_path]=feat
                 print('features already extracted '+feat_path)
             else:
-                print "feature not found"
+                print "feature not found "+feat_path
                 sys.exit(0)
 
         # features = process_features.run(vid_paths,feats_dir,frames_dir)

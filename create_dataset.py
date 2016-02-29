@@ -4,15 +4,17 @@ import os,sys
 from create_lists import create_pickle
 import process_frames
 import pickle
-import process_features
 import argparse
 import nltk
 import common
 import socket
-import json
-import subprocess
-import re
+
 import numpy as np
+
+host = socket.gethostname()
+
+if host == 'moroni':
+    import process_features
 
 def get_annots_mvad(list,corpus,annotations):
     vids_names = {}
@@ -271,8 +273,7 @@ def mvad(params):
 
 
 
-    # host = socket.gethostname()
-    host ='test'
+
     if host != 'moroni':
         feats_paths = list()
         feats = {}

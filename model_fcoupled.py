@@ -624,8 +624,19 @@ class Attention(object):
         cost = cost.reshape([y.shape[0], y.shape[1]])
         cost_y = (cost * y_mask).sum(0)
 
+        #
+        # # total cost
+        # cost = cost_x + cost_y
+
+
         # total cost
-        cost = cost_x + cost_y
+        W = tparams[_p('decoder','W')]
+        Wf = tparams[_p('decoder_f','W')]
+
+        costw = abs(W - Wf)
+        costw = T.sum(costw)
+
+        cost = cost_x + cost_y +costw
 
         extra = [probs, alphas]
         return trng, use_noise, x, x_mask, ctx, mask_ctx, alphas, cost, extra,y,y_mask

@@ -629,9 +629,7 @@ class Attention(object):
         Wf = tparams[_p('decoder_f','W')]
 
         costw = abs(W - Wf)
-        print costw
         costw = T.sum(costw)
-        print costw
 
         cost = cost_x + cost_y +costw
 

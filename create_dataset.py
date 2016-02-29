@@ -3,7 +3,6 @@ __author__ = 'oliver'
 import os,sys
 from create_lists import create_pickle
 import process_frames
-# import cPickle as pickle
 import pickle
 import process_features
 import argparse
@@ -13,6 +12,7 @@ import socket
 import json
 import subprocess
 import re
+import numpy as np
 
 def get_annots_mvad(list,corpus,annotations):
     vids_names = {}
@@ -190,7 +190,7 @@ def get_frames_ysvd(all_vids,vid_dir,dst_dir):
 
 def mvad(params):
 
-    data_root = params['data_dir']
+
     data_dir =params['data_dir']
     video_dir = params['video_dir']
     frames_dir = params['frames_dir']
@@ -268,18 +268,34 @@ def mvad(params):
         worddict = create_dictionary(annotations,dict_path)
         common.dump_pkl(worddict,dict_path)
 
-    # all_vids = all_vids[46000:-1]
-    vid_frames = get_frames_mvad(all_vids,video_dir,frames_dir)
-
-    features = process_features.run(vid_frames,feats_dir,frames_dir)
 
 
-    host = socket.gethostname()
+
+    # host = socket.gethostname()
+    host ='test'
     if host != 'moroni':
-        feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
-        common.dump_pkl(features,feats_path)
+        feats_paths = list()
+        feats = {}
+        for video in all_vids:
+            feat_path =  os.path.join(feats_dir,video)
+            feats_paths.append(feat_path)
 
+            if os.path.exists(feat_path):
+                feat = np.load(feat_path)
+                feats[feat_path]=feat
+                print('features already extracted '+feat_path)
+            else:
+                print "feature not found"
+                sys.exit(0)
 
+        # features = process_features.run(vid_paths,feats_dir,frames_dir)
+        feats_pkl_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+        common.dump_pkl(feats,feats_pkl_path)
+    else:
+
+        # all_vids = all_vids[46000:-1]
+        vid_frames = get_frames_mvad(all_vids,video_dir,frames_dir)
+        features = process_features.run(vid_frames,feats_dir,frames_dir) # We don't save the FEAT file because it requires to much memory TODO
 
     print('done creating dataset')
 
@@ -360,21 +376,21 @@ if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
 
-    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
-    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
-    # parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
-    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
-    # parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
-    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
-    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
-
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
-    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
+    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
     parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
+
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
+    # parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
 
 
 

@@ -63,11 +63,7 @@ class Movie2Caption(object):
         if os.path.exists(feat_file_path):
             feat = np.load(feat_file_path)
         else:
-<<<<<<< HEAD
             print 'error feature file doesnt exist'+feat_file_path
-=======
-            print ' error feature file doesnt exist'
->>>>>>> 4e68221e6b459e3d7ee9740a0652f1eabbbb925e
 
         # feat = self.FEAT[vidID]
         feat = self.get_sub_frames(feat)

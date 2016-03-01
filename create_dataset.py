@@ -274,7 +274,7 @@ def mvad(params):
 
 
 
-    if host != 'moroni':
+    if host != 'moroni' or test_mode:
         feats_paths = list()
         feats = {}
         for video in all_vids:
@@ -283,7 +283,7 @@ def mvad(params):
 
             if os.path.exists(feat_path):
                 feat = np.load(feat_path)
-                feats[feat_path]=feat
+                feats[video]=feat
                 print('features already extracted '+feat_path)
             else:
                 print "feature not found "+feat_path

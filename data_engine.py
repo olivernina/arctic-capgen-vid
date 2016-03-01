@@ -53,16 +53,21 @@ class Movie2Caption(object):
         return feat
 
     def _load_feat_file(self, vidID):
-        # data_dir = '/media/onina/sea2/datasets'
+
         # feats_dir =os.path.join(data_dir,'features_chal')
-        feats_dir = '/media/onina/sea2/datasets/lsmdc/features_chal'
+        # feats_dir = '/media/onina/sea2/datasets/lsmdc/features_chal'
+        feats_dir = '/p/work2/projects/ryat/datasets/vid-desc/features_chal'
         feat_filename = vidID#files.split('/')[-1].split('.avi')[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
         if os.path.exists(feat_file_path):
             feat = np.load(feat_file_path)
         else:
+<<<<<<< HEAD
             print 'error feature file doesnt exist'+feat_file_path
+=======
+            print ' error feature file doesnt exist'
+>>>>>>> 4e68221e6b459e3d7ee9740a0652f1eabbbb925e
 
         # feat = self.FEAT[vidID]
         feat = self.get_sub_frames(feat)
@@ -70,6 +75,8 @@ class Movie2Caption(object):
 
     def get_video_features(self, vidID):
         if self.video_feature == 'googlenet':
+            # y = self._filter_googlenet(vidID)
+
             if self.signature == 'youtube2text':
                 y = self._filter_googlenet(vidID)
             else:
@@ -218,11 +225,14 @@ class Movie2Caption(object):
             self.test_ids = self.test
 
         elif self.signature == 'ysvd':
-            print 'loading mvad %s features'%self.video_feature
+            print 'loading ysvd %s features'%self.video_feature
             dataset_path = common.get_rab_dataset_base_path()+'ysvd/'
 
-            self.all = common.load_pkl(dataset_path + 'all.pkl')
+            self.all = common.load_pkl(dataset_path + 'all_vids.pkl')
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
+            self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+
+            print self.FEAT.keys()
 
             self.train = self.all[0:500]
             self.valid = self.all[501:750]
@@ -281,6 +291,10 @@ def prepare_data(engine, IDs):
             caption = cap['tokenized']
             rval = cap['tokenized'].split()
         elif engine.signature == 'mvad':
+            cap = engine.CAP[vidID][0]
+            caption = cap['tokenized']
+            rval = cap['tokenized'].split()
+        elif engine.signature == 'ysvd':
             cap = engine.CAP[vidID][0]
             caption = cap['tokenized']
             rval = cap['tokenized'].split()
@@ -393,6 +407,12 @@ def prepare_data(engine, IDs):
             vidID = ID
             capID = 1
         elif engine.signature == 'mvad':
+            # t = ID.split('_')
+            # vidID = '_'.join(t[:-1])
+            # capID = t[-1]
+            vidID = ID
+            capID = 1
+        elif engine.signature == 'ysvd':
             # t = ID.split('_')
             # vidID = '_'.join(t[:-1])
             # capID = t[-1]

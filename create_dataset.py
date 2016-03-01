@@ -363,35 +363,37 @@ def ysvd(params):
     if not os.path.exists(cap_path):
        common.dump_pkl(annotations,cap_path)
 
-    # all_vids = all_vids[901:-1]
+    dict_path = os.path.join(pkl_dir,'worddict.pkl')
+    if not os.path.exists(dict_path):
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
 
     vid_frames = get_frames_ysvd(all_vids,video_dir,frames_dir)
 
-
     features = process_features.run(vid_frames,feats_dir,frames_dir)
-    # feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
-    # common.dump_pkl(features,feats_path)
+    feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+    common.dump_pkl(features,feats_path)
 
 
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
-    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
-    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
-
-    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
-    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
-    # parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
-    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
+    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
     # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
-    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
+
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
+    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
+    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
 
 
 

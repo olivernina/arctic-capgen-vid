@@ -53,7 +53,7 @@ class Movie2Caption(object):
         return feat
 
     def _load_feat_file(self, vidID):
-        # data_dir = '/media/onina/sea2/datasets'
+
         # feats_dir =os.path.join(data_dir,'features_chal')
         # feats_dir = '/media/onina/sea2/datasets/lsmdc/features_chal'
         feats_dir = '/p/work2/projects/ryat/datasets/vid-desc/features_chal'

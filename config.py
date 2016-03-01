@@ -12,7 +12,7 @@ config = DD({
         'reload_': False,
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'from_dir': '',
-        'dataset': 'youtube2text',#'youtube2text',#'lsmdc',mvad
+        'dataset': 'youtube2text',#'youtube2text',#'lsmdc',mvad. 'ysvd'
         'video_feature': 'googlenet',
         'dim_word':468, # 474
         'ctx_dim':-1,# auto set 
@@ -90,7 +90,7 @@ config = DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'reload_': False,
         'dec':'multi-stdist',
-        # 'encoder':'lstm_uni'
+        'encoder':'lstm_uni'
         # 'sampleFreq':1,
         }),
     })

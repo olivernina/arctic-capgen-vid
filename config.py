@@ -81,7 +81,7 @@ config = DD({
         'reload_': False,
         'dec':'multi-random',
         'encoder':'lstm_uni',
-        'encoder_dim': 200,
+        'encoder_dim': 300,
         'dataset': 'youtube2text'
         }),
     'noinput': DD({

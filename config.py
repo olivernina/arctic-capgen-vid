@@ -82,6 +82,7 @@ config = DD({
         'dec':'multi-random',
         'encoder':'lstm_uni',
         'encoder_dim': 200,
+        'dataset': 'youtube2text'
         }),
     'noinput': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

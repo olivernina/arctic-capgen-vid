@@ -82,6 +82,7 @@ config = DD({
         'dec':'multi-random',
         'encoder':'lstm_uni',
         'encoder_dim': 300,
+        'batch_size': 25, # for trees use 25
         'dataset': 'youtube2text'
         }),
     'noinput': DD({

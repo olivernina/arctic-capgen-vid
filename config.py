@@ -81,7 +81,8 @@ config = DD({
         'reload_': False,
         'dec':'multi-random',
         'encoder':'lstm_uni',
-        'encoder_dim': 200,
+        'encoder_dim': 300,
+        'batch_size': 25, # for trees use 25
         }),
     'noinput': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

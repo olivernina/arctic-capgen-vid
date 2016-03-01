@@ -73,7 +73,7 @@ class Movie2Caption(object):
         if self.video_feature == 'googlenet':
             # y = self._filter_googlenet(vidID)
 
-            if self.signature == 'youtube2text':
+            if self.signature == 'youtube2text' or self.signature == 'mvad':
                 y = self._filter_googlenet(vidID)
             else:
                 y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better

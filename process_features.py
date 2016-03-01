@@ -137,16 +137,16 @@ def run(vid_frames,feats_dir,frames_dir):
 
     for i,files in enumerate(vid_frames):
          # =os.path.join(data_dir,'features_chal')
-        feat_filename = files.split('/')[-1].split('.avi')[0]
+        feat_filename = files.split('/')[-1].split('.mp4')[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
         if os.path.exists(feat_file_path):
-            # feat = np.load(feat_file_path)
-            # feats[feat_filename]=feat
+            feat = np.load(feat_file_path)
+            feats[feat_filename]=feat
             print('features already extracted '+feat_file_path)
         else:
             feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
-            # feats[feat_filename]=feat
+            feats[feat_filename]=feat
 
         # sys.stdout.flush()
         print str(i)+'/'+str(len(vid_frames))

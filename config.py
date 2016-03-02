@@ -55,7 +55,8 @@ config = DD({
     'iLSTM': DD({
         'reload_': False,
         'save_model_dir': exp_path + 'attention_mod/',
-        'dec':'standard'
+        'dec':'standard',
+        'dataset': 'youtube2text'
         }),
     'attention_mod': DD({
         'reload_': False,

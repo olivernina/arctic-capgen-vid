@@ -73,7 +73,7 @@ class Movie2Caption(object):
         if self.video_feature == 'googlenet':
             # y = self._filter_googlenet(vidID)
 
-            if self.signature == 'youtube2text' or self.signature == 'mvad':
+            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd':
                 y = self._filter_googlenet(vidID)
             else:
                 y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better
@@ -227,8 +227,6 @@ class Movie2Caption(object):
             self.all = common.load_pkl(dataset_path + 'all_vids.pkl')
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
             self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
-
-            print self.FEAT.keys()
 
             self.train = self.all[0:500]
             self.valid = self.all[501:750]

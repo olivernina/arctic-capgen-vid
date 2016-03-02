@@ -52,14 +52,16 @@ config = DD({
         # 'dec':'multi-random'
         'dec':'standard'
         }),
+    'iLSTM': DD({
+        'reload_': False,
+        'save_model_dir': exp_path + 'attention_mod/',
+        'dec':'standard',
+        'dataset': 'youtube2text'
+        }),
     'attention_mod': DD({
         'reload_': False,
         'save_model_dir': exp_path + 'attention_mod/',
         'dec':'multi-stdist'
-        }),
-    'clstm': DD({
-        'reload_': False,
-        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         }),
     'svectors': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

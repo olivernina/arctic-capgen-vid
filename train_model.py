@@ -15,6 +15,7 @@ import model_same_word
 import model_fcoupled
 import model_noinput
 import model_stv_cost
+import model_iLSTM
 
 def set_config(conf, args, add_new_key=False):
     # add_new_key: if conf does not contain the key, creates it
@@ -102,6 +103,8 @@ def train_from_scratch(config, state, channel):
         model_fcoupled.train_from_scratch(state, channel)
     elif config.model == 'noinput':
         model_noinput.train_from_scratch(state, channel)
+    elif config.model == 'iLSTM':
+        model_iLSTM.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

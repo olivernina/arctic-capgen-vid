@@ -329,7 +329,7 @@ class Attention(object):
             o = tensor.nnet.sigmoid(o)
             c = tensor.tanh(_slice(preact, 3, dim))
 
-            c = f * c_ + (1-i) * c
+            c = f * c_ + (1-f) * c
             c = m_[:,None] * c + (1. - m_)[:,None] * c_
 
             h = o * tensor.tanh(c)

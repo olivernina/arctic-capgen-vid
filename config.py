@@ -56,6 +56,7 @@ config = DD({
         'reload_': False,
         'save_model_dir': exp_path + 'attention_mod/',
         'dec':'standard',
+        'valid_batch_size':200,
         'dataset': 'youtube2text'
         }),
     'attention_mod': DD({

@@ -69,7 +69,9 @@ config = DD({
     'same_word': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'reload_': False,
-        'dec':'multi-random'
+        'dec':'multi-random',
+	'encoder': 'lstm_uni',
+	'batch_size':25,
         }),
     'icoupled': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

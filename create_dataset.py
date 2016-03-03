@@ -226,7 +226,7 @@ def mpii(params):
         splits_file = f.readlines()
         splits = {}
 
-    else:
+    elif host == 'moroni':
 
         f = open(os.path.join(data_dir,'downloadLinksAvi.txt'),'rb')
         files = f.readlines()

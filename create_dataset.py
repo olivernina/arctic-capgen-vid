@@ -30,6 +30,7 @@ def get_annots_mvad(list,corpus,annotations):
             # row = row.split('\t')
         vid_name = row.split('/')[-1].split('.')[0]
         caption = annots[i]
+        caption = caption.replace('\n','')
 
         udata=caption.decode("utf-8")
         caption = udata.encode("ascii","ignore")
@@ -47,7 +48,7 @@ def get_annots_mvad(list,corpus,annotations):
                 print 'features not found'
             vids_names[vid_name]=1
 
-        annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':row[5]}]
+        annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':caption}]
 
 
 
@@ -176,6 +177,21 @@ def get_frames_mvad(all_vids,vid_dir,dst_dir):
 
     return vid_frames
 
+def get_frames_mpii(all_vids,vid_dir,dst_dir):
+    vid_frames = []
+
+    for i,file in enumerate(all_vids):
+        k = file.rfind("_")
+        movie_dir = file[:k]
+        video_name = file+'.avi'
+
+
+        frames_dir = process_frames.get_frames_mpii(vid_dir,movie_dir,dst_dir,video_name)
+        vid_frames.append(frames_dir)
+
+    return vid_frames
+
+
 def get_frames_ysvd(all_vids,vid_dir,dst_dir):
     vid_frames = []
 
@@ -189,6 +205,163 @@ def get_frames_ysvd(all_vids,vid_dir,dst_dir):
         vid_frames.append(frames_dir)
 
     return vid_frames
+
+def mpii(params):
+
+    data_dir =params['data_dir']
+    video_dir = params['video_dir']
+    frames_dir = params['frames_dir']
+    pkl_dir = params['pkl_dir']
+    feats_dir = params['feats_dir']
+
+    if params['test']:
+
+        f = open(os.path.join(data_dir,'test','downloadLinksAvi.txt'),'rb')
+        files = f.readlines()
+        f.close()
+        f = open(os.path.join(data_dir,'test','annotations-someone.csv'),'rb')
+        annots = f.readlines()
+        f.close()
+        f = open(os.path.join(data_dir,'test','dataSplit.txt'),'rb')
+        splits_file = f.readlines()
+        splits = {}
+
+    else:
+
+        f = open(os.path.join(data_dir,'downloadLinksAvi.txt'),'rb')
+        files = f.readlines()
+        f.close()
+        f = open(os.path.join(data_dir,'annotations-someone.csv'),'rb')
+        annots = f.readlines()
+        f.close()
+        f = open(os.path.join(data_dir,'dataSplit.txt'),'rb')
+        splits_file = f.readlines()
+        splits = {}
+
+
+
+
+    annotations = {}
+    train_clip_names = []
+    valid_clip_names = []
+    test_clip_names = []
+
+    train_path = os.path.join(pkl_dir,'train.pkl')
+    if not os.path.exists(train_path):
+        for line in splits_file:
+            film_name = line.split('\t')[0]
+            split = line.split('\t')[1]
+            splits[film_name] =split.replace('\r\n','')
+
+        for i,file in enumerate(files):
+            parts = file.split('/')
+
+            film_name = parts[6]
+            clip_name = parts[7].replace('\n','')
+            clip_name = clip_name.split('.avi')[0]
+            caption = annots[i].split('\t')[1]
+            caption = caption.replace('\n','')
+
+
+            udata=caption.decode("utf-8")
+            caption = udata.encode("ascii","ignore")
+
+            tokens = nltk.word_tokenize(caption)
+            tokenized = ' '.join(tokens)
+            tokenized = tokenized.lower()
+
+            annotations[clip_name]=[{'tokenized':tokenized,'image_id':clip_name,'cap_id':1,'caption':caption}]
+
+            if splits[film_name]=='training':
+                train_clip_names.append(clip_name)
+            elif splits[film_name]=='validation':
+                valid_clip_names.append(clip_name)
+            elif splits[film_name]=='test':
+                test_clip_names.append(clip_name)
+
+
+
+    if not os.path.exists(pkl_dir):
+        os.mkdir(pkl_dir)
+
+    all_vids = []
+
+
+    train_path = os.path.join(pkl_dir,'train.pkl')
+    if not os.path.exists(train_path):
+        # train_file = os.path.join(data_dir,train_list_path)
+        # train_corpus = os.path.join(data_dir,train_corpus_path)
+        # annotations,vids_names = get_annots_mvad(train_file,train_corpus,annotations)
+        # training_list = vids_names.keys()
+        common.dump_pkl(train_clip_names,train_path)
+    else:
+        train_clip_names = common.load_pkl(train_path)
+
+    all_vids = all_vids + train_clip_names
+
+
+    valid_path = os.path.join(pkl_dir,'valid.pkl')
+    if not os.path.exists(valid_path):
+        # valid_file = os.path.join(data_dir,valid_list_path)
+        # valid_corpus = os.path.join(data_dir,valid_corpus_path)
+        # annotations,vids_names = get_annots_mvad(valid_file,valid_corpus,annotations)
+        # valid_list = vids_names.keys()
+        common.dump_pkl(valid_clip_names,valid_path)
+    else:
+        valid_clip_names = common.load_pkl(valid_path)
+
+    all_vids = all_vids + valid_clip_names
+
+
+    test_path = os.path.join(pkl_dir,'test.pkl')
+    if not os.path.exists(test_path):
+        # test_file = os.path.join(data_dir,test_list_path)
+        # test_corpus = os.path.join(data_dir,test_corpus_path)
+        # annotations,vids_names = get_annots_mvad(test_file,test_corpus,annotations)
+        # test_list = vids_names.keys()
+        common.dump_pkl(test_clip_names,test_path)
+    else:
+        test_clip_names = common.load_pkl(test_path)
+
+    all_vids = all_vids + test_clip_names
+
+    cap_path = os.path.join(pkl_dir,'CAP.pkl')
+    if not os.path.exists(cap_path):
+       common.dump_pkl(annotations,cap_path)
+
+    dict_path = os.path.join(pkl_dir,'worddict.pkl')
+    if not os.path.exists(dict_path):
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
+
+
+    if host != 'moroni' or params['test']:
+        feats_paths = list()
+        feats = {}
+        for video in all_vids:
+            feat_path =  os.path.join(feats_dir,video)
+            feats_paths.append(feat_path)
+
+            if os.path.exists(feat_path):
+                feat = np.load(feat_path)
+                feats[video]=feat
+                print('features already extracted '+feat_path)
+            else:
+                print "feature not found "+feat_path
+                sys.exit(0)
+
+        # features = process_features.run(vid_paths,feats_dir,frames_dir)
+        feats_pkl_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+        common.dump_pkl(feats,feats_pkl_path)
+    else:
+
+        # all_vids = all_vids[68370:-1]
+        vid_frames = get_frames_mpii(all_vids,video_dir,frames_dir)
+        frames_dir = '/media/onina/sea2/datasets/mpii/frames'
+        features = process_features.run_mpii(vid_frames,feats_dir,frames_dir, '.avi') # We don't save the FEAT file because it requires to much memory TODO
+
+    print('done creating dataset')
+
 
 def mvad(params):
 
@@ -379,13 +552,22 @@ if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mpii')
     parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
     parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
-    parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/mpii/features')
+    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mpii/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mpii')
+
+
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
+    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
 
     # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
     # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
@@ -404,3 +586,5 @@ if __name__=='__main__':
         mvad(params)
     if params['dbname'] == 'ysvd':
         ysvd(params)
+    if params['dbname'] == 'mpii':
+        mpii(params)

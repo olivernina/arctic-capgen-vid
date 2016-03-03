@@ -60,18 +60,53 @@ def get_frames(vid_dir,movie_dir,dst_dir,video_file):
         os.mkdir(dst_dir)
     src_path =  os.path.join(src_dir,video_file)
     if not os.path.exists(src_path):
-        download.video(vid_dir,movie_dir,video_file)
+        dataset = None
+        # download.video_mpii('/media/onina/sea2/datasets/mpii/videos',movie_dir,video_file)
+        if dataset=='mvad':
+            download.video(vid_dir,movie_dir,video_file)
 
     dst_path = os.path.join(dst_dir, video_file)
+
     if not os.path.isdir(dst_path) or len(os.listdir(dst_path))==0:
         if not os.path.isdir(dst_path):
             os.mkdir(dst_path)
         command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
         print command
         os.system(command)
-    # else:
-    #     print('frames already extracted')
+    else:
+        print('frames already extracted')
     return dst_path
+
+def get_frames_mpii(vid_dir,movie_dir,dst_dir,video_file):
+    src_dir = os.path.join(vid_dir,movie_dir)
+    if not os.path.exists(dst_dir):
+        os.mkdir(dst_dir)
+    src_path =  os.path.join(src_dir,video_file)
+    dst_path = None
+    if not os.path.exists(src_path):
+        dataset = None
+        src_path = os.path.join('/media/onina/sea2/datasets/mpii/videos', movie_dir,video_file)
+        if not os.path.exists(src_path):
+            download.video_mpii('/media/onina/sea2/datasets/mpii/videos',movie_dir,video_file)
+        else:
+            print 'already downloaded ...'
+        if dataset=='mvad':
+            download.video(vid_dir,movie_dir,video_file)
+        # return None
+        dst_path = os.path.join('/media/onina/sea2/datasets/mpii/frames', video_file)
+
+    # dst_path = os.path.join(dst_dir, video_file)
+
+        if not os.path.isdir(dst_path) or len(os.listdir(dst_path))==0:
+            if not os.path.isdir(dst_path):
+                os.mkdir(dst_path)
+            command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
+            print command
+            os.system(command)
+        else:
+            print('frames already extracted')
+    return dst_path
+
 
 
 def sample_frames(src_dir,video_name,num_samples,rate=-1): #TODO: currently it samples number of frames with same distance, could be done more consecutive ones

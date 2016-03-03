@@ -301,6 +301,10 @@ def prepare_data(engine, IDs):
             cap = engine.CAP[vidID][0]
             caption = cap['tokenized']
             rval = cap['tokenized'].split()
+        elif engine.signature == 'mpii':
+            cap = engine.CAP[vidID][0]
+            caption = cap['tokenized']
+            rval = cap['tokenized'].split()
         elif engine.signature == 'ysvd':
             cap = engine.CAP[vidID][0]
             caption = cap['tokenized']

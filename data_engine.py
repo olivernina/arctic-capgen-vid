@@ -219,6 +219,20 @@ class Movie2Caption(object):
             self.valid_ids = self.valid
             self.test_ids = self.test
 
+        elif self.signature == 'mpii':
+            print 'loading mpii %s features'%self.video_feature
+            dataset_path = common.get_rab_dataset_base_path()+'mpii/'
+            # dataset_path = common.get_rab_dataset_base_path()
+            self.train = common.load_pkl(dataset_path + 'train.pkl')
+            self.valid = common.load_pkl(dataset_path + 'valid.pkl')
+            self.test = common.load_pkl(dataset_path + 'test.pkl')
+            self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
+            self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+
+            self.train_ids = self.train
+            self.valid_ids = self.valid
+            self.test_ids = self.test
+
         elif self.signature == 'ysvd':
             print 'loading ysvd %s features'%self.video_feature
             dataset_path = common.get_rab_dataset_base_path()+'ysvd/'

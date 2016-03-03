@@ -289,10 +289,6 @@ def mpii(params):
 
     train_path = os.path.join(pkl_dir,'train.pkl')
     if not os.path.exists(train_path):
-        # train_file = os.path.join(data_dir,train_list_path)
-        # train_corpus = os.path.join(data_dir,train_corpus_path)
-        # annotations,vids_names = get_annots_mvad(train_file,train_corpus,annotations)
-        # training_list = vids_names.keys()
         common.dump_pkl(train_clip_names,train_path)
     else:
         train_clip_names = common.load_pkl(train_path)
@@ -302,10 +298,6 @@ def mpii(params):
 
     valid_path = os.path.join(pkl_dir,'valid.pkl')
     if not os.path.exists(valid_path):
-        # valid_file = os.path.join(data_dir,valid_list_path)
-        # valid_corpus = os.path.join(data_dir,valid_corpus_path)
-        # annotations,vids_names = get_annots_mvad(valid_file,valid_corpus,annotations)
-        # valid_list = vids_names.keys()
         common.dump_pkl(valid_clip_names,valid_path)
     else:
         valid_clip_names = common.load_pkl(valid_path)
@@ -315,10 +307,6 @@ def mpii(params):
 
     test_path = os.path.join(pkl_dir,'test.pkl')
     if not os.path.exists(test_path):
-        # test_file = os.path.join(data_dir,test_list_path)
-        # test_corpus = os.path.join(data_dir,test_corpus_path)
-        # annotations,vids_names = get_annots_mvad(test_file,test_corpus,annotations)
-        # test_list = vids_names.keys()
         common.dump_pkl(test_clip_names,test_path)
     else:
         test_clip_names = common.load_pkl(test_path)

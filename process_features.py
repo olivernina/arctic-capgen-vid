@@ -119,8 +119,40 @@ def get_features(src_dir,dst_dir,video_dir,net):
 
         return False
 
+def get_features_mpii(file, src_dir,dst_dir,video_dir,net):
+    if not os.path.exists(dst_dir):
+        os.mkdir(dst_dir)
+    src_path =  os.path.join(src_dir,video_dir)
+    if os.path.exists(src_path):
+        dst_path = os.path.join(dst_dir, video_dir.split('.avi')[0])
+        if not os.path.exists(dst_path):
 
-def run(vid_frames,feats_dir,frames_dir):
+            # base_dir = os.path.dirname(files)
+            frames = os.listdir(src_path)
+            frames.sort()
+
+            filenames = [os.path.join(src_path,x) for x in frames]
+
+            print 'processing '+ dst_path+' '+str(len(filenames))+' frames'
+            allftrs = batch_predict(filenames, net)
+            feat_file = open(dst_path, 'wb')
+            np.save(feat_file,allftrs)
+            print ' features created'
+            return allftrs
+
+        else:
+            print('features already extracted')
+        return dst_path
+    else:
+        print('video: '+src_path+' doesn\'t exist')
+        # sys.exit(0)
+
+
+
+        return False
+
+
+def run(vid_frames,feats_dir,frames_dir,ext):
 
     caffe.set_mode_gpu()
 
@@ -137,7 +169,8 @@ def run(vid_frames,feats_dir,frames_dir):
 
     for i,files in enumerate(vid_frames):
          # =os.path.join(data_dir,'features_chal')
-        feat_filename = files.split('/')[-1].split('.mp4')[0]
+
+        feat_filename = files.split('/')[-1].split(ext)[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
         if os.path.exists(feat_file_path):
@@ -145,7 +178,8 @@ def run(vid_frames,feats_dir,frames_dir):
             feats[feat_filename]=feat
             print('features already extracted '+feat_file_path)
         else:
-            feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+            # feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+            feat = get_features_mpii(files,frames_dir,feats_dir,files.split('/')[-1],net)
             feats[feat_filename]=feat
 
         # sys.stdout.flush()
@@ -155,3 +189,39 @@ def run(vid_frames,feats_dir,frames_dir):
 
     return feats
 
+def run_mpii(vid_frames,feats_dir,frames_dir,ext):
+
+    caffe.set_mode_gpu()
+
+
+    model_def = 'caffe/models/bvlc_googlenet/deploy_video.prototxt'
+    model = 'caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel'
+
+    # --out vgg_feats.mat'+' --spv '+str(samples_per_video)
+    net = caffe.Net(model_def, model, caffe.TEST)
+    #caffe.set_phase_test()
+
+
+    feats = {}
+
+    for i,file in enumerate(vid_frames):
+         # =os.path.join(data_dir,'features_chal')
+        if file != None:
+            feat_filename = file.split('/')[-1].split(ext)[0]
+            feat_file_path = os.path.join(feats_dir,feat_filename)
+
+            if os.path.exists(feat_file_path):
+                feat = np.load(feat_file_path)
+                feats[feat_filename]=feat
+                print('features already extracted '+feat_file_path)
+            else:
+                # feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+                feat = get_features_mpii(file,frames_dir,feats_dir,file.split('/')[-1],net)
+                feats[feat_filename]=feat
+
+            # sys.stdout.flush()
+        print str(i)+'/'+str(len(vid_frames))
+
+
+
+    return feats

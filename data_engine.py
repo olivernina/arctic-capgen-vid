@@ -425,6 +425,9 @@ def prepare_data(engine, IDs):
             # capID = t[-1]
             vidID = ID
             capID = 1
+        elif engine.signature == 'mpii':
+            vidID = ID
+            capID = 1
         else:
             raise NotImplementedError()
         

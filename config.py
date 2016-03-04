@@ -73,9 +73,11 @@ config = DD({
     'same_word': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'reload_': False,
-        'dec':'multi-random',
-	'encoder': 'lstm_uni',
-	'batch_size':25,
+        'dec':'multi-same',
+        'encoder':None,
+        'encoder_dim': 300,
+        'batch_size': 64, # for trees use 25
+        'dataset': 'youtube2text'
         }),
     'icoupled': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

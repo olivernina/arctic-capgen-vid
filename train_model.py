@@ -93,8 +93,6 @@ def train_from_scratch(config, state, channel):
         model_attention.train_from_scratch(state, channel)
     elif config.model == 'attention_mod':
         model_attention_mod.train_from_scratch(state, channel)
-    elif config.model == 'stv_cost':
-        model_stv_cost.train_from_scratch(state, channel)
     elif config.model == 'same_word':
         model_same_word.train_from_scratch(state, channel)
     elif config.model == 'icoupled':

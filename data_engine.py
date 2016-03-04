@@ -354,6 +354,10 @@ def prepare_data(engine, IDs):
             z_words = get_words(vidID, str(most_distant))
             z_seq = [engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words]
 
+        elif engine.dec == 'multi-same':
+            z_words = get_words(vidID, str(capID))
+            z_seq = [engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words]
+
         return z_seq
 
     def clean_sequences(seqs,z_seqs,feat_list):

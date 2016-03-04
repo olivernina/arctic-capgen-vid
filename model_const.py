@@ -634,8 +634,8 @@ class Attention(object):
         W = tparams[_p('decoder','W')]
         Wf = tparams[_p('decoder_f','W')]
 
-        costw = abs(W - Wf)
-        costw = -T.sum(costw)
+        costw = -T.log(abs(W - Wf))
+        costw = costw.sum(0)
 
         cost = cost_x + cost_y + costw
 
@@ -1394,7 +1394,7 @@ class Attention(object):
 
 def train_from_scratch(state, channel):
     t0 = time.time()
-    print 'training an attention model'
+    print 'training an const model'
     model = Attention(channel)
     model.train(**state.const)
     print 'training time in total %.4f sec'%(time.time()-t0)

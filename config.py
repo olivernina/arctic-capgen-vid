@@ -49,8 +49,8 @@ config = DD({
         'OutOf':None, # used to be 240, for motionfeature use 26
         'verbose': True,
         'debug': False,
-        # 'dec':'multi-random'
-        'dec':'standard'
+        'dec':'standard',
+        'encoder':None,
         }),
     'iLSTM': DD({
         'reload_': False,

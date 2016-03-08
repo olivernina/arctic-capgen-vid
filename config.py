@@ -59,6 +59,7 @@ config = DD({
         'valid_batch_size':200,
         'dataset': 'youtube2text',
         'encoder': 'lstm_uni',
+        'max_epochs':500,
         }),
     'attention_mod': DD({
         'reload_': False,

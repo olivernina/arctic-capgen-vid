@@ -18,6 +18,7 @@ import model_iLSTM
 import model_const
 import model_const2
 import model_LSTM
+import model_lstmdd
 
 def set_config(conf, args, add_new_key=False):
     # add_new_key: if conf does not contain the key, creates it
@@ -111,6 +112,8 @@ def train_from_scratch(config, state, channel):
         model_const2.train_from_scratch(state, channel)
     elif config.model == 'LSTM':
         model_LSTM.train_from_scratch(state, channel)
+    elif config.model == 'lstmdd':
+        model_lstmdd.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

@@ -143,4 +143,14 @@ config = DD({
         'encoder': 'lstm_uni',
         'max_epochs':500,
         }),
-    })
+    'lstmde': DD({
+        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
+        'reload_': False,
+        'dec':'multi-stdist',
+        'encoder':None,
+        'encoder_dim': 300,
+        'batch_size': 64, # for trees use 25
+        'dataset': 'youtube2text',
+        'dim':3518, # lstm dim # 536
+    }),
+})

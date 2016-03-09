@@ -134,4 +134,13 @@ config = DD({
         'batch_size': 64, # for trees use 25
         'dataset': 'youtube2text'
         }),
+    'LSTM': DD({
+        'reload_': False,
+        'save_model_dir': exp_path + 'attention_mod/',
+        'dec':'standard',
+        'valid_batch_size':200,
+        'dataset': 'youtube2text',
+        'encoder': 'lstm_uni',
+        'max_epochs':500,
+        }),
     })

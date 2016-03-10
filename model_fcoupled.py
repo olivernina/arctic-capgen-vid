@@ -1204,35 +1204,35 @@ class Attention(object):
                     sample_execute(from_which='train')
                     sample_execute(from_which='valid')
 
-                test =True  #This is to produce actual descriptions
-                if test:
-                    t0_valid = time.time()
-                    alphas,_ = f_alpha(x, x_mask, ctx, ctx_mask,y,y_mask)
-                    ratio = alphas.min(-1).mean()/(alphas.max(-1)).mean()
-                    alphas_ratio.append(ratio)
-                    current_params = unzip(tparams)
-
-
-
-                    mean_ranking = 0
-                    blue_t0 = time.time()
-                    metrics.save_samples(
-                        model_type='attention',
-                        model_archive=current_params,
-                        options=model_options,
-                        engine=self.engine,
-                        save_dir=save_model_dir,
-                        beam=5, n_process=5,
-                        whichset='both',
-                        on_cpu=False,
-                        processes=processes, queue=queue, rqueue=rqueue,
-                        shared_params=shared_params, metric=metric,
-                        one_time=False,
-                        f_init=f_init, f_next=f_next, model=self
-                        )
-
-
-                    sys.exit(0)
+                # test =True  #This is to produce actual descriptions
+                # if test:
+                #     t0_valid = time.time()
+                #     alphas,_ = f_alpha(x, x_mask, ctx, ctx_mask,y,y_mask)
+                #     ratio = alphas.min(-1).mean()/(alphas.max(-1)).mean()
+                #     alphas_ratio.append(ratio)
+                #     current_params = unzip(tparams)
+                #
+                #
+                #
+                #     mean_ranking = 0
+                #     blue_t0 = time.time()
+                #     metrics.save_samples(
+                #         model_type='attention',
+                #         model_archive=current_params,
+                #         options=model_options,
+                #         engine=self.engine,
+                #         save_dir=save_model_dir,
+                #         beam=5, n_process=5,
+                #         whichset='both',
+                #         on_cpu=False,
+                #         processes=processes, queue=queue, rqueue=rqueue,
+                #         shared_params=shared_params, metric=metric,
+                #         one_time=False,
+                #         f_init=f_init, f_next=f_next, model=self
+                #         )
+                #
+                #
+                #     sys.exit(0)
 
 
                 if validFreq != -1 and numpy.mod(uidx, validFreq) == 0:

@@ -146,7 +146,7 @@ config = DD({
         'max_epochs':500,
         'from_dir': '',
         }),
-    'lstmde': DD({
+    'lstmdd': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'reload_': False,
         'dec':'multi-stdi',

@@ -183,9 +183,9 @@ class Movie2Caption(object):
 
 
             # if self.test_mode:
-            #     self.train_ids = ['vid%s'%i for i in range(1,120)]
-            #     self.valid_ids = ['vid%s'%i for i in range(120,130)]
-            #     self.test_ids = ['vid%s'%i for i in range(130,197)]
+            # self.train_ids = ['vid%s'%i for i in range(1,12)]
+            # self.valid_ids = ['vid%s'%i for i in range(12,13)]
+            # self.test_ids = ['vid%s'%i for i in range(13,19)]
             # else:
             self.train_ids = ['vid%s'%i for i in range(1,1201)]
             self.valid_ids = ['vid%s'%i for i in range(1201,1301)]

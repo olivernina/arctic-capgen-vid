@@ -82,6 +82,29 @@ def build_sample_pairs(samples, vidIDs):
         D[vidID] = [{'image_id': vidID, 'caption': sample}]
     return D
 
+def save_test_samples(samples_test, engine):
+
+    f=open('results/'+engine.signature+'_'+engine.model_type+'_'+'samplestest.csv','wr')
+
+    gts_test = OrderedDict()
+
+    if engine.signature=='youtube2text':
+        import cPickle
+        d= open('data/youtube2text_iccv15/dict_youtube_mapping.pkl','rb')
+        D = cPickle.load(d)
+        D = dict((y,x) for x,y in D.iteritems())
+
+    for vidID in engine.test_ids:
+        gts_test[vidID] = engine.CAP[vidID]
+        # print samples_test[vidID]
+        if engine.signature=='youtube2text':
+
+            f.write(D[vidID]+','+ samples_test[vidID][0]['caption']+','+gts_test[vidID][0]['caption']+'\n')
+        else:
+            f.write(vidID+','+ samples_test[vidID][0]['caption']+','+gts_test[vidID][0]['caption']+'\n')
+
+    f.close()
+
 def score_with_cocoeval(samples_valid, samples_test, engine):
     scorer = COCOScorer()
     if samples_valid:
@@ -91,11 +114,13 @@ def score_with_cocoeval(samples_valid, samples_test, engine):
         valid_score = scorer.score(gts_valid, samples_valid, engine.valid_ids)
     else:
         valid_score = None
+
     if samples_test:
         gts_test = OrderedDict()
         for vidID in engine.test_ids:
             gts_test[vidID] = engine.CAP[vidID]
         test_score = scorer.score(gts_test, samples_test, engine.test_ids)
+
     else:
         test_score = None
     return valid_score, test_score
@@ -170,8 +195,9 @@ def compute_score(
             save_dir=save_dir,
             beam=beam,
             whichset=whichset)
-        
+
     valid_score, test_score = score_with_cocoeval(samples_valid, samples_test, engine)
+
     scores_final = {}
     scores_final['valid'] = valid_score
     scores_final['test'] = test_score
@@ -180,6 +206,41 @@ def compute_score(
         return scores_final
     
     return scores_final, processes, queue, rqueue, shared_params    
+
+def save_samples(
+        model_type, model_archive, options, engine, save_dir,
+        beam, n_process,
+        whichset='both', on_cpu=True,
+        processes=None, queue=None, rqueue=None, shared_params=None,
+        one_time=False, metric=None,
+        f_init=None, f_next=None, model=None):
+
+    assert metric != 'perplexity'
+    if on_cpu:
+        raise NotImplementedError()
+    else:
+        assert model is not None
+        samples_valid, samples_test = generate_sample_gpu_single_process(
+            model_type, model_archive,options,
+            engine, model, f_init, f_next,
+            save_dir=save_dir,
+            beam=beam,
+            whichset=whichset)
+
+    # valid_score, test_score = score_with_cocoeval(samples_valid, samples_test, engine)
+    save_test_samples(samples_test, engine)
+
+    # scores_final = {}
+    # scores_final['valid'] = valid_score
+    # scores_final['test'] = test_score
+    #
+    # if one_time:
+    #     return scores_final
+    #
+    # return scores_final, processes, queue, rqueue, shared_params
+
+
+
 
 def test_cocoeval():
     engine = data_engine.Movie2Caption('attention', 'youtube2text',

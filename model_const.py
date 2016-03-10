@@ -633,10 +633,10 @@ class Attention(object):
         # total cost
         W = tparams[_p('decoder','W')]
         Wf = tparams[_p('decoder_f','W')]
-
         costw = -T.log(abs(W - Wf))
         costw = costw.reshape([W.shape[0], W.shape[1]])
         costw = T.sum(costw)
+        costw = costw/(W.shape[0]* W.shape[1])
 
         cost = cost_x + cost_y + costw
 

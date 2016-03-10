@@ -125,7 +125,9 @@ config = DD({
         'encoder':None,
         'encoder_dim': 300,
         'batch_size': 64, # for trees use 25
-        'dataset': 'youtube2text'
+        'dataset': 'youtube2text',
+        'dim':3518, # lstm dim # 536
+        'from_dir': '',
         }),
     'const2': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

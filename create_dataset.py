@@ -534,7 +534,7 @@ def ysvd(params):
             #     print 'features not found'
             vids_names[vid_name]=1
 
-        annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':1,'caption':caption},{'tokenized':tokenized2,'image_id':vid_name,'cap_id':2,'caption':caption2} ]
+        annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':0,'caption':caption},{'tokenized':tokenized2,'image_id':vid_name,'cap_id':1,'caption':caption2} ]
 
 
     all_vids = vids_names.keys()

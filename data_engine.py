@@ -307,7 +307,7 @@ def prepare_data(engine, IDs):
             caption = cap['tokenized']
             rval = cap['tokenized'].split()
         elif engine.signature == 'ysvd':
-            cap = engine.CAP[vidID][0]
+            cap = engine.CAP[vidID][capID]
             caption = cap['tokenized']
             rval = cap['tokenized'].split()
 
@@ -341,10 +341,8 @@ def prepare_data(engine, IDs):
                     # print captions[id]
                     if captions[id].isspace():
                         captions[id] = captions[0]
-                        if captions[id].isspace():
-                            captions[id] = 'No description'
 
-                common.dump_pkl(captions,'captions')
+                # common.dump_pkl(captions,'captions')
                 vectors = skipthoughts.encode(engine.st_model,captions)
                 caps_dist = spatial.distance.cdist(vectors, vectors, 'cosine')
                 engine.cap_distances[vidID] = caps_dist
@@ -359,6 +357,9 @@ def prepare_data(engine, IDs):
 
         elif engine.dec == 'multi-same':
             z_words = get_words(vidID, str(capID))
+            z_seq = [engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words]
+        elif engine.dec == 'dual':
+            z_words = get_words(vidID, 1)
             z_seq = [engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in z_words]
 
         return z_seq
@@ -435,7 +436,7 @@ def prepare_data(engine, IDs):
             # vidID = '_'.join(t[:-1])
             # capID = t[-1]
             vidID = ID
-            capID = 1
+            capID = 0
         elif engine.signature == 'mpii':
             vidID = ID
             capID = 1

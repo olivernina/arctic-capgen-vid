@@ -96,6 +96,8 @@ config = DD({
         'dataset': 'youtube2text',
         'dim':3518, # lstm dim # 536
         'from_dir': '',
+        'valid_batch_size':200,
+        'max_epochs':500,
         }),
     'noinput': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',

@@ -461,6 +461,26 @@ def mvad(params):
 
     print('done creating dataset')
 
+def get_human_annotations(data_dir):
+    hannot_path = os.path.join(data_dir,'human_annotations','HumanCaps.csv')
+    import csv
+
+    hannot = {}
+    with open(hannot_path, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='\"')
+        for row in spamreader:
+            print ', '.join(row)
+            hannot[row[0]] = row[1]
+    return hannot
+
+def tokenize_cap(caption):
+    udata=caption.decode("utf-8")
+    caption = udata.encode("ascii","ignore")
+
+    tokens = nltk.word_tokenize(caption)
+    tokenized = ' '.join(tokens)
+    tokenized = tokenized.lower()
+    return tokenized
 
 def ysvd(params):
 
@@ -482,9 +502,14 @@ def ysvd(params):
 
     vids_names = {}
 
+    hannots = get_human_annotations(data_dir)
+
+
     for file in os.listdir(video_dir):
 
         vid_name = file.split('.')[0]
+
+        print vid_name
 
         desc_file = os.path.join(desc_path,vid_name+'.description')
         f = open(desc_file,'r')
@@ -492,26 +517,24 @@ def ysvd(params):
 
 
         caption = desc.split('.')[0]
+
+        tokenized = tokenize_cap(caption)
         # caption = desc[0:100]
 
+        caption2 = hannots[vid_name]
+        tokenized2 = tokenize_cap(caption2)
 
-        udata=caption.decode("utf-8")
-        caption = udata.encode("ascii","ignore")
-
-        tokens = nltk.word_tokenize(caption)
-        tokenized = ' '.join(tokens)
-        tokenized = tokenized.lower()
 
         if vids_names.has_key(vid_name):
             vids_names[vid_name] += 1
             print 'other annots, there should be only 1. TODO'
-            sys.exit(0)
+            # sys.exit(0)
         else:
             # if not os.path.exists('/media/onina/sea2/datasets/lsmdc/features_chal/'+vid_name):
             #     print 'features not found'
             vids_names[vid_name]=1
 
-        annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':caption}]
+        annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':1,'caption':caption},{'tokenized':tokenized2,'image_id':vid_name,'cap_id':2,'caption':caption2} ]
 
 
     all_vids = vids_names.keys()
@@ -540,13 +563,13 @@ if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mpii')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
-    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/mpii/features')
-    parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mpii/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mpii')
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mpii')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
+    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/mpii/features')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mpii/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mpii')
 
 
     # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/mvad')
@@ -557,13 +580,13 @@ if __name__=='__main__':
     # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
     # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
 
-    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
-    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
-    # parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
-    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
-    # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
-    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
+    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
+    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
 
 
 

@@ -341,6 +341,8 @@ def prepare_data(engine, IDs):
                     # print captions[id]
                     if captions[id].isspace():
                         captions[id] = captions[0]
+                        if captions[id].isspace():
+                            captions[id] = 'No description'
 
                 common.dump_pkl(captions,'captions')
                 vectors = skipthoughts.encode(engine.st_model,captions)

@@ -13,12 +13,14 @@ import model_icoupled
 import model_attention
 import model_same_word
 import model_fcoupled
-import model_nio
 import model_iLSTM
 import model_const
 import model_const2
 import model_LSTM
 import model_lstmdd
+import model_nio
+import model_ni
+import model_clstm
 
 def set_config(conf, args, add_new_key=False):
     # add_new_key: if conf does not contain the key, creates it
@@ -114,6 +116,10 @@ def train_from_scratch(config, state, channel):
         model_lstmdd.train_from_scratch(state, channel)
     elif config.model == 'nio':
         model_nio.train_from_scratch(state, channel)
+    elif config.model == 'ni':
+        model_ni.train_from_scratch(state, channel)
+    elif config.model == 'clstm':
+        model_clstm.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

@@ -13,7 +13,7 @@ import model_icoupled
 import model_attention
 import model_same_word
 import model_fcoupled
-import model_noinput
+import model_nio
 import model_iLSTM
 import model_const
 import model_const2
@@ -102,8 +102,6 @@ def train_from_scratch(config, state, channel):
         model_icoupled.train_from_scratch(state, channel)
     elif config.model == 'fcoupled':
         model_fcoupled.train_from_scratch(state, channel)
-    elif config.model == 'noinput':
-        model_noinput.train_from_scratch(state, channel)
     elif config.model == 'iLSTM':
         model_iLSTM.train_from_scratch(state, channel)
     elif config.model == 'const':
@@ -114,6 +112,8 @@ def train_from_scratch(config, state, channel):
         model_LSTM.train_from_scratch(state, channel)
     elif config.model == 'lstmdd':
         model_lstmdd.train_from_scratch(state, channel)
+    elif config.model == 'nio':
+        model_nio.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

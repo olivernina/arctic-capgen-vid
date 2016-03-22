@@ -58,7 +58,7 @@ config = DD({
         'dec':'standard',
         'valid_batch_size':200,
         'dataset': 'youtube2text',
-        'encoder': 'lstm_uni',
+        'encoder': None,
         'max_epochs':500,
         'from_dir': '',
         }),
@@ -66,11 +66,6 @@ config = DD({
         'reload_': False,
         'save_model_dir': exp_path + 'attention_mod/',
         'dec':'multi-stdist'
-        }),
-    'svectors': DD({
-        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
-        'reload_': False,
-     #   'encoder': 'lstm_uni'
         }),
     'same_word': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
@@ -98,19 +93,6 @@ config = DD({
         'from_dir': '',
         'valid_batch_size':200,
         'max_epochs':500,
-        }),
-    'noinput': DD({
-        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
-        'reload_': False,
-        'dec':'multi-random'
-        }),
-    'stv_cost': DD({
-        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
-        'reload_': False,
-        'dec':'multi-stdist',
-        'encoder':'lstm_uni',
-        'encoder_dim': 200,
-        # 'sampleFreq':1,
         }),
     'clstm': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
@@ -160,4 +142,14 @@ config = DD({
         'dataset': 'youtube2text',
         'dim':3518, # lstm dim # 536
     }),
+    'nio': DD({
+        'reload_': False,
+        'save_model_dir': exp_path + 'attention_mod/',
+        'dec':'standard',
+        'valid_batch_size':200,
+        'dataset': 'youtube2text',
+        'encoder': None,
+        'max_epochs':500,
+        'from_dir': '',
+        }),
 })

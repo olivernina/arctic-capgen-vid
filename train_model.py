@@ -21,6 +21,9 @@ import model_lstmdd
 import model_nio
 import model_ni
 import model_clstm
+import model_nf
+import model_fc
+import model_ic
 
 def set_config(conf, args, add_new_key=False):
     # add_new_key: if conf does not contain the key, creates it
@@ -114,12 +117,18 @@ def train_from_scratch(config, state, channel):
         model_LSTM.train_from_scratch(state, channel)
     elif config.model == 'lstmdd':
         model_lstmdd.train_from_scratch(state, channel)
+    elif config.model == 'clstm':
+        model_clstm.train_from_scratch(state, channel)
     elif config.model == 'nio':
         model_nio.train_from_scratch(state, channel)
     elif config.model == 'ni':
         model_ni.train_from_scratch(state, channel)
-    elif config.model == 'clstm':
-        model_clstm.train_from_scratch(state, channel)
+    elif config.model == 'nf':
+        model_nf.train_from_scratch(state, channel)
+    elif config.model == 'fc':
+        model_fc.train_from_scratch(state, channel)
+    elif config.model == 'ic':
+        model_ic.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

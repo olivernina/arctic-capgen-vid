@@ -1111,7 +1111,7 @@ class Attention(object):
                     sample_execute(from_which='train')
                     sample_execute(from_which='valid')
 
-                test =True  #This is to produce actual descriptions
+                test =False  #This is to produce actual descriptions
                 if test:
                     t0_valid = time.time()
                     alphas,_ = f_alpha(x, mask, ctx, ctx_mask)

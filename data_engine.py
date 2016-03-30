@@ -198,7 +198,7 @@ class Movie2Caption(object):
             self.valid = common.load_pkl(dataset_path + 'valid.pkl')
             self.test = common.load_pkl(dataset_path + 'test.pkl')
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
-            self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+            # self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
 
             self.train_ids = self.train
             self.valid_ids = self.valid

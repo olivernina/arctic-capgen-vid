@@ -54,7 +54,7 @@ class COCOScorer(object):
                 print "%s: %0.3f"%(method, score)
                 
         for metric, score in self.eval.items():
-            print '%s: %.3f'%(metric, score)
+            print '%s: %.5f'%(metric, score)
         return self.eval
     
     def setEval(self, score, method):

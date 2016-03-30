@@ -1,7 +1,6 @@
 __author__ = 'oliver'
 
 import os,sys
-from create_lists import create_pickle
 import process_frames
 import pickle
 import argparse
@@ -15,6 +14,43 @@ host = socket.gethostname()
 
 if host == 'moroni':
     import process_features
+
+
+
+def get_annots_lsmdc(filename,annotations):
+    vids_names = {}
+
+    with open(filename) as csvfile:
+        rows = csvfile.readlines()
+        for row in rows:
+            row = row.split('\t')
+            vid_name = row[0]
+
+            if len(row)>5:
+                ocaption = row[5]
+
+                ocaption = ocaption.replace('\n','')
+                udata=ocaption.decode("utf-8")
+                caption = udata.encode("ascii","ignore")
+
+                tokens = nltk.word_tokenize(caption)
+                tokenized = ' '.join(tokens)
+                tokenized = tokenized.lower()
+
+                if vids_names.has_key(vid_name):
+                    vids_names[vid_name] += 1
+                    print 'other annots'
+                else:
+                    if not os.path.exists('/media/onina/sea2/datasets/lsmdc/features_chal/'+vid_name):
+                        print 'features not found'
+                    vids_names[vid_name]=1
+
+                annotations[vid_name]=[{'tokenized':tokenized,'image_id':vid_name,'cap_id':vids_names[vid_name],'caption':ocaption}]
+
+
+
+    return annotations,vids_names
+
 
 def get_annots_mvad(list,corpus,annotations):
     vids_names = {}
@@ -55,7 +91,7 @@ def get_annots_mvad(list,corpus,annotations):
     return annotations,vids_names
 
 
-def lsmdc(params):
+def lsmdc_old(params):
 
     # sys.stdout = open('out.log','w')
 
@@ -152,18 +188,20 @@ def create_dictionary(annotations,pkl_dir):
     worddict = {}
     word_idx = 2
     for a in annotations:
-        ann = annotations[a][0]
-        tokens = ann['tokenized'].split()
-        for token in tokens:
-            if token not in ['','\t','\n',' ']:
-                if not worddict.has_key(token):
-                    worddict[token]=word_idx
-                    word_idx+=1
+        caps = annotations[a]
+
+        for cap in caps:
+            tokens = cap['tokenized'].split()
+            for token in tokens:
+                if token not in ['','\t','\n',' ']:
+                    if not worddict.has_key(token):
+                        worddict[token]=word_idx
+                        word_idx+=1
 
     return worddict
 
 
-def get_frames_mvad(all_vids,vid_dir,dst_dir):
+def get_frames(all_vids,vid_dir,dst_dir):
     vid_frames = []
 
     for file in all_vids:
@@ -176,6 +214,7 @@ def get_frames_mvad(all_vids,vid_dir,dst_dir):
         vid_frames.append(frames_dir)
 
     return vid_frames
+
 
 def get_frames_mpii(all_vids,vid_dir,dst_dir):
     vid_frames = []
@@ -205,6 +244,104 @@ def get_frames_ysvd(all_vids,vid_dir,dst_dir):
         vid_frames.append(frames_dir)
 
     return vid_frames
+
+def lsmdc(params):
+
+    data_dir =params['data_dir']
+    video_dir = params['video_dir']
+    frames_dir = params['frames_dir']
+    pkl_dir = params['pkl_dir']
+    feats_dir = params['feats_dir']
+
+    test_mode = params['test']
+    if test_mode:
+        train_list_path = 'lists/small/LSMDC15_annos_training_small.csv'
+        valid_list_path = 'lists/small/LSMDC15_annos_val_small.csv'
+        test_list_path = 'lists/small/LSMDC15_annos_test_small.csv'
+    else:
+        train_list_path = 'lists/LSMDC15_annos_training.csv'
+        valid_list_path = 'lists/LSMDC15_annos_val.csv'
+        test_list_path = 'lists/LSMDC15_annos_test.csv'
+
+    annotations = {}
+
+    if not os.path.exists(pkl_dir):
+        os.mkdir(pkl_dir)
+
+    all_vids = []
+
+
+    train_path = os.path.join(pkl_dir,'train.pkl')
+    if not os.path.exists(train_path):
+        train_file = os.path.join(data_dir,train_list_path)
+        annotations,vids_names = get_annots_lsmdc(train_file,annotations)
+        training_list = vids_names.keys()
+        common.dump_pkl(training_list,train_path)
+    else:
+        training_list = common.load_pkl(train_path)
+
+
+    all_vids = all_vids + training_list
+
+
+    valid_path = os.path.join(pkl_dir,'valid.pkl')
+    if not os.path.exists(valid_path):
+        valid_file = os.path.join(data_dir,valid_list_path)
+        annotations,vids_names = get_annots_lsmdc(valid_file,annotations)
+        valid_list = vids_names.keys()
+        common.dump_pkl(valid_list,valid_path)
+    else:
+        valid_list = common.load_pkl(valid_path)
+
+    all_vids = all_vids + valid_list
+
+
+    test_path = os.path.join(pkl_dir,'test.pkl')
+    if not os.path.exists(test_path):
+        test_file = os.path.join(data_dir,test_list_path)
+        annotations,vids_names = get_annots_lsmdc(test_file,annotations)
+        test_list = vids_names.keys()
+        common.dump_pkl(test_list,test_path)
+    else:
+        test_list = common.load_pkl(test_path)
+
+    all_vids = all_vids + test_list
+
+    cap_path = os.path.join(pkl_dir,'CAP.pkl')
+    if not os.path.exists(cap_path):
+       common.dump_pkl(annotations,cap_path)
+
+    dict_path = os.path.join(pkl_dir,'worddict.pkl')
+    if not os.path.exists(dict_path):
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
+
+
+    if host != 'moroni' or test_mode:
+        feats_paths = list()
+        feats = {}
+        for video in all_vids:
+            feat_path =  os.path.join(feats_dir,video)
+            feats_paths.append(feat_path)
+
+            if os.path.exists(feat_path):
+                feat = np.load(feat_path)
+                feats[video]=feat
+                print('features already extracted '+feat_path)
+            else:
+                print "feature not found "+feat_path
+                sys.exit(0)
+
+        # features = process_features.run(vid_paths,feats_dir,frames_dir)
+        feats_pkl_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+        common.dump_pkl(feats,feats_pkl_path)
+    else:
+
+        # all_vids = all_vids[46000:-1]
+        vid_frames = get_frames(all_vids,video_dir,frames_dir)
+        features = process_features.run(vid_frames,feats_dir,frames_dir,'.avi') # We don't save the FEAT file because it requires to much memory TODO
+
+    print('done creating dataset')
 
 def mpii(params):
 
@@ -580,13 +717,22 @@ if __name__=='__main__':
     # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvad/')
     # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvad')
 
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
-    parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
-    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/ysvd')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/ysvd/videos')
+    # parser.add_argument('-f','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/ysvd/frames')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/ysvd/features')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/ysvd/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
+
+
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/lsmdc')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
+    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
+    parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/lsmdc/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='lsmdc')
 
 
 
@@ -599,3 +745,5 @@ if __name__=='__main__':
         ysvd(params)
     if params['dbname'] == 'mpii':
         mpii(params)
+    if params['dbname'] == 'lsmdc':
+        lsmdc(params)

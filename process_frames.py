@@ -64,6 +64,9 @@ def get_frames(vid_dir,movie_dir,dst_dir,video_file):
         # download.video_mpii('/media/onina/sea2/datasets/mpii/videos',movie_dir,video_file)
         if dataset=='mvad':
             download.video(vid_dir,movie_dir,video_file)
+        else:
+            print "didn't download video"
+            sys.exit(0)
 
     dst_path = os.path.join(dst_dir, video_file)
 

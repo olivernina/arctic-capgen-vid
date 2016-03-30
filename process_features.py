@@ -178,8 +178,7 @@ def run(vid_frames,feats_dir,frames_dir,ext):
             feats[feat_filename]=feat
             print('features already extracted '+feat_file_path)
         else:
-            # feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
-            feat = get_features_mpii(files,frames_dir,feats_dir,files.split('/')[-1],net)
+            feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
             feats[feat_filename]=feat
 
         # sys.stdout.flush()

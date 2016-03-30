@@ -288,15 +288,6 @@ def prepare_data(engine, IDs):
                     break
         elif engine.signature == 'lsmdc':
             cap = engine.CAP[vidID][0]
-
-            # for cap in caps:
-            #     if cap['cap_id'] == capID:
-            #         rval = cap['tokenized'].split(' ')
-            #         break
-
-            # cap = caps[0]
-            # if cap['cap_id'] == capID:
-            caption = cap['tokenized']
             rval = cap['tokenized'].split()
         elif engine.signature == 'mvad':
             cap = engine.CAP[vidID][0]

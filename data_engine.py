@@ -193,8 +193,7 @@ class Movie2Caption(object):
 
         elif self.signature == 'lsmdc':
             print 'loading lsmdc %s features'%self.video_feature
-            # dataset_path = common.get_rab_dataset_base_path()+'youtube2text_iccv15/'
-            dataset_path = common.get_rab_dataset_base_path()
+            dataset_path = common.get_rab_dataset_base_path()+'lsmdc/'
             self.train = common.load_pkl(dataset_path + 'train.pkl')
             self.valid = common.load_pkl(dataset_path + 'valid.pkl')
             self.test = common.load_pkl(dataset_path + 'test.pkl')

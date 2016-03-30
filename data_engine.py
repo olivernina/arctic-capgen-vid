@@ -73,10 +73,10 @@ class Movie2Caption(object):
         if self.video_feature == 'googlenet':
             # y = self._filter_googlenet(vidID)
 
-            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd':
+            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii':
                 y = self._filter_googlenet(vidID)
             else:
-                y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better
+                y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better. Mpii might need this..
         else:
             raise NotImplementedError()
         return y

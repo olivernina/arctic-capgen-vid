@@ -190,4 +190,13 @@ config = DD({
         'encoder': None,
         'from_dir': '',
     }),
+    'const_w': DD({
+        'save_model_dir': exp_path + 'const_w/',
+        'reload_': False,
+        'dec':'multi-stdist',
+        'encoder':None,
+        'encoder_dim': 300,
+        'batch_size': 64, # for trees use 25
+        'dataset': 'youtube2text'
+        }),
 })

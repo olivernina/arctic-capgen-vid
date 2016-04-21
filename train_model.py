@@ -24,6 +24,7 @@ import model_clstm
 import model_nf
 import model_fc
 import model_ic
+import model_const_w
 
 def set_config(conf, args, add_new_key=False):
     # add_new_key: if conf does not contain the key, creates it
@@ -129,6 +130,8 @@ def train_from_scratch(config, state, channel):
         model_fc.train_from_scratch(state, channel)
     elif config.model == 'ic':
         model_ic.train_from_scratch(state, channel)
+    elif config.model == 'const_w':
+        model_const_w.train_from_scratch(state, channel)
     else:
         raise NotImplementedError()
         

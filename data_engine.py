@@ -333,9 +333,13 @@ def prepare_data(engine, IDs):
                 for i in range(0,num_caps):
                     cap = caps[i]
                     id = int(cap['cap_id'])
-                    caption = cap['caption']
-                    udata=caption.decode("utf-8")
-                    captions[id] = udata.encode("ascii","ignore")
+
+                    if engine.signature!='vtt':
+                        caption = cap['caption']
+                        udata=caption.decode("utf-8")
+                        captions[id] = udata.encode("ascii","ignore")
+                    else:
+                        captions[id] = cap['tokenized']
                     # print captions[id]
                     if captions[id].isspace():
                         captions[id] = captions[0]

@@ -332,17 +332,17 @@ def prepare_data(engine, IDs):
                 captions = ["" for x in range(num_caps)]
                 for i in range(0,num_caps):
                     cap = caps[i]
-                    id = int(cap['cap_id'])
 
                     if engine.signature!='vtt':
+                        id = int(cap['cap_id'])
                         caption = cap['caption']
                         udata=caption.decode("utf-8")
                         captions[id] = udata.encode("ascii","ignore")
+                        if captions[id].isspace():
+                            captions[id] = captions[0]
                     else:
-                        captions[id] = cap['tokenized']
+                        captions[i] = cap['tokenized']
                     # print captions[id]
-                    if captions[id].isspace():
-                        captions[id] = captions[0]
 
                 # common.dump_pkl(captions,'captions')
                 vectors = skipthoughts.encode(engine.st_model,captions)

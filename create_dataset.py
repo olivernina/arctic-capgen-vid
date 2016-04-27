@@ -122,13 +122,24 @@ def get_annots_vtt(filename,annotations):
 
         vid_id = int(vid_name.split('video')[1])
 
+
+        cap_id = -1
+        if annotations.has_key(vid_name):
+            cap_id = str(len(annotations[vid_name]))
+            annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':cap_id,'caption':ocaption})
+        else:
+            annotations[vid_name]= []
+            cap_id = str(0)
+            annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':cap_id,'caption':ocaption})
+
+
         if data['videos'][vid_id]['split'] == 'train':
 
             # if vids_train.has_key(vid_name):
             #     vids_train[vid_name] += 1
             # else:
             #     vids_train[vid_name]=1
-            vid_train =vid_name + '_' + str(sent['sen_id'])
+            vid_train =vid_name + '_' + cap_id
             vids_train.append(vid_train)
 
         elif data['videos'][vid_id]['split'] == 'validate':
@@ -136,16 +147,10 @@ def get_annots_vtt(filename,annotations):
             #     vids_val[vid_name] += 1
             # else:
             #     vids_val[vid_name]=1
-            vid_val = vid_name + '_' + str(sent['sen_id'])
+            vid_val = vid_name + '_' + cap_id
             vids_val.append(vid_val)
         else:
             print "not a split"
-
-        if annotations.has_key(vid_name):
-            annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':str(sent['sen_id']),'caption':ocaption})
-        else:
-            annotations[vid_name]= []
-            annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':str(sent['sen_id']),'caption':ocaption})
 
     return annotations,vids_train,vids_val,all_vids.keys()
 
@@ -854,10 +859,15 @@ def vtt(params):
     # else:
 
         # all_vids = all_vids[46000:-1]
-    vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
-    features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4') # We don't save the FEAT file because it requires to much memory TODO
     feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
-    common.dump_pkl(features,feats_path)
+    if not os.path.exists(feats_path):
+        vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
+        features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4') # We don't save the FEAT file because it requires to much memory TODO
+        common.dump_pkl(features,feats_path)
+
+
+
+
 
     print('done creating dataset')
 

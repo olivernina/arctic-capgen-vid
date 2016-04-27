@@ -4,7 +4,7 @@ import common
 exp_path = common.get_rab_exp_path()
 
 config = DD({
-    'model': 'attention_mod',
+    'model': 'attention',
     'random_seed': 1234,
     # ERASE everything under save_model_path
     'erase_history': True,
@@ -34,9 +34,9 @@ config = DD({
         'optimizer':'adadelta',
         'clip_c': 10.,
         'batch_size': 64, # for trees use 25
-        # 'batch_size': 5, # for trees use 25
+        # 'batch_size': 2, # for trees use 25
         'valid_batch_size':200,
-        # 'valid_batch_size':5,
+        # 'valid_batch_size':2,
         # in the unit of minibatches
         'dispFreq':10,
         'validFreq':2000,
@@ -138,7 +138,8 @@ config = DD({
         'dec':'multi-stdi',
         'encoder':None,
         'encoder_dim': 300,
-        'batch_size': 64, # for trees use 25
+        'batch_size': 64, #64 for trees use 25
+        'valid_batch_size':200,
         'dataset': 'youtube2text',
         'dim':3518, # lstm dim # 536
     }),

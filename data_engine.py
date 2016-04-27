@@ -280,7 +280,7 @@ class Movie2Caption(object):
             len(self.test), self.mb_size_test)
         
 def prepare_data(engine, IDs):
-    print "Preparing engine "+engine.dec
+    # print "Preparing engine "+engine.dec
     seqs = []
     z_seqs = []
     feat_list = []

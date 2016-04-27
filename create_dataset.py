@@ -7,7 +7,7 @@ import argparse
 import nltk
 import common
 import socket
-
+import json
 import numpy as np
 
 host = socket.gethostname()
@@ -89,6 +89,67 @@ def get_annots_mvad(list,corpus,annotations):
 
 
     return annotations,vids_names
+
+def get_annots_vtt(filename,annotations):
+    vids_train = []
+    vids_val = []
+    all_vids = {}
+    with open(filename) as data_file:
+        data = json.load(data_file)
+
+
+    for sent in data['sentences']:#[0:1000]:
+
+        vid_name = sent['video_id']
+
+        if not all_vids.has_key(vid_name):
+            all_vids[vid_name]=1
+        else:
+            all_vids[vid_name]+=1
+
+        ocaption = sent['caption']
+        print vid_name
+        print ocaption
+
+        # ocaption = ocaption.replace('\n','')
+        ocaption = ocaption.strip()
+        # udata=ocaption.decode("utf-8")
+        # caption = udata.encode("ascii","ignore")
+
+        tokens = nltk.word_tokenize(ocaption)
+        tokenized = ' '.join(tokens)
+        tokenized = tokenized.lower()
+
+        vid_id = int(vid_name.split('video')[1])
+
+        if data['videos'][vid_id]['split'] == 'train':
+
+            # if vids_train.has_key(vid_name):
+            #     vids_train[vid_name] += 1
+            # else:
+            #     vids_train[vid_name]=1
+            vid_train =vid_name + '_' + str(sent['sen_id'])
+            vids_train.append(vid_train)
+
+        elif data['videos'][vid_id]['split'] == 'validate':
+            # if vids_val.has_key(vid_name):
+            #     vids_val[vid_name] += 1
+            # else:
+            #     vids_val[vid_name]=1
+            vid_val = vid_name + '_' + str(sent['sen_id'])
+            vids_val.append(vid_val)
+        else:
+            print "not a split"
+
+        if annotations.has_key(vid_name):
+            annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':str(sent['sen_id']),'caption':ocaption})
+        else:
+            annotations[vid_name]= []
+            annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':str(sent['sen_id']),'caption':ocaption})
+
+    return annotations,vids_train,vids_val,all_vids.keys()
+
+
 
 
 def lsmdc_old(params):
@@ -200,6 +261,19 @@ def create_dictionary(annotations,pkl_dir):
 
     return worddict
 
+def get_frames_vtt(all_vids,vid_dir,dst_dir):
+    vid_frames = []
+
+    for file in all_vids:
+        # k = file.rfind("_")
+        # movie_dir = file[:k]
+        video_name = file+'.mp4'
+
+
+        frames_dir = process_frames.get_frames(vid_dir,'',dst_dir,video_name)
+        vid_frames.append(frames_dir)
+
+    return vid_frames
 
 def get_frames(all_vids,vid_dir,dst_dir):
     vid_frames = []
@@ -696,6 +770,97 @@ def ysvd(params):
     common.dump_pkl(features,feats_path)
 
 
+
+def vtt(params):
+
+    data_dir =params['data_dir']
+    video_dir = params['video_dir']
+    frames_dir = params['frames_dir']
+    pkl_dir = params['pkl_dir']
+    feats_dir = params['feats_dir']
+
+    test_mode = params['test']
+    if test_mode:
+        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+
+    else:
+        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+
+
+    annotations = {}
+
+    if not os.path.exists(pkl_dir):
+        os.mkdir(pkl_dir)
+
+    all_vids = None
+
+
+    train_path = os.path.join(pkl_dir,'train.pkl')
+    valid_path = os.path.join(pkl_dir,'valid.pkl')
+    test_path = os.path.join(pkl_dir,'test.pkl')
+
+    if not os.path.exists(train_path):
+        train_val_file = os.path.join(data_dir,train_val_list_path)
+        annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,annotations)
+
+        # train_list = vids_train.keys()
+        common.dump_pkl(vids_train,train_path)
+        # all_vids = all_vids + vids_train
+
+        # valid_list = vids_val.keys()
+        common.dump_pkl(vids_val,valid_path)
+        # all_vids = all_vids + vids_val
+
+        # test_list = vids_val.keys()
+        common.dump_pkl(vids_val,test_path)
+        # all_vids = all_vids + test_list
+
+    else:
+        train_list = common.load_pkl(train_path)
+        valid_list = common.load_pkl(valid_path)
+        test_list = common.load_pkl(test_path)
+
+    cap_path = os.path.join(pkl_dir,'CAP.pkl')
+    if not os.path.exists(cap_path):
+       common.dump_pkl(annotations,cap_path)
+    else:
+        annotations = common.load_pkl(cap_path)
+
+    dict_path = os.path.join(pkl_dir,'worddict.pkl')
+    if not os.path.exists(dict_path):
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
+    else:
+        worddict = common.load_pkl(dict_path)
+
+    # if host != 'moroni' or test_mode:
+    #     feats_paths = list()
+    #     feats = {}
+    #     for video in all_vids:
+    #         feat_path =  os.path.join(feats_dir,video)
+    #         feats_paths.append(feat_path)
+    #
+    #         if os.path.exists(feat_path):
+    #             feat = np.load(feat_path)
+    #             feats[video]=feat
+    #             print('features already extracted '+feat_path)
+    #         else:
+    #             print "feature not found "+feat_path
+    #             sys.exit(0)
+    #
+    #     # features = process_features.run(vid_paths,feats_dir,frames_dir)
+    #     feats_pkl_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+    #     common.dump_pkl(feats,feats_pkl_path)
+    # else:
+
+        # all_vids = all_vids[46000:-1]
+    vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
+    features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4') # We don't save the FEAT file because it requires to much memory TODO
+    feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+    common.dump_pkl(features,feats_path)
+
+    print('done creating dataset')
+
 if __name__=='__main__':
 
     parser = argparse.ArgumentParser()
@@ -726,14 +891,22 @@ if __name__=='__main__':
     # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='ysvd')
 
 
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/lsmdc')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
-    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
-    parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/lsmdc/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='lsmdc')
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/lsmdc')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/videos')
+    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/frames_chal')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/lsmdc/features_chal')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=0, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/lsmdc/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='lsmdc')
 
+
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/vtt')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/vtt/TrainValVideo')
+    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/vtt/frames')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/vtt/features')
+    parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/vtt/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='vtt')
 
 
     args = parser.parse_args()
@@ -747,3 +920,5 @@ if __name__=='__main__':
         mpii(params)
     if params['dbname'] == 'lsmdc':
         lsmdc(params)
+    if params['dbname'] == 'vtt':
+        vtt(params)

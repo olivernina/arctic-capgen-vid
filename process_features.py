@@ -224,3 +224,67 @@ def run_mpii(vid_frames,feats_dir,frames_dir,ext):
 
 
     return feats
+
+
+def main(argv):
+
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        'frames_dir',
+        help = 'directory where videos are'
+    )
+    arg_parser.add_argument(
+        'feats_dir',
+        help = 'directory where to store frames'
+    )
+    arg_parser.add_argument(
+        'start',
+        help = 'directory where to store frames'
+    )
+    arg_parser.add_argument(
+        'end',
+        help = 'directory where to store frames'
+    )
+
+
+    ext = '.mp4'
+
+    args = arg_parser.parse_args()
+    frames_dir = args.frames_dir
+    feats_dir = args.feats_dir
+    start = int(args.start)
+    end = int(args.end)
+
+    vid_frames = os.listdir(frames_dir)
+
+    if not os.path.isdir(feats_dir):
+        os.mkdir(feats_dir)
+
+
+    caffe.set_mode_gpu()
+
+
+    model_def = 'caffe/models/bvlc_googlenet/deploy_video.prototxt'
+    model = 'caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel'
+
+    net = caffe.Net(model_def, model, caffe.TEST)
+
+
+    for i,files in enumerate(vid_frames[start:end]):
+
+
+        feat_filename = files.split('/')[-1].split(ext)[0]
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+        if os.path.exists(feat_file_path):
+            feat = np.load(feat_file_path)
+            print('features already extracted '+feat_file_path)
+        else:
+            feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+
+        print str(i)+'/'+str(len(vid_frames))
+
+
+
+if __name__=='__main__':
+    main(sys.argv)

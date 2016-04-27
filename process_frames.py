@@ -17,6 +17,14 @@ def main(argv):
         'dst_dir',
         help = 'directory where to store frames'
     )
+    arg_parser.add_argument(
+        'start',
+        help = 'directory where to store frames'
+    )
+    arg_parser.add_argument(
+        'end',
+        help = 'directory where to store frames'
+    )
     # arg_parser.add_argument(
     #     'list_classes',
     #     help= 'list of classes'
@@ -25,6 +33,8 @@ def main(argv):
     args = arg_parser.parse_args()
     src_dir = args.src_dir
     dst_dir = args.dst_dir
+    start = int(args.start)
+    end = int(args.end)
     # list_classes = args.list_classes
  
     src_files = os.listdir(src_dir)
@@ -39,7 +49,7 @@ def main(argv):
     # classes_allowed = [dict_classes['class_name'][i] for i in range(0,len(dict_classes['class_id']))]
  
  
-    for video_file in src_files:
+    for video_file in src_files[start:end]:
  
 
         src_path =  os.path.join(src_dir,video_file)

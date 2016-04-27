@@ -73,10 +73,12 @@ class Movie2Caption(object):
         if self.video_feature == 'googlenet':
             # y = self._filter_googlenet(vidID)
 
-            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii':
+            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii' or self.signature == 'vtt':
                 y = self._filter_googlenet(vidID)
-            else:
+            elif self.signature == 'lsmdc':
                 y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better. Mpii might need this..
+            else:
+                raise NotImplementedError()
         else:
             raise NotImplementedError()
         return y
@@ -180,13 +182,6 @@ class Movie2Caption(object):
             self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
             self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
 
-
-
-            # if self.test_mode:
-            # self.train_ids = ['vid%s'%i for i in range(1,12)]
-            # self.valid_ids = ['vid%s'%i for i in range(12,13)]
-            # self.test_ids = ['vid%s'%i for i in range(13,19)]
-            # else:
             self.train_ids = ['vid%s'%i for i in range(1,1201)]
             self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
             self.test_ids = ['vid%s'%i for i in range(1301,1971)]
@@ -248,6 +243,19 @@ class Movie2Caption(object):
             self.valid_ids = self.valid
             self.test_ids = self.test
 
+        elif self.signature == 'vtt':
+            print 'loading vtt %s features'%self.video_feature
+            dataset_path = common.get_rab_dataset_base_path()+'vtt/'
+            self.train = common.load_pkl(dataset_path + 'train.pkl')
+            self.valid = common.load_pkl(dataset_path + 'valid.pkl')
+            self.test = common.load_pkl(dataset_path + 'test.pkl')
+            self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
+            self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+
+            self.train_ids = ['video%s'%i for i in range(0,6513)] #0-6512
+            self.valid_ids = ['video%s'%i for i in range(6513,7010)]#6513-7010
+            self.test_ids = ['video%s'%i for i in range(6513,7010)]
+
 
         else:
             raise NotImplementedError()
@@ -279,7 +287,7 @@ def prepare_data(engine, IDs):
 
     def get_words(vidID, capID):
         rval = None
-        if engine.signature == 'youtube2text':
+        if engine.signature == 'youtube2text' or engine.signature =='vtt':
             caps = engine.CAP[vidID]
             for cap in caps:
                 if cap['cap_id'] == capID:
@@ -406,7 +414,7 @@ def prepare_data(engine, IDs):
     for i, ID in enumerate(IDs):
         #print 'processed %d/%d caps'%(i,len(IDs))
         # print ID
-        if engine.signature == 'youtube2text':
+        if engine.signature == 'youtube2text' or engine.signature == 'vtt':
             # load GNet feature
             vidID, capID = ID.split('_')
         elif engine.signature == 'lsmdc':
@@ -428,6 +436,9 @@ def prepare_data(engine, IDs):
             vidID = ID
             capID = 0
         elif engine.signature == 'mpii':
+            vidID = ID
+            capID = 1
+        elif engine.signature == 'vtt':
             vidID = ID
             capID = 1
         else:

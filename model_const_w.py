@@ -651,54 +651,54 @@ class Attention(object):
 
 
 
-        ############################   skipthougth distance ########################
-
-        import numpy as np
-        x_s = x
-        mask_s = x_mask
-        ctx_s = np.asarray(ctx)
-        ctx_mask_s = np.asarray(mask_ctx)
-
-        f_init, f_next = self.build_sampler(tparams, options, use_noise, trng)
-
-        stochastic = False
-        for jj in xrange(10):
-            sample, score, _, _ = self.gen_sample(tparams, f_init, f_next, ctx_s[jj], ctx_mask_s[jj],options, trng=trng, k=5, maxlen=30, stochastic=stochastic)
-            best_one = numpy.argmin(score)
-            sample = sample[0]
-
-            print 'Truth ',jj,': ',
-            truth_cap = ''
-            for vv in x_s[:,jj]:
-                if vv == 0:
-                    break
-                if vv in self.engine.word_idict:
-                    word = self.engine.word_idict[vv]
-                    truth_cap = truth_cap +' '+ word
-                    print truth_cap
-                else:
-                    truth_cap = truth_cap +' UNK'
-
-            sample_cap = ''
-            for kk, ss in enumerate([sample]):
-                print 'Sample (', kk,') ', jj, ': ',
-                for vv in ss:
-                    if vv == 0:
-                        break
-                    if vv in self.engine.word_idict:
-                        word = self.engine.word_idict[vv]
-                        sample_cap = sample_cap+' '+word
-                        print sample_cap
-
-                    else:
-                        sample_cap = sample_cap +' UNK'
-
-        v1 = skipthoughts.encode(self.engine.st_model,truth_cap)
-        v2 = skipthoughts.encode(self.engine.st_model,sample_cap)
-        caps_dist = spatial.distance.cdist(v1, v2, 'cosine')
-
-
-        cost = cost + caps_dist
+        # ############################   skipthougth distance ########################
+        #
+        # import numpy as np
+        # x_s = x
+        # mask_s = x_mask
+        # ctx_s = np.asarray(ctx)
+        # ctx_mask_s = np.asarray(mask_ctx)
+        #
+        # f_init, f_next = self.build_sampler(tparams, options, use_noise, trng)
+        #
+        # stochastic = False
+        # for jj in xrange(10):
+        #     sample, score, _, _ = self.gen_sample(tparams, f_init, f_next, ctx_s[jj], ctx_mask_s[jj],options, trng=trng, k=5, maxlen=30, stochastic=stochastic)
+        #     best_one = numpy.argmin(score)
+        #     sample = sample[0]
+        #
+        #     print 'Truth ',jj,': ',
+        #     truth_cap = ''
+        #     for vv in x_s[:,jj]:
+        #         if vv == 0:
+        #             break
+        #         if vv in self.engine.word_idict:
+        #             word = self.engine.word_idict[vv]
+        #             truth_cap = truth_cap +' '+ word
+        #             print truth_cap
+        #         else:
+        #             truth_cap = truth_cap +' UNK'
+        #
+        #     sample_cap = ''
+        #     for kk, ss in enumerate([sample]):
+        #         print 'Sample (', kk,') ', jj, ': ',
+        #         for vv in ss:
+        #             if vv == 0:
+        #                 break
+        #             if vv in self.engine.word_idict:
+        #                 word = self.engine.word_idict[vv]
+        #                 sample_cap = sample_cap+' '+word
+        #                 print sample_cap
+        #
+        #             else:
+        #                 sample_cap = sample_cap +' UNK'
+        #
+        # v1 = skipthoughts.encode(self.engine.st_model,truth_cap)
+        # v2 = skipthoughts.encode(self.engine.st_model,sample_cap)
+        # caps_dist = spatial.distance.cdist(v1, v2, 'cosine')
+        #
+        #
+        # cost = cost + caps_dist
 
         return trng, use_noise, x, x_mask, ctx, mask_ctx, alphas, cost, extra,y,y_mask
 

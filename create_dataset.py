@@ -184,8 +184,14 @@ def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):
             ocaption = udata.encode("ascii","ignore")
 
             tokens = nltk.word_tokenize(ocaption)
+
+            if len(tokens)==0:
+                print tokens
+                next
+
             tokenized = ' '.join(tokens)
             tokenized = tokenized.lower()
+
 
 
             if annotations.has_key(vid_name):

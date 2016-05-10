@@ -442,16 +442,13 @@ def prepare_data(engine, IDs):
         elif engine.signature == 'mpii':
             vidID = ID
             capID = 1
-        elif engine.signature == 'vtt':
-            vidID = ID
-            capID = 1
         else:
             raise NotImplementedError()
         
         feat = engine.get_video_features(vidID)
         feat_list.append(feat)
         words = get_words(vidID, capID)
-        # print words
+        print words
         seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
 
         # print engine.dec
@@ -502,7 +499,7 @@ def test_data_engine():
     signature = 'youtube2text' #'youtube2text'
     engine = Movie2Caption('attention', signature, video_feature,
                            mb_size_train, mb_size_test, maxlen,
-                           n_words,
+                           n_words,'standard',
                            n_frames=26,
                            outof=out_of)
     i = 0

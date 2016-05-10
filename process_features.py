@@ -188,6 +188,45 @@ def run(vid_frames,feats_dir,frames_dir,ext):
 
     return feats
 
+def mvdc(vid_frames,feats_dir,frames_dir,ext,dict):
+
+    caffe.set_mode_gpu()
+
+
+    model_def = 'caffe/models/bvlc_googlenet/deploy_video.prototxt'
+    model = 'caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel'
+
+    # --out vgg_feats.mat'+' --spv '+str(samples_per_video)
+    net = caffe.Net(model_def, model, caffe.TEST)
+    #caffe.set_phase_test()
+
+
+    feats = {}
+
+    for i,files in enumerate(vid_frames):
+         # =os.path.join(data_dir,'features_chal')
+
+        feat_filename = files.split('/')[-1].split(ext)[0]
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+        if os.path.exists(feat_file_path):
+            feat = np.load(feat_file_path)
+            vid = dict[feat_filename]
+            feats[vid]=feat
+            print('features already extracted '+feat_file_path)
+        else:
+            feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+            vid = dict[feat_filename]
+            feats[vid]=feat
+
+
+        # sys.stdout.flush()
+        print str(i)+'/'+str(len(vid_frames))
+
+
+
+    return feats
+
 def run_mpii(vid_frames,feats_dir,frames_dir,ext):
 
     caffe.set_mode_gpu()

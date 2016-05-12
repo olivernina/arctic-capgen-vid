@@ -67,15 +67,6 @@ config = DD({
         'save_model_dir': exp_path + 'attention_mod/',
         'dec':'multi-stdist'
         }),
-    'same_word': DD({
-        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
-        'reload_': False,
-        'dec':'multi-same',
-        'encoder':None,
-        'encoder_dim': 300,
-        'batch_size': 64, # for trees use 25
-        'dataset': 'youtube2text'
-        }),
     'icoupled': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'reload_': False,
@@ -101,14 +92,6 @@ config = DD({
         'from_dir': '',
         'valid_batch_size':200,
         'max_epochs':500,
-        }),
-    'clstm': DD({
-        'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
-        'reload_': False,
-        'dec':'multi-stdist',
-        'encoder':'lstm_uni',
-        'encoder_dim': 200,
-        # 'sampleFreq':1,
         }),
     'const': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
@@ -151,22 +134,6 @@ config = DD({
         'dataset': 'youtube2text',
         'dim':3518, # lstm dim # 536
     }),
-    'nio': DD({
-        'reload_': False,
-        'save_model_dir': exp_path + 'attention_mod/',
-        'dec':'standard',
-        'dataset': 'youtube2text',
-        'encoder': None,
-        'from_dir': '',
-        }),
-    'ni': DD({
-        'reload_': False,
-        'save_model_dir': exp_path + 'attention_mod/',
-        'dec':'standard',
-        'dataset': 'youtube2text',
-        'encoder': None,
-        'from_dir': '',
-        }),
     'nf': DD({
         'reload_': False,
         'save_model_dir': exp_path + 'attention_mod/',
@@ -191,14 +158,6 @@ config = DD({
         'encoder': None,
         'from_dir': '',
         }),
-    'clstm': DD({
-        'reload_': False,
-        'save_model_dir': exp_path + 'attention_mod/',
-        'dec':'standard',
-        'dataset': 'youtube2text',
-        'encoder': None,
-        'from_dir': '',
-    }),
     'const_w': DD({
         'save_model_dir': exp_path + 'const_w/',
         'reload_': False,

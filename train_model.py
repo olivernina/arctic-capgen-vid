@@ -11,17 +11,12 @@ import common
 import model_attention_mod
 import model_icoupled
 import model_attention
-import model_same_word
 import model_fcoupled
 import model_iLSTM
 import model_const
 import model_const2
 import model_LSTM
 import model_lstmdd
-import model_nio
-import model_ni
-import model_clstm
-import model_nf
 import model_fc
 import model_ic
 import model_const_w

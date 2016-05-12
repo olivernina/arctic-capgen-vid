@@ -10,6 +10,9 @@ import socket
 import json
 import numpy as np
 import cPickle
+from random import shuffle
+
+import collections
 
 host = socket.gethostname()
 
@@ -136,22 +139,18 @@ def get_annots_vtt(filename,annotations):
 
         if data['videos'][vid_id]['split'] == 'train':
 
-            # if vids_train.has_key(vid_name):
-            #     vids_train[vid_name] += 1
-            # else:
-            #     vids_train[vid_name]=1
             vid_train =vid_name + '_' + cap_id
             vids_train.append(vid_train)
 
         elif data['videos'][vid_id]['split'] == 'validate':
-            # if vids_val.has_key(vid_name):
-            #     vids_val[vid_name] += 1
-            # else:
-            #     vids_val[vid_name]=1
+
             vid_val = vid_name + '_' + cap_id
             vids_val.append(vid_val)
         else:
             print "not a split"
+
+    shuffle(vids_train) #If we don't shuffle performance deminishes
+    shuffle(vids_val)
 
     return annotations,vids_train,vids_val,all_vids.keys()
 
@@ -162,19 +161,20 @@ def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):
     all_vids = {}
 
 
+    for vid_name in youtube_map_dict.keys():
 
-    for vid in vid_caption_dict.keys():
-        for cap_id, cap in enumerate(vid_caption_dict[vid]):#[0:1000]:
+        vid = youtube_map_dict[vid_name]
 
-            vid_name = youtube_map_dict[vid]
+        for cap_id, cap in enumerate(vid_caption_dict[vid_name]):#[0:1000]:
 
-            if not all_vids.has_key(vid):
-                all_vids[vid]=1
+
+            if not all_vids.has_key(vid_name):
+                all_vids[vid_name]=1
             else:
-                all_vids[vid]+=1
+                all_vids[vid_name]+=1
 
             ocaption = cap
-            print vid_name
+            print vid
             print ocaption
 
             ocaption = ocaption.replace('\n','')
@@ -183,26 +183,26 @@ def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):
             udata=ocaption.decode("utf-8")
             ocaption = udata.encode("ascii","ignore")
 
-            tokens = nltk.word_tokenize(ocaption)
+            tokens = nltk.word_tokenize(ocaption.replace('.',''))
 
             if len(tokens)==0:
                 print tokens
-                next
+                continue
 
             tokenized = ' '.join(tokens)
             tokenized = tokenized.lower()
 
 
 
-            if annotations.has_key(vid_name):
-                annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':str(cap_id),'caption':ocaption})
+            if annotations.has_key(vid):
+                annotations[vid].append({'tokenized':tokenized,'image_id':vid,'cap_id':str(cap_id),'caption':ocaption})
             else:
-                annotations[vid_name]= []
-                annotations[vid_name].append({'tokenized':tokenized,'image_id':vid_name,'cap_id':str(cap_id),'caption':ocaption})
+                annotations[vid]= []
+                annotations[vid].append({'tokenized':tokenized,'image_id':vid,'cap_id':str(cap_id),'caption':ocaption})
 
 
-            idx = int(vid_name.split('vid')[1])
-            vid_cap =vid_name + '_' + str(cap_id)
+            idx = int(vid.split('vid')[1])
+            vid_cap =vid + '_' + str(cap_id)
 
             if idx >= 1 and idx <= 1201:
                 vids_train.append(vid_cap)
@@ -214,6 +214,10 @@ def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):
                 vids_test.append(vid_cap)
             else:
                 print "not a split"
+
+    shuffle(vids_train)
+    shuffle(vids_val)
+    shuffle(vids_test)
 
     return annotations,vids_train,vids_val,vids_test,all_vids.keys()
 
@@ -312,7 +316,7 @@ def lsmdc_old(params):
     process_features.run(vid_frames,data_root,pkl_dir)
 
 def create_dictionary(annotations,pkl_dir):
-    worddict = {}
+    worddict = collections.OrderedDict()
     word_idx = 2
     for a in annotations:
         caps = annotations[a]
@@ -867,7 +871,6 @@ def vtt(params):
     else:
         train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
 
-
     annotations = {}
 
     if not os.path.exists(pkl_dir):
@@ -884,17 +887,9 @@ def vtt(params):
         train_val_file = os.path.join(data_dir,train_val_list_path)
         annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,annotations)
 
-        # train_list = vids_train.keys()
         common.dump_pkl(vids_train,train_path)
-        # all_vids = all_vids + vids_train
-
-        # valid_list = vids_val.keys()
         common.dump_pkl(vids_val,valid_path)
-        # all_vids = all_vids + vids_val
-
-        # test_list = vids_val.keys()
         common.dump_pkl(vids_val,test_path)
-        # all_vids = all_vids + test_list
 
     else:
         train_list = common.load_pkl(train_path)
@@ -914,27 +909,7 @@ def vtt(params):
     else:
         worddict = common.load_pkl(dict_path)
 
-    # if host != 'moroni' or test_mode:
-    #     feats_paths = list()
-    #     feats = {}
-    #     for video in all_vids:
-    #         feat_path =  os.path.join(feats_dir,video)
-    #         feats_paths.append(feat_path)
-    #
-    #         if os.path.exists(feat_path):
-    #             feat = np.load(feat_path)
-    #             feats[video]=feat
-    #             print('features already extracted '+feat_path)
-    #         else:
-    #             print "feature not found "+feat_path
-    #             sys.exit(0)
-    #
-    #     # features = process_features.run(vid_paths,feats_dir,frames_dir)
-    #     feats_pkl_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
-    #     common.dump_pkl(feats,feats_pkl_path)
-    # else:
 
-        # all_vids = all_vids[46000:-1]
     feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
     if not os.path.exists(feats_path):
         vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
@@ -960,13 +935,13 @@ def mvdc(params):
         vid_caption_dict_path = 'dict_movieID_caption.pkl'
         youtube_map_dict_path = 'dict_youtube_mapping.pkl'
 
-    annotations = {}
+
 
     if not os.path.exists(pkl_dir):
         os.mkdir(pkl_dir)
 
     all_vids = None
-
+    annotations = collections.OrderedDict()
 
     train_path = os.path.join(pkl_dir,'train.pkl')
     valid_path = os.path.join(pkl_dir,'valid.pkl')
@@ -980,17 +955,12 @@ def mvdc(params):
 
         annotations,vids_train,vids_val,vids_test,all_vids = get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations)
 
-        # train_list = vids_train.keys()
         common.dump_pkl(vids_train,train_path)
-        # all_vids = all_vids + vids_train
 
-        # valid_list = vids_val.keys()
         common.dump_pkl(vids_val,valid_path)
-        # all_vids = all_vids + vids_val
 
-        # test_list = vids_val.keys()
         common.dump_pkl(vids_test,test_path)
-        # all_vids = all_vids + test_list
+
 
     else:
         train_list = common.load_pkl(train_path)

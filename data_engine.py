@@ -448,7 +448,7 @@ def prepare_data(engine, IDs):
         feat = engine.get_video_features(vidID)
         feat_list.append(feat)
         words = get_words(vidID, capID)
-        # print words
+        print words
         seqs.append([engine.worddict[w] if engine.worddict[w] < engine.n_words else 1 for w in words])
 
         # print engine.dec

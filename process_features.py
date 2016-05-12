@@ -49,7 +49,7 @@ def batch_predict(filenames, net):
     F = net.blobs[net.outputs[0]].data.shape[1]
     Nf = len(filenames)
     Hi, Wi, _ = imread(filenames[0]).shape
-    allftrs = np.zeros((Nf, F))
+    allftrs = np.zeros((Nf, F),dtype=np.float32)
     for i in range(0, Nf, N):
         in_data = np.zeros((N, C, H, W), dtype=np.float32)
 

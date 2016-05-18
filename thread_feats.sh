@@ -1,0 +1,15 @@
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 0 500 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 500 1000 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 1000 1500 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 1500 2000 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 2000 2500 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 2000 2500 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 2000 2500 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 2000 2500 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 3000 3500 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 3500 4000 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 4500 5000 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 5500 6000 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 6500 7000 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 7500 8000 &
+python process_features.py /media/onina/sea2/datasets/vtt/frames /media/onina/sea2/datasets/vtt/features 8500 9000 &

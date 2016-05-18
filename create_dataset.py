@@ -16,8 +16,8 @@ import collections
 
 host = socket.gethostname()
 
-if host == 'moroni':
-    import process_features
+
+import process_features
 
 
 
@@ -964,7 +964,7 @@ def mvdc(params):
 
         common.dump_pkl(vids_test,test_path)
 
-        common.dump_pkl(all_vids,'allvids.pkl')
+        common.dump_pkl(all_vids,os.path.join(pkl_dir,'allvids.pkl'))
 
 
     else:
@@ -990,7 +990,7 @@ def mvdc(params):
     feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
     if not os.path.exists(feats_path):
         if all_vids == None:
-            all_vids = common.load_pkl('allvids.pkl')
+            all_vids = common.load_pkl(os.path.join(pkl_dir,'allvids.pkl'))
         vid_frames = get_frames_mvdc(all_vids,video_dir,frames_dir)
         features = process_features.mvdc(vid_frames,feats_dir,frames_dir,'.avi',youtube_map_dict) # We don't save the FEAT file because it requires to much memory TODO
         common.dump_pkl(features,feats_path)

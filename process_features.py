@@ -72,8 +72,8 @@ def batch_predict2(filenames, net):
 
 
         for j in range(len(batch_range)):
-            # allftrs[i+j,:] = ftrs[j,:,0,0] #oversample
-            allftrs[i+j,:] = ftrs[j,:]
+            # allftrs[i+j,:] = ftrs[j,:,0,0] #center only
+            allftrs[i+j,:] = ftrs[j,:] #oversample
 
         print 'Done %d/%d files' % (i+len(batch_range), len(filenames))
 

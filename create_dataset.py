@@ -890,6 +890,7 @@ def vtt(params):
         common.dump_pkl(vids_train,train_path)
         common.dump_pkl(vids_val,valid_path)
         common.dump_pkl(vids_val,test_path)
+        common.dump_pkl(all_vids,'allvids.pkl')
 
     else:
         train_list = common.load_pkl(train_path)
@@ -912,6 +913,8 @@ def vtt(params):
 
     feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
     if not os.path.exists(feats_path):
+        if all_vids == None:
+            all_vids = common.load_pkl('allvids.pkl')
         vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
         features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4') # We don't save the FEAT file because it requires to much memory TODO
         common.dump_pkl(features,feats_path)
@@ -935,7 +938,10 @@ def mvdc(params):
         vid_caption_dict_path = 'dict_movieID_caption.pkl'
         youtube_map_dict_path = 'dict_youtube_mapping.pkl'
 
-
+    f = open(os.path.join(data_dir,vid_caption_dict_path),'r')
+    vid_caption_dict = cPickle.load(f)
+    f = open(os.path.join(data_dir,youtube_map_dict_path),'r')
+    youtube_map_dict = cPickle.load(f)
 
     if not os.path.exists(pkl_dir):
         os.mkdir(pkl_dir)
@@ -948,10 +954,7 @@ def mvdc(params):
     test_path = os.path.join(pkl_dir,'test.pkl')
 
     if not os.path.exists(train_path):
-        f = open(os.path.join(data_dir,vid_caption_dict_path),'r')
-        vid_caption_dict = cPickle.load(f)
-        f = open(os.path.join(data_dir,youtube_map_dict_path),'r')
-        youtube_map_dict = cPickle.load(f)
+
 
         annotations,vids_train,vids_val,vids_test,all_vids = get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations)
 
@@ -960,6 +963,8 @@ def mvdc(params):
         common.dump_pkl(vids_val,valid_path)
 
         common.dump_pkl(vids_test,test_path)
+
+        common.dump_pkl(all_vids,'allvids.pkl')
 
 
     else:
@@ -984,6 +989,8 @@ def mvdc(params):
         # all_vids = all_vids[46000:-1]
     feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
     if not os.path.exists(feats_path):
+        if all_vids == None:
+            all_vids = common.load_pkl('allvids.pkl')
         vid_frames = get_frames_mvdc(all_vids,video_dir,frames_dir)
         features = process_features.mvdc(vid_frames,feats_dir,frames_dir,'.avi',youtube_map_dict) # We don't save the FEAT file because it requires to much memory TODO
         common.dump_pkl(features,feats_path)
@@ -1031,22 +1038,22 @@ if __name__=='__main__':
     # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='lsmdc')
 
 
-    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/vtt')
-    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/vtt/TrainValVideo')
-    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/vtt/frames')
-    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/vtt/features')
-    # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/vtt/')
-    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='vtt')
-
-
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/mvdc')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/mvdc/videos')
-    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/mvdc/frames')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/mvdc/features')
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/vtt')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/vtt/TrainValVideo')
+    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/vtt/frames')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/vtt/features')
     parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvdc/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvdc')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/vtt/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='vtt')
+
+
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/mvdc')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/mvdc/videos')
+    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/mvdc/frames')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/mvdc/features')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvdc/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvdc')
 
 
 

@@ -33,6 +33,53 @@ def predict(in_data, net):
 
     return features
 
+def batch_predict2(filenames, net):
+    """
+    Get the features for all images from filenames using a network
+
+    Inputs:
+    filenames: a list of names of image files
+
+    Returns:
+    an array of feature vectors for the images in that file
+    """
+
+    N, C, H, W = net.blobs[net.inputs[0]].data.shape
+    H = 256
+    W = 256
+    F = net.blobs[net.outputs[0]].data.shape[1]
+    Nf = len(filenames)
+    Hi, Wi, _ = imread(filenames[0]).shape
+    allftrs = np.zeros((Nf, F),dtype=np.float32)
+    for i in range(0, Nf, N):
+        in_data = np.zeros((N, H, W,C), dtype=np.float32)
+
+        batch_range = range(i, min(i+N, Nf))
+        batch_filenames = [filenames[j] for j in batch_range]
+        Nb = len(batch_range)
+
+        batch_images = np.zeros((Nb, H, W,3))
+        for j,fname in enumerate(batch_filenames):
+            input_image = caffe.io.load_image(fname)
+            batch_images[j,:,:,:] = input_image
+
+        #then get the features
+        # insert into correct place
+        in_data[0:len(batch_range), :, :, :] = batch_images
+
+        # predict features
+        ftrs = net.predict(in_data,oversample=True)
+
+
+        for j in range(len(batch_range)):
+            # allftrs[i+j,:] = ftrs[j,:,0,0] #oversample
+            allftrs[i+j,:] = ftrs[j,:]
+
+        print 'Done %d/%d files' % (i+len(batch_range), len(filenames))
+
+    return allftrs
+
+
 
 def batch_predict(filenames, net):
     """
@@ -60,12 +107,12 @@ def batch_predict(filenames, net):
         batch_images = np.zeros((Nb, 3, H, W))
         for j,fname in enumerate(batch_filenames):
             im = imread(fname)
-            if len(im.shape) == 2:
-                im = np.tile(im[:,:,np.newaxis], (1,1,3))
+            # if len(im.shape) == 2:
+            #     im = np.tile(im[:,:,np.newaxis], (1,1,3))
             # RGB -> BGR
             im = im[:,:,(2,1,0)]
             # mean subtraction
-            im = im - np.array([103.939, 116.779, 123.68])
+            # im = im - np.array([103.939, 116.779, 123.68])
             # resize
             im = imresize(im, (H, W), 'bicubic')
             # get channel in correct dimension
@@ -77,6 +124,7 @@ def batch_predict(filenames, net):
 
         # predict features
         ftrs = predict(in_data, net)
+
 
         for j in range(len(batch_range)):
             allftrs[i+j,:] = ftrs[j,:,0,0] #for googlenet
@@ -102,7 +150,7 @@ def get_features(src_dir,dst_dir,video_dir,net):
             filenames = [os.path.join(src_path,x) for x in frames]
 
             print 'processing '+ dst_path+' '+str(len(filenames))+' frames'
-            allftrs = batch_predict(filenames, net)
+            allftrs = batch_predict2(filenames, net)
             feat_file = open(dst_path, 'wb')
             np.save(feat_file,allftrs)
             print ' features created'
@@ -152,7 +200,7 @@ def get_features_mpii(file, src_dir,dst_dir,video_dir,net):
         return False
 
 
-def run(vid_frames,feats_dir,frames_dir,ext):
+def run_old(vid_frames,feats_dir,frames_dir,ext):
 
     caffe.set_mode_gpu()
 
@@ -191,20 +239,28 @@ def run(vid_frames,feats_dir,frames_dir,ext):
 def mvdc(vid_frames,feats_dir,frames_dir,ext,dict):
 
     caffe.set_mode_gpu()
+    # caffe.set_mode_cpu()
 
+    caffe_root = './caffe/'
 
     model_def = 'caffe/models/bvlc_googlenet/deploy_video.prototxt'
     model = 'caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel'
+    mean_path = caffe_root + 'python/caffe/imagenet/ilsvrc_2012_mean.npy'
 
     # --out vgg_feats.mat'+' --spv '+str(samples_per_video)
-    net = caffe.Net(model_def, model, caffe.TEST)
-    #caffe.set_phase_test()
+    # net = caffe.Net(model_def, model, caffe.TEST)
+    # caffe
+
+    net = caffe.Classifier(model_def, model,
+                           mean=np.load(mean_path).mean(1).mean(1),
+                           channel_swap=(2,1,0),
+                           raw_scale=255,
+                           image_dims=(256, 256))
 
 
     feats = {}
 
     for i,files in enumerate(vid_frames):
-         # =os.path.join(data_dir,'features_chal')
 
         feat_filename = files.split('/')[-1].split(ext)[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
@@ -226,6 +282,45 @@ def mvdc(vid_frames,feats_dir,frames_dir,ext,dict):
 
 
     return feats
+
+def run(vid_frames,feats_dir,frames_dir,ext):
+
+    caffe.set_mode_gpu()
+
+    caffe_root = './caffe/'
+
+    model_def = 'caffe/models/bvlc_googlenet/deploy_video.prototxt'
+    model = 'caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel'
+    mean_path = caffe_root + 'python/caffe/imagenet/ilsvrc_2012_mean.npy'
+
+    net = caffe.Classifier(model_def, model,
+                           mean=np.load(mean_path).mean(1).mean(1),
+                           channel_swap=(2,1,0),
+                           raw_scale=255,
+                           image_dims=(256, 256))
+
+
+    feats = {}
+
+    for i,files in enumerate(vid_frames):
+
+        feat_filename = files.split('/')[-1].split(ext)[0]
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+        if os.path.exists(feat_file_path):
+            feat = np.load(feat_file_path)
+            feats[feat_filename]=feat
+            print('features already extracted '+feat_file_path)
+        else:
+            feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+            feats[feat_filename]=feat
+
+        print str(i)+'/'+str(len(vid_frames))
+
+
+
+    return feats
+
 
 def run_mpii(vid_frames,feats_dir,frames_dir,ext):
 
@@ -265,7 +360,7 @@ def run_mpii(vid_frames,feats_dir,frames_dir,ext):
     return feats
 
 
-def main(argv):
+def main_nomean(argv):
 
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
@@ -323,6 +418,72 @@ def main(argv):
 
         print str(i)+'/'+str(len(vid_frames))
 
+
+def main(argv):
+
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        'frames_dir',
+        help = 'directory where videos are'
+    )
+    arg_parser.add_argument(
+        'feats_dir',
+        help = 'directory where to store frames'
+    )
+    arg_parser.add_argument(
+        'start',
+        help = 'start video index'
+    )
+    arg_parser.add_argument(
+        'end',
+        help = 'end video index'
+    )
+
+
+    ext = '.mp4'
+
+    args = arg_parser.parse_args()
+    frames_dir = args.frames_dir
+    feats_dir = args.feats_dir
+    start = int(args.start)
+    end = int(args.end)
+
+    vid_frames = os.listdir(frames_dir)
+
+    if not os.path.isdir(feats_dir):
+        os.mkdir(feats_dir)
+
+
+    caffe.set_mode_gpu()
+
+    caffe_root = './caffe/'
+
+    model_def = 'caffe/models/bvlc_googlenet/deploy_video.prototxt'
+    model = 'caffe/models/bvlc_googlenet/bvlc_googlenet.caffemodel'
+    mean_path = caffe_root + 'python/caffe/imagenet/ilsvrc_2012_mean.npy'
+
+
+
+    net = caffe.Classifier(model_def, model,
+                           mean=np.load(mean_path).mean(1).mean(1),
+                           channel_swap=(2,1,0),
+                           raw_scale=255,
+                           image_dims=(256, 256))
+
+
+    for i,files in enumerate(vid_frames[start:end]):
+
+
+        feat_filename = files.split('/')[-1].split(ext)[0]
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+        if os.path.exists(feat_file_path):
+            feat = np.load(feat_file_path)
+            print('features already extracted '+feat_file_path)
+        else:
+            feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+
+        print str(i)+'/'+str(len(vid_frames))
 
 
 if __name__=='__main__':

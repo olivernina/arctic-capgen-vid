@@ -97,8 +97,6 @@ def train_from_scratch(config, state, channel):
         model_attention.train_from_scratch(state, channel)
     elif config.model == 'attention_mod':
         model_attention_mod.train_from_scratch(state, channel)
-    elif config.model == 'same_word':
-        model_same_word.train_from_scratch(state, channel)
     elif config.model == 'icoupled':
         model_icoupled.train_from_scratch(state, channel)
     elif config.model == 'fcoupled':
@@ -113,14 +111,6 @@ def train_from_scratch(config, state, channel):
         model_LSTM.train_from_scratch(state, channel)
     elif config.model == 'lstmdd':
         model_lstmdd.train_from_scratch(state, channel)
-    elif config.model == 'clstm':
-        model_clstm.train_from_scratch(state, channel)
-    elif config.model == 'nio':
-        model_nio.train_from_scratch(state, channel)
-    elif config.model == 'ni':
-        model_ni.train_from_scratch(state, channel)
-    elif config.model == 'nf':
-        model_nf.train_from_scratch(state, channel)
     elif config.model == 'fc':
         model_fc.train_from_scratch(state, channel)
     elif config.model == 'ic':

@@ -431,6 +431,10 @@ def main(argv):
         help = 'directory where to store frames'
     )
     arg_parser.add_argument(
+        'ext',
+        help = 'video extension'
+    )
+    arg_parser.add_argument(
         'start',
         help = 'start video index'
     )
@@ -440,11 +444,12 @@ def main(argv):
     )
 
 
-    ext = '.mp4'
+
 
     args = arg_parser.parse_args()
     frames_dir = args.frames_dir
     feats_dir = args.feats_dir
+    ext = args.ext
     start = int(args.start)
     end = int(args.end)
 

@@ -113,7 +113,7 @@ def get_annots_vtt(filename,annotations):
 
         ocaption = sent['caption']
         print vid_name
-        print ocaption
+        # print ocaption
 
         # ocaption = ocaption.replace('\n','')
         ocaption = ocaption.strip()

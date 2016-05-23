@@ -79,7 +79,36 @@ def batch_predict2(filenames, net):
 
     return allftrs
 
+def batch_predict3(filenames, net):
+    """
+    Get the features for all images from filenames using a network
 
+    Inputs:
+    filenames: a list of names of image files
+
+    Returns:
+    an array of feature vectors for the images in that file
+    """
+
+
+    F = net.blobs[net.outputs[0]].data.shape[1]
+    Nf = len(filenames)
+
+    allftrs = np.zeros((Nf, F),dtype=np.float32)
+    for i in range(0, len(filenames)):
+
+        input_image = caffe.io.load_image(filenames[i])
+
+        # predict features
+        ftrs = net.predict([input_image],oversample=True)
+
+
+
+        allftrs[i,:] = ftrs[0] #oversample
+        # allftrs[i,:] = ftrs[0,:,0,0]
+        print 'Done %d/%d files' % (i, len(filenames))
+
+    return allftrs
 
 def batch_predict(filenames, net):
     """
@@ -150,7 +179,7 @@ def get_features(src_dir,dst_dir,video_dir,net):
             filenames = [os.path.join(src_path,x) for x in frames]
 
             print 'processing '+ dst_path+' '+str(len(filenames))+' frames'
-            allftrs = batch_predict2(filenames, net)
+            allftrs = batch_predict3(filenames, net)
             feat_file = open(dst_path, 'wb')
             np.save(feat_file,allftrs)
             print ' features created'
@@ -254,8 +283,8 @@ def mvdc(vid_frames,feats_dir,frames_dir,ext,dict):
     net = caffe.Classifier(model_def, model,
                            mean=np.load(mean_path).mean(1).mean(1),
                            channel_swap=(2,1,0),
-                           raw_scale=255,
-                           image_dims=(256, 256))
+                           raw_scale=255)
+                           # image_dims=(256, 256))
 
 
     feats = {}
@@ -296,8 +325,8 @@ def run(vid_frames,feats_dir,frames_dir,ext):
     net = caffe.Classifier(model_def, model,
                            mean=np.load(mean_path).mean(1).mean(1),
                            channel_swap=(2,1,0),
-                           raw_scale=255,
-                           image_dims=(256, 256))
+                           raw_scale=255)#,
+                           # image_dims=(256, 256))
 
 
     feats = {}

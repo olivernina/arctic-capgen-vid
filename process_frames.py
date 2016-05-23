@@ -58,7 +58,8 @@ def main(argv):
 
         if not os.path.isdir(dst_path):
             os.mkdir(dst_path)
-            command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
+            # command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
+            command = 'ffmpeg -i '+ src_path+' -r 20 '+ dst_path + '/%5d.jpg'
             print command
             os.system(command)
 
@@ -83,7 +84,7 @@ def get_frames(vid_dir,movie_dir,dst_dir,video_file):
     if not os.path.isdir(dst_path) or len(os.listdir(dst_path))==0:
         if not os.path.isdir(dst_path):
             os.mkdir(dst_path)
-        command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
+        command = 'ffmpeg -i '+ src_path+' -r 20 '+ dst_path + '/%5d.jpg'
         print command
         os.system(command)
     else:

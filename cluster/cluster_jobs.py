@@ -7,11 +7,12 @@ from time import gmtime, strftime
 def main(argv):
     os.system('rm *.pbs')
 
-    start = int(argv[1]) #0
-    end = int(argv[2]) #8000
+    s = int(argv[1]) #0
+    e = int(argv[2]) #8000
     step =int(argv[3]) #200
     idx = 0
-    for i in range(start,end,step):
+    local_time = strftime("%H:%M:%S",gmtime())
+    for i in range(s,e,step):
         start = i
         end = i + step
         job_name  = 'features'+str(idx)+'.pbs'
@@ -21,7 +22,7 @@ def main(argv):
         f.write("#PBS -l select=1:ncpus=1:mpiprocs=1:ngpus=1\n")
         f.write("#PBS -q GPU\n")
         f.write("#PBS -l walltime=0:30:00\n")
-        f.write("#PBS -N feats_"+strftime("%M-%S",gmtime())+"\n")
+        f.write("#PBS -N feats_"+str(start)+"_"+str(end)+"\n")
         f.write("#PBS -j oe\n")
         f.write("module load cuda/7.5\n")
         f.write("module load anaconda/2.3.0\n")

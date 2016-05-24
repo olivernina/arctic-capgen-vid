@@ -42,13 +42,7 @@ def main(argv):
     if not os.path.isdir(dst_dir):
         os.mkdir(dst_dir)
  
- 
-    # df = pd.read_csv(list_classes,delimiter=' ')
-    # dict_classes = df.to_dict()
- 
-    # classes_allowed = [dict_classes['class_name'][i] for i in range(0,len(dict_classes['class_id']))]
- 
- 
+
     for video_file in src_files[start:end]:
  
 

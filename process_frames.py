@@ -25,17 +25,13 @@ def main(argv):
         'end',
         help = 'directory where to store frames'
     )
-    # arg_parser.add_argument(
-    #     'list_classes',
-    #     help= 'list of classes'
-    # )
- 
+
     args = arg_parser.parse_args()
     src_dir = args.src_dir
     dst_dir = args.dst_dir
     start = int(args.start)
     end = int(args.end)
-    # list_classes = args.list_classes
+
  
     src_files = os.listdir(src_dir)
  
@@ -52,7 +48,7 @@ def main(argv):
 
         if not os.path.isdir(dst_path):
             os.mkdir(dst_path)
-            # command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg'
+            # command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg' #with resize
             command = 'ffmpeg -i '+ src_path+' -r 20 '+ dst_path + '/%5d.jpg'
             print command
             os.system(command)

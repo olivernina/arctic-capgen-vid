@@ -17,7 +17,7 @@ for i in range(start,end,step):
     f.write("#PBS -A AFSNW35489ANO\n")
     f.write("#PBS -l select=1:ncpus=1:mpiprocs=1:ngpus=1\n")
     f.write("#PBS -q GPU\n")
-    f.write("#PBS -l walltime=1:00:00\n")
+    f.write("#PBS -l walltime=0:30:00\n")
     f.write("#PBS -N features\n")
     f.write("#PBS -j oe\n")
     f.write("module load cuda/7.5\n")

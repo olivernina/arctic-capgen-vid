@@ -2,6 +2,7 @@ __author__ = 'onina'
 
 import os
 import sys
+from time import gmtime, strftime
 
 def main(argv):
     os.system('rm *.pbs')
@@ -20,7 +21,7 @@ def main(argv):
         f.write("#PBS -l select=1:ncpus=1:mpiprocs=1:ngpus=1\n")
         f.write("#PBS -q GPU\n")
         f.write("#PBS -l walltime=0:30:00\n")
-        f.write("#PBS -N features\n")
+        f.write("#PBS -N features_"+strftime("%H:%M:%S",gmtime())+"\n")
         f.write("#PBS -j oe\n")
         f.write("module load cuda/7.5\n")
         f.write("module load anaconda/2.3.0\n")

@@ -489,17 +489,11 @@ def main_resnet(argv):
 
     model_def = 'caffe/models/resnet/ResNet-50-deploy.prototxt'
     model = 'caffe/models/resnet/ResNet-50-model.caffemodel'
-    # mean_path = caffe_root + 'python/caffe/imagenet/ilsvrc_2012_mean.npy'
+    mean_path = 'caffe/models/resnet/ResNet_mean.npy'
 
-
-
-    # net = caffe.Classifier(model_def, model,
-    #                        mean=np.load(mean_path).mean(1).mean(1),
-    #                        channel_swap=(2,1,0),
-    #                        raw_scale=255,
-    #                        image_dims=(256, 256))
-
-    net = caffe.Classifier(model_def, model, channel_swap=(2, 1, 0),
+    net = caffe.Classifier(model_def, model,
+                           mean=np.load(mean_path).mean(1).mean(1),
+                           channel_swap=(2, 1, 0),
                            raw_scale=255,
                            image_dims=(256, 256))
 

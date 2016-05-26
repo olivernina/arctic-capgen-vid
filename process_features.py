@@ -448,6 +448,69 @@ def main_nomean(argv):
         print str(i)+'/'+str(len(vid_frames))
 
 
+def main_resnet(argv):
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        'frames_dir',
+        help='directory where videos are'
+    )
+    arg_parser.add_argument(
+        'feats_dir',
+        help='directory where to store frames'
+    )
+    arg_parser.add_argument(
+        'ext',
+        help='video extension'
+    )
+    arg_parser.add_argument(
+        'start',
+        help='start video index'
+    )
+    arg_parser.add_argument(
+        'end',
+        help='end video index'
+    )
+
+    args = arg_parser.parse_args()
+    frames_dir = args.frames_dir
+    feats_dir = args.feats_dir
+    ext = args.ext
+    start = int(args.start)
+    end = int(args.end)
+
+    vid_frames = os.listdir(frames_dir)
+
+    if not os.path.isdir(feats_dir):
+        os.mkdir(feats_dir)
+
+    caffe.set_mode_gpu()
+
+    caffe_root = './caffe/'
+
+    model_def = 'caffe/models/resnet/ResNet-50-deploy.prototxt'
+    model = 'caffe/models/resnet/ResNet-50-model.caffemodel'
+    mean_path = 'caffe/models/resnet/ResNet_mean.npy'
+
+    net = caffe.Classifier(model_def, model,
+                           mean=np.load(mean_path).mean(1).mean(1),
+                           channel_swap=(2, 1, 0),
+                           raw_scale=255,
+                           image_dims=(256, 256))
+
+    for i, files in enumerate(vid_frames[start:end]):
+
+        feat_filename = files.split('/')[-1].split(ext)[0]
+        feat_file_path = os.path.join(feats_dir, feat_filename)
+
+        if os.path.exists(feat_file_path):
+            feat = np.load(feat_file_path)
+            print('features already extracted ' + feat_file_path)
+        else:
+            feat = get_features(frames_dir, feats_dir, files.split('/')[-1], net)
+
+        print str(i) + '/' + str(len(vid_frames))
+
+
 def main(argv):
 
     arg_parser = argparse.ArgumentParser()
@@ -521,4 +584,4 @@ def main(argv):
 
 
 if __name__=='__main__':
-    main(sys.argv)
+    main_resnet(sys.argv)

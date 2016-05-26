@@ -992,7 +992,7 @@ def mvdc(params):
         if all_vids == None:
             all_vids = common.load_pkl(os.path.join(pkl_dir,'allvids.pkl'))
         vid_frames = get_frames_mvdc(all_vids,video_dir,frames_dir)
-        features = process_features.mvdc(vid_frames,feats_dir,frames_dir,'.avi',youtube_map_dict) # We don't save the FEAT file because it requires to much memory TODO
+        features = process_features.mvdc(vid_frames,feats_dir,frames_dir,'.avi',youtube_map_dict) # TODO: We don't save the FEAT file because it requires to much memory
         common.dump_pkl(features,feats_path)
 
 

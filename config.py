@@ -79,6 +79,7 @@ config = DD({
         'from_dir': '',
         'valid_batch_size':200,
         'max_epochs':500,
+        'video_feature': 'googlenet',
         }),
     'fcoupled': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
@@ -92,6 +93,7 @@ config = DD({
         'from_dir': '',
         'valid_batch_size':200,
         'max_epochs':500,
+        'video_feature': 'googlenet',
         }),
     'const': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
@@ -133,6 +135,7 @@ config = DD({
         'valid_batch_size':200,
         'dataset': 'youtube2text',
         'dim':3518, # lstm dim # 536
+        'video_feature': 'googlenet',
     }),
     'nf': DD({
         'reload_': False,
@@ -165,6 +168,7 @@ config = DD({
         'encoder':None,
         'encoder_dim': 300,
         'batch_size': 64, # for trees use 25
-        'dataset': 'youtube2text'
+        'dataset': 'youtube2text',
+        'video_feature': 'googlenet',
         }),
 })

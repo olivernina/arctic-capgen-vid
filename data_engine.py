@@ -70,7 +70,7 @@ class Movie2Caption(object):
         return feat
 
     def get_video_features(self, vidID):
-        if self.video_feature == 'googlenet':
+        if self.video_feature == 'googlenet' or self.video_feature == 'resnet': #hack to be fixed
             # y = self._filter_googlenet(vidID)
 
             if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii' or self.signature == 'vtt':

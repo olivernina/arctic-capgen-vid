@@ -453,7 +453,7 @@ def prepare_data(engine, IDs):
 
 
         feat = engine.get_video_features(vidID)
-        print feat.shape()
+
         feat_list.append(feat)
         words = get_words(vidID, capID)
         # print words

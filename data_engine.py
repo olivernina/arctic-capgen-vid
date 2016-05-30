@@ -448,7 +448,8 @@ def prepare_data(engine, IDs):
             capID = 1
         else:
             raise NotImplementedError()
-        
+
+        print vidID
         feat = engine.get_video_features(vidID)
         feat_list.append(feat)
         words = get_words(vidID, capID)

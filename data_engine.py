@@ -50,7 +50,7 @@ class Movie2Caption(object):
     def _filter_googlenet(self, vidID):
         feat = self.FEAT[vidID]
         print vidID
-        print feat.shape()
+        print feat
         feat = self.get_sub_frames(feat)
         return feat
 

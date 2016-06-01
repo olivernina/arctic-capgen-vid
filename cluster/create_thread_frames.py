@@ -19,9 +19,7 @@ def main(argv):
         end = i + step
         f.write("python process_features.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ '.mp4' "+str(start)+" "+str(end)+" &\n")
         idx+=1
-    # command = 'qsub '+job_name
-    # print command
-    # os.system(command)
+
     f.close()
 
 

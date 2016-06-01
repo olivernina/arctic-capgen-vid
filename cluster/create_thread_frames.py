@@ -17,7 +17,7 @@ def main(argv):
     for i in range(s,e,step):
         start = i
         end = i + step
-        f.write("python process_features.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ '.mp4' "+str(start)+" "+str(end)+" &\n")
+        f.write("python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ "+str(start)+" "+str(end)+" &\n")
         idx+=1
 
     f.close()

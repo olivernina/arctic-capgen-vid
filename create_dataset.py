@@ -856,7 +856,7 @@ def ysvd(params):
 
 
 
-def vtt(params):
+def vtt_googlenet(params):
 
     data_dir =params['data_dir']
     video_dir = params['video_dir']
@@ -919,6 +919,94 @@ def vtt(params):
         features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4') # We don't save the FEAT file because it requires to much memory TODO
         common.dump_pkl(features,feats_path)
 
+
+def get_c3d_features(vid_frames,feats_dir):
+
+    feats = {}
+    ext = 'fc6-1'
+    for i,files in enumerate(vid_frames):
+
+        feat_filename = files.split('/')[-1].split(ext)[0]
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+        if os.path.exists(feat_file_path):
+            # feat = np.load(feat_file_path)
+            feat = np.fromfile(feat_file_path)
+            feats[feat_filename]=feat
+            # print('features already extracted '+feat_file_path)
+        # else:
+        #     feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
+            feats[feat_filename]=feat
+
+        print str(i)+'/'+str(len(vid_frames))
+
+
+
+    return feats
+
+def vtt_c3d(params):
+
+    data_dir =params['data_dir']
+    video_dir = params['video_dir']
+    frames_dir = params['frames_dir']
+    pkl_dir = params['pkl_dir']
+    feats_dir = params['feats_dir']
+
+    test_mode = params['test']
+    if test_mode:
+        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+
+    else:
+        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+
+    annotations = {}
+
+    if not os.path.exists(pkl_dir):
+        os.mkdir(pkl_dir)
+
+    all_vids = None
+
+
+    train_path = os.path.join(pkl_dir,'train.pkl')
+    valid_path = os.path.join(pkl_dir,'valid.pkl')
+    test_path = os.path.join(pkl_dir,'test.pkl')
+
+    if not os.path.exists(train_path):
+        train_val_file = os.path.join(data_dir,train_val_list_path)
+        annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,annotations)
+
+        common.dump_pkl(vids_train,train_path)
+        common.dump_pkl(vids_val,valid_path)
+        common.dump_pkl(vids_val,test_path)
+        common.dump_pkl(all_vids,'allvids.pkl')
+
+    else:
+        train_list = common.load_pkl(train_path)
+        valid_list = common.load_pkl(valid_path)
+        test_list = common.load_pkl(test_path)
+
+    cap_path = os.path.join(pkl_dir,'CAP.pkl')
+    if not os.path.exists(cap_path):
+       common.dump_pkl(annotations,cap_path)
+    else:
+        annotations = common.load_pkl(cap_path)
+
+    dict_path = os.path.join(pkl_dir,'worddict.pkl')
+    if not os.path.exists(dict_path):
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
+    else:
+        worddict = common.load_pkl(dict_path)
+
+
+    feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+    if not os.path.exists(feats_path):
+        if all_vids == None:
+            all_vids = common.load_pkl('allvids.pkl')
+        # vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
+        # features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4')
+        features = get_c3d_features(all_vids,feats_dir)
+        common.dump_pkl(features,feats_path)
 
 
 def mvdc(params):
@@ -993,6 +1081,86 @@ def mvdc(params):
             all_vids = common.load_pkl(os.path.join(pkl_dir,'allvids.pkl'))
         vid_frames = get_frames_mvdc(all_vids,video_dir,frames_dir)
         features = process_features.mvdc(vid_frames,feats_dir,frames_dir,'.avi',youtube_map_dict) # TODO: We don't save the FEAT file because it requires to much memory
+        common.dump_pkl(features,feats_path)
+
+
+
+    print('done creating dataset')
+
+
+def mvdc_c3d(params):
+
+    data_dir =params['data_dir']
+    video_dir = params['video_dir']
+    frames_dir = params['frames_dir']
+    pkl_dir = params['pkl_dir']
+    feats_dir = params['feats_dir']
+
+    test_mode = params['test']
+    if test_mode:
+        vid_caption_dict_path = 'dict_movieID_caption.pkl'
+        youtube_map_dict_path = 'dict_youtube_mapping.pkl'
+
+    else:
+        vid_caption_dict_path = 'dict_movieID_caption.pkl'
+        youtube_map_dict_path = 'dict_youtube_mapping.pkl'
+
+    f = open(os.path.join(data_dir,vid_caption_dict_path),'r')
+    vid_caption_dict = cPickle.load(f)
+    f = open(os.path.join(data_dir,youtube_map_dict_path),'r')
+    youtube_map_dict = cPickle.load(f)
+
+    if not os.path.exists(pkl_dir):
+        os.mkdir(pkl_dir)
+
+    all_vids = None
+    annotations = collections.OrderedDict()
+
+    train_path = os.path.join(pkl_dir,'train.pkl')
+    valid_path = os.path.join(pkl_dir,'valid.pkl')
+    test_path = os.path.join(pkl_dir,'test.pkl')
+
+    if not os.path.exists(train_path):
+
+
+        annotations,vids_train,vids_val,vids_test,all_vids = get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations)
+
+        common.dump_pkl(vids_train,train_path)
+
+        common.dump_pkl(vids_val,valid_path)
+
+        common.dump_pkl(vids_test,test_path)
+
+        common.dump_pkl(all_vids,os.path.join(pkl_dir,'allvids.pkl'))
+
+
+    else:
+        train_list = common.load_pkl(train_path)
+        valid_list = common.load_pkl(valid_path)
+        test_list = common.load_pkl(test_path)
+
+    cap_path = os.path.join(pkl_dir,'CAP.pkl')
+    if not os.path.exists(cap_path):
+       common.dump_pkl(annotations,cap_path)
+    else:
+        annotations = common.load_pkl(cap_path)
+
+    dict_path = os.path.join(pkl_dir,'worddict.pkl')
+    if not os.path.exists(dict_path):
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
+    else:
+        worddict = common.load_pkl(dict_path)
+
+
+        # all_vids = all_vids[46000:-1]
+    feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+    if not os.path.exists(feats_path):
+        if all_vids == None:
+            all_vids = common.load_pkl(os.path.join(pkl_dir,'allvids.pkl'))
+        # vid_frames = get_frames_mvdc(all_vids,video_dir,frames_dir)
+        # features = process_features.mvdc(vid_frames,feats_dir,frames_dir,'.avi',youtube_map_dict) # TODO: We don't save the FEAT file because it requires to much memory
+        features = get_c3d_features(all_vids,feats_dir)
         common.dump_pkl(features,feats_path)
 
 

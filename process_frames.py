@@ -49,7 +49,7 @@ def main(argv):
         if not os.path.isdir(dst_path):
             os.mkdir(dst_path)
             # command = 'ffmpeg -i '+ src_path+' -s 256x256 '+ dst_path + '/%5d.jpg' #with resize
-            command = 'ffmpeg -i '+ src_path+' -r 20 '+ dst_path + '/%5d.jpg'
+            command = 'ffmpeg -i '+ src_path+' -r 20 '+ dst_path + '/%6d.jpg' #6 is to be in accordance with C3D features.
             print command
             os.system(command)
 

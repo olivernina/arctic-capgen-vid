@@ -920,7 +920,7 @@ def vtt_googlenet(params):
         common.dump_pkl(features,feats_path)
 
 
-def get_c3d_features(vid_frames,feats_dir):
+def get_c3d_features(vid_frames,feats_dir,dict):
 
     feats = {}
     ext = 'fc6-1'
@@ -929,14 +929,29 @@ def get_c3d_features(vid_frames,feats_dir):
         feat_filename = files.split('/')[-1].split(ext)[0]
         feat_file_path = os.path.join(feats_dir,feat_filename)
 
-        if os.path.exists(feat_file_path):
-            # feat = np.load(feat_file_path)
-            feat = np.fromfile(feat_file_path)
-            feats[feat_filename]=feat
-            # print('features already extracted '+feat_file_path)
+
+        files = os.listdir(feat_file_path)
+        files.sort()
+        allftrs = np.zeros((len(files), 4101),dtype=np.float32)
+
+        for j in range(0, len(files)):
+
+            feat = np.fromfile(os.path.join(feat_file_path, files[j]),dtype=np.float32)
+            allftrs[j,:] = feat
+            # print feat[0:4096]
+            # print feat[4097:-1]
+
+        # if os.path.exists(feat_file_path):
+        #     # feat = np.load(feat_file_path)
+        #     feat = np.fromfile(feat_file_path)
+        #     feats[feat_filename]=feat
+        #     # print('features already extracted '+feat_file_path)
         # else:
         #     feat = get_features(frames_dir,feats_dir,files.split('/')[-1],net)
-            feats[feat_filename]=feat
+
+        vid = dict[feat_filename]
+        feats[vid]=allftrs
+
 
         print str(i)+'/'+str(len(vid_frames))
 
@@ -1158,9 +1173,7 @@ def mvdc_c3d(params):
     if not os.path.exists(feats_path):
         if all_vids == None:
             all_vids = common.load_pkl(os.path.join(pkl_dir,'allvids.pkl'))
-        # vid_frames = get_frames_mvdc(all_vids,video_dir,frames_dir)
-        # features = process_features.mvdc(vid_frames,feats_dir,frames_dir,'.avi',youtube_map_dict) # TODO: We don't save the FEAT file because it requires to much memory
-        features = get_c3d_features(all_vids,feats_dir)
+        features = get_c3d_features(all_vids,feats_dir,youtube_map_dict)
         common.dump_pkl(features,feats_path)
 
 
@@ -1239,4 +1252,4 @@ if __name__=='__main__':
     if params['dbname'] == 'vtt':
         vtt(params)
     if params['dbname'] == 'mvdc':
-        mvdc(params)
+        mvdc_c3d(params)

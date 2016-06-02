@@ -72,7 +72,7 @@ class Movie2Caption(object):
         return feat
 
     def get_video_features(self, vidID):
-        if self.video_feature == 'googlenet' or self.video_feature == 'resnet': #hack to be fixed
+        if self.video_feature == 'googlenet' or self.video_feature == 'resnet' or self.video_feature == 'c3d':  #hack to be fixed
             # y = self._filter_googlenet(vidID)
 
             if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii' or self.signature == 'vtt':
@@ -274,8 +274,8 @@ class Movie2Caption(object):
             self.ctx_dim = 1024
         elif self.video_feature == 'resnet':
             self.ctx_dim = 2048
-        elif self.video_feature == 'C3D':
-            self.ctx_dim = 2048
+        elif self.video_feature == 'c3d':
+            self.ctx_dim = 4101
         else:
             raise NotImplementedError()
         self.kf_train = common.generate_minibatch_idx(

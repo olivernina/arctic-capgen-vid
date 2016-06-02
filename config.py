@@ -33,7 +33,7 @@ config = DD({
         'maxlen':30, # max length of the descprition
         'optimizer':'adadelta',
         'clip_c': 10.,
-        'batch_size': 25,#64, # for trees use 25
+        'batch_size': 64, # for trees use 25
         # 'batch_size': 2, # for trees use 25
         'valid_batch_size':200,
         # 'valid_batch_size':2,

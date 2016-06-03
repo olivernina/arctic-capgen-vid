@@ -262,7 +262,7 @@ class Movie2Caption(object):
         else:
             raise NotImplementedError()
                 
-        self.worddict = common.load_pkl(dataset_path + 'worddict.pkl')
+        self.worddict = common.load_pkl(os.path.join(dataset_path ,'worddict.pkl'))
         self.word_idict = dict()
         # wordict start with index 2
         for kk, vv in self.worddict.iteritems():

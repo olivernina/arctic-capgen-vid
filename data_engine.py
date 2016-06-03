@@ -454,6 +454,10 @@ def prepare_data(engine, IDs):
 
         feat = engine.get_video_features(vidID)
 
+        if len(feat[0])!= engine.ctx_dim:
+            print 'dim error on '+vidID
+            sys.exit(0)
+
         feat_list.append(feat)
         words = get_words(vidID, capID)
         # print words
@@ -470,7 +474,8 @@ def prepare_data(engine, IDs):
     if len(lengths) < 1:
         return None, None, None, None
 
-
+    # print feat_list
+    print len(feat_list)
     y = numpy.asarray(feat_list)
     # print len(y[1,1])
     y_mask = engine.get_ctx_mask(y)

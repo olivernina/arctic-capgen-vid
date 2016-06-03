@@ -451,7 +451,6 @@ def prepare_data(engine, IDs):
         else:
             raise NotImplementedError()
 
-
         feat = engine.get_video_features(vidID)
 
         # if len(feat[0])!= engine.ctx_dim:

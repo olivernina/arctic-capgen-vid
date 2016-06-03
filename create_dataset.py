@@ -1261,24 +1261,24 @@ if __name__=='__main__':
     # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='lsmdc')
 
 
-    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/vtt')
-    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/vtt/TrainValVideo')
-    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/vtt/frames')
-    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/vtt/features')
-    # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/vtt/')
-    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='vtt')
-    # parser.add_argument('-type','--type',dest ='type',type=str,default='googlenet')
-
-
-    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/mvdc')
-    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/mvdc/videos')
-    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/mvdc/frames')
-    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/mvdc/features')
+    parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea2/datasets/vtt')
+    parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea2/datasets/vtt/TrainValVideo')
+    parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea2/datasets/vtt/frames')
+    parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea2/datasets/vtt/features')
     parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
-    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvdc/')
-    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvdc')
+    parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/vtt/')
+    parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='vtt')
     parser.add_argument('-type','--type',dest ='type',type=str,default='googlenet')
+
+
+    # parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/mvdc')
+    # parser.add_argument('-v','--video_dir',dest ='video_dir',type=str,default='/media/onina/sea1/datasets/mvdc/videos')
+    # parser.add_argument('-frame','--frames_dir',dest ='frames_dir',type=str,default='/media/onina/sea1/datasets/mvdc/frames')
+    # parser.add_argument('-feat','--feats_dir',dest ='feats_dir',type=str,default='/media/onina/sea1/datasets/mvdc/features')
+    # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
+    # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvdc/')
+    # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvdc')
+    # parser.add_argument('-type','--type',dest ='type',type=str,default='googlenet')
 
 
 

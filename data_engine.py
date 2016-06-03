@@ -474,8 +474,6 @@ def prepare_data(engine, IDs):
     if len(lengths) < 1:
         return None, None, None, None
 
-    # print feat_list
-    print len(feat_list)
     y = numpy.asarray(feat_list)
     # print len(y[1,1])
     y_mask = engine.get_ctx_mask(y)

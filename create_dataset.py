@@ -897,6 +897,38 @@ def ysvd(params):
     feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
     common.dump_pkl(features,feats_path)
 
+
+
+
+def get_c3d_features_vtt(vid_frames,feats_dir):
+
+    feats = {}
+    ext = 'fc6-1'
+    for i,files in enumerate(vid_frames):
+
+        feat_filename = files.split('/')[-1].split(ext)[0] #TODO:doesn't need ext remove it
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+
+        files = os.listdir(feat_file_path)
+        files.sort()
+        allftrs = np.zeros((len(files), 4101),dtype=np.float32)
+
+        for j in range(0, len(files)):
+
+            feat = np.fromfile(os.path.join(feat_file_path, files[j]),dtype=np.float32)
+            allftrs[j,:] = feat
+
+        feats[feat_filename]=allftrs
+
+
+        print str(i)+'/'+str(len(vid_frames))
+
+
+
+    return feats
+
+
 def get_c3d_features(vid_frames,feats_dir,dict):
 
     feats = {}
@@ -1062,7 +1094,7 @@ def vtt_c3d(params):
     if not os.path.exists(feats_path):
         if all_vids == None:
             all_vids = common.load_pkl('allvids.pkl')
-        features = get_c3d_features(all_vids,feats_dir)
+        features = get_c3d_features_vtt(all_vids,feats_dir)
         common.dump_pkl(features,feats_path)
 
 

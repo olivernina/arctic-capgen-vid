@@ -247,12 +247,12 @@ class Movie2Caption(object):
 
         elif self.signature == 'vtt':
             print 'loading vtt %s features'%self.video_feature
-            dataset_path = common.get_rab_dataset_base_path()+'vtt/'
-            self.train = common.load_pkl(dataset_path + 'train.pkl')
-            self.valid = common.load_pkl(dataset_path + 'valid.pkl')
-            self.test = common.load_pkl(dataset_path + 'test.pkl')
-            self.CAP = common.load_pkl(dataset_path + 'CAP.pkl')
-            self.FEAT = common.load_pkl(dataset_path + 'FEAT_key_vidID_value_features.pkl')
+            dataset_path = common.get_rab_dataset_base_path()+'vtt/'+self.video_feature
+            self.train = common.load_pkl(os.path.join(dataset_path ,'train.pkl'))
+            self.valid = common.load_pkl(os.path.join(dataset_path ,'valid.pkl'))
+            self.test = common.load_pkl(os.path.join(dataset_path ,'test.pkl'))
+            self.CAP = common.load_pkl(os.path.join(dataset_path , 'CAP.pkl'))
+            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
 
             self.train_ids = ['video%s'%i for i in range(0,6513)] #0-6512
             self.valid_ids = ['video%s'%i for i in range(6513,7010)]#6513-7010
@@ -454,9 +454,9 @@ def prepare_data(engine, IDs):
 
         feat = engine.get_video_features(vidID)
 
-        if len(feat[0])!= engine.ctx_dim:
-            print 'dim error on '+vidID
-            sys.exit(0)
+        # if len(feat[0])!= engine.ctx_dim:
+        #     print 'dim error on '+vidID
+        #     sys.exit(0)
 
         feat_list.append(feat)
         words = get_words(vidID, capID)

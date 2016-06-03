@@ -94,13 +94,15 @@ def get_annots_mvad(list,corpus,annotations):
 
     return annotations,vids_names
 
-def get_annots_vtt(filename,annotations):
+def get_annots_vtt(filename,filename_test,annotations):
     vids_train = []
     vids_val = []
     all_vids = {}
     with open(filename) as data_file:
         data = json.load(data_file)
 
+    with open(filename_test) as data_file:
+        data_test = json.load(data_file)
 
     for sent in data['sentences']:#[0:1000]:
 
@@ -153,6 +155,47 @@ def get_annots_vtt(filename,annotations):
     shuffle(vids_val)
 
     return annotations,vids_train,vids_val,all_vids.keys()
+
+def get_test_annots_vtt(filename,annotations,all_vids):
+    vids_test = []
+
+
+    with open(filename) as data_file:
+        data = json.load(data_file)
+
+    for vid in data['videos']:#[0:1000]:
+
+        vid_name = vid['video_id']
+
+        if not all_vids.has_key(vid_name):
+            all_vids[vid_name]=1
+        else:
+            all_vids[vid_name]+=1
+
+        ocaption = ''
+        print vid_name
+
+        vid_id = int(vid_name.split('video')[1])
+
+
+        cap_id = -1
+        if annotations.has_key(vid_name):
+            cap_id = str(len(annotations[vid_name]))
+            annotations[vid_name].append({'tokenized':'','image_id':vid_name,'cap_id':cap_id,'caption':''})
+        else:
+            annotations[vid_name]= []
+            cap_id = str(0)
+            annotations[vid_name].append({'tokenized':'','image_id':vid_name,'cap_id':cap_id,'caption':''})
+
+
+        if data['videos'][vid_id]['split'] == 'test':
+
+            vid_test =vid_name + '_' + cap_id
+            vids_test.append(vid_test)
+
+
+
+    return annotations,vids_test,all_vids
 
 def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):
     vids_train = []
@@ -854,72 +897,6 @@ def ysvd(params):
     feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
     common.dump_pkl(features,feats_path)
 
-
-
-def vtt_googlenet(params):
-
-    data_dir =params['data_dir']
-    video_dir = params['video_dir']
-    frames_dir = params['frames_dir']
-    pkl_dir = params['pkl_dir']
-    feats_dir = params['feats_dir']
-
-    test_mode = params['test']
-    if test_mode:
-        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
-
-    else:
-        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
-
-    annotations = {}
-
-    if not os.path.exists(pkl_dir):
-        os.mkdir(pkl_dir)
-
-    all_vids = None
-
-
-    train_path = os.path.join(pkl_dir,'train.pkl')
-    valid_path = os.path.join(pkl_dir,'valid.pkl')
-    test_path = os.path.join(pkl_dir,'test.pkl')
-
-    if not os.path.exists(train_path):
-        train_val_file = os.path.join(data_dir,train_val_list_path)
-        annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,annotations)
-
-        common.dump_pkl(vids_train,train_path)
-        common.dump_pkl(vids_val,valid_path)
-        common.dump_pkl(vids_val,test_path)
-        common.dump_pkl(all_vids,'allvids.pkl')
-
-    else:
-        train_list = common.load_pkl(train_path)
-        valid_list = common.load_pkl(valid_path)
-        test_list = common.load_pkl(test_path)
-
-    cap_path = os.path.join(pkl_dir,'CAP.pkl')
-    if not os.path.exists(cap_path):
-       common.dump_pkl(annotations,cap_path)
-    else:
-        annotations = common.load_pkl(cap_path)
-
-    dict_path = os.path.join(pkl_dir,'worddict.pkl')
-    if not os.path.exists(dict_path):
-        worddict = create_dictionary(annotations,dict_path)
-        common.dump_pkl(worddict,dict_path)
-    else:
-        worddict = common.load_pkl(dict_path)
-
-
-    feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
-    if not os.path.exists(feats_path):
-        if all_vids == None:
-            all_vids = common.load_pkl('allvids.pkl')
-        vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
-        features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4') # We don't save the FEAT file because it requires to much memory TODO
-        common.dump_pkl(features,feats_path)
-
-
 def get_c3d_features(vid_frames,feats_dir,dict):
 
     feats = {}
@@ -958,6 +935,73 @@ def get_c3d_features(vid_frames,feats_dir,dict):
 
 
     return feats
+
+def vtt_googlenet(params):
+
+    data_dir =params['data_dir']
+    video_dir = params['video_dir']
+    frames_dir = params['frames_dir']
+    pkl_dir = params['pkl_dir']
+    feats_dir = params['feats_dir']
+
+    test_mode = params['test']
+    if test_mode:
+        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+        test_list_path = 'annotations/test_videodatainfo_nosen.json'
+
+    else:
+        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+        test_list_path = 'annotations/test_videodatainfo_nosen.json'
+
+    annotations = {}
+
+    if not os.path.exists(pkl_dir):
+        os.mkdir(pkl_dir)
+
+    all_vids = None
+
+
+    train_path = os.path.join(pkl_dir,'train.pkl')
+    valid_path = os.path.join(pkl_dir,'valid.pkl')
+    test_path = os.path.join(pkl_dir,'test.pkl')
+
+    if not os.path.exists(train_path):
+        train_val_file = os.path.join(data_dir,train_val_list_path)
+        test_file = os.path.join(data_dir,test_list_path)
+        annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,test_file,annotations)
+        annotations,vids_test,all_vids = get_test_annots_vtt(test_file,annotations,all_vids)
+
+        common.dump_pkl(vids_train,train_path)
+        common.dump_pkl(vids_val,valid_path)
+        common.dump_pkl(vids_test,test_path)
+        common.dump_pkl(all_vids.keys(),'allvids.pkl')
+
+    else:
+        train_list = common.load_pkl(train_path)
+        valid_list = common.load_pkl(valid_path)
+        test_list = common.load_pkl(test_path)
+
+    cap_path = os.path.join(pkl_dir,'CAP.pkl')
+    if not os.path.exists(cap_path):
+       common.dump_pkl(annotations,cap_path)
+    else:
+        annotations = common.load_pkl(cap_path)
+
+    dict_path = os.path.join(pkl_dir,'worddict.pkl')
+    if not os.path.exists(dict_path):
+        worddict = create_dictionary(annotations,dict_path)
+        common.dump_pkl(worddict,dict_path)
+    else:
+        worddict = common.load_pkl(dict_path)
+
+
+    feats_path = os.path.join(pkl_dir,'FEAT_key_vidID_value_features.pkl')
+    if not os.path.exists(feats_path):
+        if all_vids == None:
+            all_vids = common.load_pkl('allvids.pkl')
+        vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
+        features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4') # We don't save the FEAT file because it requires to much memory TODO
+        common.dump_pkl(features,feats_path)
 
 def vtt_c3d(params):
 
@@ -1018,13 +1062,11 @@ def vtt_c3d(params):
     if not os.path.exists(feats_path):
         if all_vids == None:
             all_vids = common.load_pkl('allvids.pkl')
-        # vid_frames = get_frames_vtt(all_vids,video_dir,frames_dir)
-        # features = process_features.run(vid_frames,feats_dir,frames_dir,'.mp4')
         features = get_c3d_features(all_vids,feats_dir)
         common.dump_pkl(features,feats_path)
 
 
-def mvdc(params):
+def mvdc_googlenet(params):
 
     data_dir =params['data_dir']
     video_dir = params['video_dir']
@@ -1226,6 +1268,7 @@ if __name__=='__main__':
     # parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
     # parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/vtt/')
     # parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='vtt')
+    # parser.add_argument('-type','--type',dest ='type',type=str,default='googlenet')
 
 
     parser.add_argument('-d','--data_dir',dest ='data_dir',type=str,default='/media/onina/sea1/datasets/mvdc')
@@ -1235,6 +1278,7 @@ if __name__=='__main__':
     parser.add_argument('-t','--test',dest = 'test',type=int,default=1, help='perform small test')
     parser.add_argument('-p','--pkl_dir',dest ='pkl_dir',type=str,default='./data/mvdc/')
     parser.add_argument('-dbname','--dbname',dest ='dbname',type=str,default='mvdc')
+    parser.add_argument('-type','--type',dest ='type',type=str,default='googlenet')
 
 
 
@@ -1250,6 +1294,12 @@ if __name__=='__main__':
     if params['dbname'] == 'lsmdc':
         lsmdc(params)
     if params['dbname'] == 'vtt':
-        vtt(params)
+        if params['type'] == 'googlenet':
+            vtt_googlenet(params)
+        elif params['type']=='c3d':
+            vtt_c3d(params)
     if params['dbname'] == 'mvdc':
-        mvdc_c3d(params)
+        if params['type'] == 'googlenet' or params['type'] == 'resnet':
+            mvdc_googlenet(params)
+        elif params['type']=='c3d':
+            mvdc_c3d(params)

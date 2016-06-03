@@ -94,15 +94,12 @@ def get_annots_mvad(list,corpus,annotations):
 
     return annotations,vids_names
 
-def get_annots_vtt(filename,filename_test,annotations):
+def get_annots_vtt(filename,annotations):
     vids_train = []
     vids_val = []
     all_vids = {}
     with open(filename) as data_file:
         data = json.load(data_file)
-
-    with open(filename_test) as data_file:
-        data_test = json.load(data_file)
 
     for sent in data['sentences']:#[0:1000]:
 

@@ -151,7 +151,7 @@ def get_annots_vtt(filename,annotations):
     shuffle(vids_train) #If we don't shuffle performance deminishes
     shuffle(vids_val)
 
-    return annotations,vids_train,vids_val,all_vids.keys()
+    return annotations,vids_train,vids_val,all_vids
 
 def get_test_annots_vtt(filename,annotations,all_vids):
     vids_test = []
@@ -185,7 +185,7 @@ def get_test_annots_vtt(filename,annotations,all_vids):
             annotations[vid_name].append({'tokenized':'','image_id':vid_name,'cap_id':cap_id,'caption':''})
 
 
-        if data['videos'][vid_id]['split'] == 'test':
+        if vid['split'] == 'test':
 
             vid_test =vid_name + '_' + cap_id
             vids_test.append(vid_test)
@@ -975,11 +975,11 @@ def vtt_googlenet(params):
 
     test_mode = params['test']
     if test_mode:
-        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+        train_val_list_path = 'annotations/train_val_videodatainfo.json'
         test_list_path = 'annotations/test_videodatainfo_nosen.json'
 
     else:
-        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+        train_val_list_path = 'annotations/train_val_videodatainfo.json'
         test_list_path = 'annotations/test_videodatainfo_nosen.json'
 
     annotations = {}
@@ -997,7 +997,7 @@ def vtt_googlenet(params):
     if not os.path.exists(train_path):
         train_val_file = os.path.join(data_dir,train_val_list_path)
         test_file = os.path.join(data_dir,test_list_path)
-        annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,test_file,annotations)
+        annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,annotations)
         annotations,vids_test,all_vids = get_test_annots_vtt(test_file,annotations,all_vids)
 
         common.dump_pkl(vids_train,train_path)

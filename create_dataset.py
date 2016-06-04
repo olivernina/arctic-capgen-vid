@@ -1323,7 +1323,7 @@ if __name__=='__main__':
     if params['dbname'] == 'lsmdc':
         lsmdc(params)
     if params['dbname'] == 'vtt':
-        if params['type'] == 'googlenet':
+        if params['type'] == 'googlenet' or params['type'] == 'resnet':
             vtt_googlenet(params)
         elif params['type']=='c3d':
             vtt_c3d(params)

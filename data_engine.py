@@ -321,6 +321,7 @@ def prepare_data(engine, IDs):
     def get_z_seq():
         caps = engine.CAP[vidID]
         num_caps = len(caps)
+        #print vidID+" "+str(num_caps)
 
         if engine.dec == 'multi-random':
             import random
@@ -341,9 +342,13 @@ def prepare_data(engine, IDs):
 
                     if engine.signature!='vtt':
                         id = int(cap['cap_id'])
+			#if id>=num_caps:
+			#    continue
                         caption = cap['caption']
                         udata=caption.decode("utf-8")
+			#print str(id)+" "+caption
                         captions[id] = udata.encode("ascii","ignore")
+			
                         if captions[id].isspace():
                             captions[id] = captions[0]
                     else:

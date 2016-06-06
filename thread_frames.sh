@@ -1,22 +1,41 @@
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 0 200 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 200 400 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 400 600 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 600 800 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 800 1000 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 1000 1200 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 1200 1400 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 1400 1600 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 1600 1800 &
-
-python process_frames.py /media/onina/sea1/datasets/mvdc/videos/ /media/onina/sea1/datasets/mvdc/frames/ 1800 2000 &
-
-
-
+#!/bin/bash 
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 0 100 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 100 200 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 200 300 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 300 400 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 400 500 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 500 600 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 600 700 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 700 800 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 800 900 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 900 1000 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1000 1100 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1100 1200 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1200 1300 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1300 1400 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1400 1500 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1500 1600 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1600 1700 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1700 1800 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1800 1900 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 1900 2000 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2000 2100 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2100 2200 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2200 2300 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2300 2400 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2400 2500 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2500 2600 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2600 2700 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2700 2800 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2800 2900 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 2900 3000 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3000 3100 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3100 3200 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3200 3300 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3300 3400 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3400 3500 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3500 3600 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3600 3700 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3700 3800 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3800 3900 &
+python process_frames.py /p/work2/projects/ryat/datasets/vid-desc/vtt/videos/ /p/work2/projects/ryat/datasets/vid-desc/vtt/frames/ 3900 4000 &

@@ -178,11 +178,11 @@ def get_test_annots_vtt(filename,annotations,all_vids):
         cap_id = -1
         if annotations.has_key(vid_name):
             cap_id = str(len(annotations[vid_name]))
-            annotations[vid_name].append({'tokenized':'','image_id':vid_name,'cap_id':cap_id,'caption':''})
+            annotations[vid_name].append({'tokenized':'no caption','image_id':vid_name,'cap_id':cap_id,'caption':'no caption'})
         else:
             annotations[vid_name]= []
             cap_id = str(0)
-            annotations[vid_name].append({'tokenized':'','image_id':vid_name,'cap_id':cap_id,'caption':''})
+            annotations[vid_name].append({'tokenized':'no caption','image_id':vid_name,'cap_id':cap_id,'caption':'no caption'})
 
 
         if vid['split'] == 'test':

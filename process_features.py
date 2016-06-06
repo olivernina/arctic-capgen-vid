@@ -584,4 +584,4 @@ def main(argv):
 
 
 if __name__=='__main__':
-    main_resnet(sys.argv)
+    main(sys.argv)

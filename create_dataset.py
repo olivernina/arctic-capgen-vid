@@ -191,7 +191,7 @@ def get_test_annots_vtt(filename,annotations,all_vids):
             vids_test.append(vid_test)
 
 
-    shuffle(vids_test)
+    # shuffle(vids_test)
     return annotations,vids_test,all_vids
 
 def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):
@@ -1044,9 +1044,11 @@ def vtt_c3d(params):
     test_mode = params['test']
     if test_mode:
         train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+        test_list_path = 'annotations/test_videodatainfo_nosen.json'
 
     else:
         train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+        test_list_path = 'annotations/test_videodatainfo_nosen.json'
 
     annotations = {}
 
@@ -1062,11 +1064,14 @@ def vtt_c3d(params):
 
     if not os.path.exists(train_path):
         train_val_file = os.path.join(data_dir,train_val_list_path)
+        test_file = os.path.join(data_dir,test_list_path)
         annotations,vids_train,vids_val,all_vids = get_annots_vtt(train_val_file,annotations)
+        annotations,vids_test,all_vids = get_test_annots_vtt(test_file,annotations,all_vids)
 
         common.dump_pkl(vids_train,train_path)
         common.dump_pkl(vids_val,valid_path)
-        common.dump_pkl(vids_val,test_path)
+        #common.dump_pkl(vids_val,test_path)
+        common.dump_pkl(vids_test,test_path)
         common.dump_pkl(all_vids,'allvids.pkl')
 
     else:

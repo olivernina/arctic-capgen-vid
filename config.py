@@ -136,6 +136,7 @@ config = DD({
         'dataset': 'youtube2text',
         'dim':3518, # lstm dim # 536
         'video_feature': 'googlenet',
+        'validFreq': 2000,
     }),
     'nf': DD({
         'reload_': False,

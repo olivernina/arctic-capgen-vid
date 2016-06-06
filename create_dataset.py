@@ -191,7 +191,7 @@ def get_test_annots_vtt(filename,annotations,all_vids):
             vids_test.append(vid_test)
 
 
-    shuffle(vid_test)	
+    shuffle(vids_test)
     return annotations,vids_test,all_vids
 
 def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):

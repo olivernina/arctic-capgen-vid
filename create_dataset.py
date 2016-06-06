@@ -191,7 +191,7 @@ def get_test_annots_vtt(filename,annotations,all_vids):
             vids_test.append(vid_test)
 
 
-
+    shuffle(vid_test)	
     return annotations,vids_test,all_vids
 
 def get_annots_mvdc(vid_caption_dict,youtube_map_dict,annotations):
@@ -1002,6 +1002,7 @@ def vtt_googlenet(params):
 
         common.dump_pkl(vids_train,train_path)
         common.dump_pkl(vids_val,valid_path)
+        #common.dump_pkl(vids_val,test_path)
         common.dump_pkl(vids_test,test_path)
         common.dump_pkl(all_vids.keys(),'allvids.pkl')
 

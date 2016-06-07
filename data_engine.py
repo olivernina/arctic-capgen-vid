@@ -72,7 +72,7 @@ class Movie2Caption(object):
         return feat
 
     def _load_c3d_feat_file(self,vidID):
-        feats_dir = '/p/work2/projects/ryat/datasets/vid-desc/mvdc/features_c3d'
+        feats_dir = '/p/work2/projects/ryat/datasets/vid-desc/vtt/features_c3d'
         feat_filename = vidID
         feat_file_path = os.path.join(feats_dir,feat_filename)
 

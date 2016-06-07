@@ -62,7 +62,7 @@ def main(argv):
         std_feats[key] = std_scale.transform(nfeats)
         # std_feats[key] = nfeats
 
-    print 'processed: '+str(std_feats)
+    print 'processed: '+str(len(std_feats))
 
     f = open(os.path.join(pkl_dir,feats_out_pkl), 'wb')
     try:

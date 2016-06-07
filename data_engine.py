@@ -71,14 +71,38 @@ class Movie2Caption(object):
         feat = self.get_sub_frames(feat)
         return feat
 
+    def _load_c3d_feat_file(self,vidID):
+        feats_dir = '/p/work2/projects/ryat/datasets/vid-desc/mvdc/features_c3d'
+        feat_filename = vidID
+        feat_file_path = os.path.join(feats_dir,feat_filename)
+
+        if os.path.exists(feat_file_path):
+            files = os.listdir(feat_file_path)
+            files.sort()
+            allftrs = np.zeros((len(files), 4101),dtype=np.float32)
+
+            for j in range(0, len(files)):
+
+                feat = np.fromfile(os.path.join(feat_file_path, files[j]),dtype=np.float32)
+                allftrs[j,:] = feat
+            allftrs = self.get_sub_frames(allftrs)
+
+            return allftrs
+        else:
+            print 'error feature file doesnt exist'+feat_file_path
+            sys.exit(0)
+
+
     def get_video_features(self, vidID):
         if self.video_feature == 'googlenet' or self.video_feature == 'resnet' or self.video_feature == 'c3d':  #hack to be fixed
             # y = self._filter_googlenet(vidID)
 
-            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii' or self.signature == 'vtt':
+            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii' :
                 y = self._filter_googlenet(vidID)
-            elif self.signature == 'lsmdc':
+            elif self.signature == 'lsmdc' :
                 y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better. Mpii might need this..
+            elif self.signature == 'vtt':
+                y = self._load_c3d_feat_file(vidID)
             else:
                 raise NotImplementedError()
         else:
@@ -187,6 +211,7 @@ class Movie2Caption(object):
             self.train_ids = ['vid%s'%i for i in range(1,1201)]
             self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
             self.test_ids = ['vid%s'%i for i in range(1301,1971)]
+            # self.test_ids = ['vid%s'%i for i in range(1301,1321)]
 
         elif self.signature == 'lsmdc':
             print 'loading lsmdc %s features'%self.video_feature
@@ -252,7 +277,7 @@ class Movie2Caption(object):
             self.valid = common.load_pkl(os.path.join(dataset_path ,'valid.pkl'))
             self.test = common.load_pkl(os.path.join(dataset_path ,'test.pkl'))
             self.CAP = common.load_pkl(os.path.join(dataset_path , 'CAP.pkl'))
-            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
+            # self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
 
             self.train_ids = ['video%s'%i for i in range(0,6513)] #0-6512
             self.valid_ids = ['video%s'%i for i in range(6513,7010)]#6513-7010

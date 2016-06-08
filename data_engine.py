@@ -277,10 +277,10 @@ class Movie2Caption(object):
             self.valid = common.load_pkl(os.path.join(dataset_path ,'valid.pkl'))
             self.test = common.load_pkl(os.path.join(dataset_path ,'test.pkl'))
             self.CAP = common.load_pkl(os.path.join(dataset_path , 'CAP.pkl'))
-            # self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
+            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
 
             if self.video_feature=='c3d_resnet':
-                self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d.pkl'))
+                # self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d.pkl'))
                 self.FEAT2 = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_resnet.pkl'))
 
 

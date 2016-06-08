@@ -88,9 +88,11 @@ def main(argv):
 
     if type=='scale':
         scaled_feats = {}
+        i=0
         for key in feats_orig.keys():
             scaled_feats[key] = preprocessing.scale(feats_orig[key])
-            print str(i)+'/'+str(len(feats))
+            print str(i)+'/'+str(len(feats_orig.keys()))
+            i+=1
 
         print 'processed: '+str(len(scaled_feats))+" features "
 
@@ -101,9 +103,11 @@ def main(argv):
         pca = PCA(n_components=1024).fit(feats)
 
         pca_feats = {}
+        i=0
         for key in feats_orig.keys():
             pca_feats[key] = pca.transform(feats_orig[key])
             print str(i)+'/'+str(len(feats))
+            i+=1
 
         print 'processed: '+str(len(pca_feats))+" features "
 

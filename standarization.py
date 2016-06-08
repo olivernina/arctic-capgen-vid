@@ -17,6 +17,16 @@ def dump_pkl(obj, path):
         cPickle.dump(obj, f, protocol=cPickle.HIGHEST_PROTOCOL)
     finally:
         f.close()
+
+def gather_feats(feats_orig,train_ids,pkl_dir):
+    feats = feats_orig[train_ids[0]]
+    for key in train_ids[1:]:
+        feat = feats_orig[key]
+        feats = np.concatenate((feats, feat), axis=0)
+    print "saving concatenated feats.."
+    dump_pkl(feats,os.path.join(pkl_dir,'train_feats.pkl'))
+    return feats
+
 def main(argv):
 
     arg_parser = argparse.ArgumentParser()
@@ -63,28 +73,18 @@ def main(argv):
         train_ids = ['video%s'%i for i in range(0,6513)]
 
 
+    if type=='std':
 
-    feats = feats_orig[train_ids[0]]
-    for key in train_ids[1:]:
-        feat = feats_orig[key]
-        feats = np.concatenate((feats, feat), axis=0)
+        feats = gather_feats(feats_orig,train_ids,pkl_dir)
+        normalizer = preprocessing.Normalizer().fit(feats)
+        nfeats = normalizer.transform(feats)
+        std_scale = preprocessing.StandardScaler().fit(feats)
 
-    # print 'original:'+str(len(feats_orig.keys()))
-
-    print "saving concatenated feats.."
-    dump_pkl(feats,os.path.join(pkl_dir,'train_feats.pkl'))
-
-
-    # normalizer = preprocessing.Normalizer().fit(feats)
-    # nfeats = normalizer.transform(feats)
-    # std_scale = preprocessing.StandardScaler().fit(feats)
-    #
-    # std_feats = {}
-    # for key in feats_orig.keys():
-    #     nfeats = normalizer.transform(feats_orig[key])
-    #     std_feats[key] = std_scale.transform(nfeats)
-    #     # std_feats[key] = nfeats
-
+        std_feats = {}
+        for key in feats_orig.keys():
+            nfeats = normalizer.transform(feats_orig[key])
+            std_feats[key] = std_scale.transform(nfeats)
+            # std_feats[key] = nfeats
 
     if type=='scale':
         scaled_feats = {}
@@ -97,7 +97,7 @@ def main(argv):
         dump_pkl(scaled_feats,os.path.join(pkl_dir,feats_out_pkl))
 
     elif type=='PCA':
-
+        feats = gather_feats(feats_orig,train_ids,pkl_dir)
         pca = PCA(n_components=1024).fit(feats)
 
         pca_feats = {}

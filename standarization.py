@@ -98,7 +98,7 @@ def main(argv):
 
         dump_pkl(scaled_feats,os.path.join(pkl_dir,feats_out_pkl))
 
-    elif type=='PCA':
+    elif type=='pca':
         feats = gather_feats(feats_orig,train_ids,pkl_dir)
         pca = PCA(n_components=1024).fit(feats)
 

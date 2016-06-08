@@ -298,9 +298,9 @@ class Movie2Caption(object):
         if self.video_feature == 'googlenet':
             self.ctx_dim = 1024
         elif self.video_feature == 'resnet':
-            self.ctx_dim = 2048
+            self.ctx_dim = 1024#2048
         elif self.video_feature == 'c3d':
-            self.ctx_dim = 1024
+            self.ctx_dim = 1024#4101
         else:
             raise NotImplementedError()
         self.kf_train = common.generate_minibatch_idx(

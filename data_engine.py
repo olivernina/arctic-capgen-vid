@@ -97,12 +97,12 @@ class Movie2Caption(object):
         if self.video_feature == 'googlenet' or self.video_feature == 'resnet' or self.video_feature == 'c3d':  #hack to be fixed
             # y = self._filter_googlenet(vidID)
 
-            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii' :
+            if self.signature == 'youtube2text' or self.signature == 'mvad' or self.signature == 'ysvd' or self.signature == 'mpii' or self.signature == 'vtt':
                 y = self._filter_googlenet(vidID)
             elif self.signature == 'lsmdc' :
                 y = self._load_feat_file(vidID) #this is for large datasets, needs to be fixed with something better. Mpii might need this..
-            elif self.signature == 'vtt':
-                y = self._load_c3d_feat_file(vidID)
+            # elif self.signature == 'vtt':
+            #     y = self._load_c3d_feat_file(vidID)
             else:
                 raise NotImplementedError()
         else:
@@ -278,6 +278,11 @@ class Movie2Caption(object):
             self.test = common.load_pkl(os.path.join(dataset_path ,'test.pkl'))
             self.CAP = common.load_pkl(os.path.join(dataset_path , 'CAP.pkl'))
             # self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
+
+            if self.video_feature=='c3d_resnet':
+                self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d.pkl'))
+                self.FEAT2 = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_resnet.pkl'))
+
 
             self.train_ids = ['video%s'%i for i in range(0,6513)] #0-6512
             self.valid_ids = ['video%s'%i for i in range(6513,7010)]#6513-7010

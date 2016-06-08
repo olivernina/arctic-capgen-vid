@@ -284,9 +284,9 @@ class Movie2Caption(object):
                 self.FEAT2 = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_resnet.pkl'))
 
 
-            self.train_ids = ['video%s'%i for i in range(0,6513)] #0-6512
-            self.valid_ids = ['video%s'%i for i in range(6513,7010)]#6513-7010
-            self.test_ids = ['video%s'%i for i in range(6513,7010)]
+            self.train_ids = ['video%s'%i for i in range(0,6513)] #0-6512 This indexes are taken from the json provided
+            self.valid_ids = ['video%s'%i for i in range(6513,7010)]#6513-7009 confirmed
+            self.test_ids = ['video%s'%i for i in range(7010,10000)] #confirmed
 
 
         else:

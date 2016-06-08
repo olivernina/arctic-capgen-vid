@@ -211,7 +211,7 @@ class Movie2Caption(object):
             self.train_ids = ['vid%s'%i for i in range(1,1201)]
             self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
             self.test_ids = ['vid%s'%i for i in range(1301,1971)]
-            # self.test_ids = ['vid%s'%i for i in range(1301,1321)]
+
 
         elif self.signature == 'lsmdc':
             print 'loading lsmdc %s features'%self.video_feature
@@ -300,7 +300,7 @@ class Movie2Caption(object):
         elif self.video_feature == 'resnet':
             self.ctx_dim = 2048
         elif self.video_feature == 'c3d':
-            self.ctx_dim = 4101
+            self.ctx_dim = 1024
         else:
             raise NotImplementedError()
         self.kf_train = common.generate_minibatch_idx(

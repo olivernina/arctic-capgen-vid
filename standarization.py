@@ -6,6 +6,17 @@ import cPickle
 from sklearn import preprocessing
 import numpy as np
 import os
+from sklearn.decomposition import PCA
+
+def dump_pkl(obj, path):
+    """
+    Save a Python object into a pickle file.
+    """
+    f = open(path, 'wb')
+    try:
+        cPickle.dump(obj, f, protocol=cPickle.HIGHEST_PROTOCOL)
+    finally:
+        f.close()
 def main(argv):
 
     arg_parser = argparse.ArgumentParser()
@@ -25,12 +36,19 @@ def main(argv):
         'dataset',
         help = 'video extension'
     )
+    arg_parser.add_argument(
+        'type',
+        help = 'video extension'
+    )
+
 
     args = arg_parser.parse_args()
     pkl_dir = args.pkl_dir
     feats_pkl = args.feats_pkl
     feats_out_pkl = args.feats_out_pkl
     dataset = args.dataset
+    type  = args.type
+
 
     f = open(os.path.join(pkl_dir,feats_pkl),'r')
     feats_orig = cPickle.load(f)
@@ -45,30 +63,51 @@ def main(argv):
         train_ids = ['video%s'%i for i in range(0,6513)]
 
 
+
     feats = feats_orig[train_ids[0]]
     for key in train_ids[1:]:
         feat = feats_orig[key]
         feats = np.concatenate((feats, feat), axis=0)
 
-    print 'original:'+str(len(feats))
+    # print 'original:'+str(len(feats_orig.keys()))
 
-    normalizer = preprocessing.Normalizer().fit(feats)
-    nfeats = normalizer.transform(feats)
-    std_scale = preprocessing.StandardScaler().fit(feats)
+    print "saving concatenated feats.."
+    dump_pkl(feats,os.path.join(pkl_dir,'train_feats.pkl'))
 
-    std_feats = {}
-    for key in feats_orig.keys():
-        nfeats = normalizer.transform(feats_orig[key])
-        std_feats[key] = std_scale.transform(nfeats)
-        # std_feats[key] = nfeats
 
-    print 'processed: '+str(len(std_feats))
+    # normalizer = preprocessing.Normalizer().fit(feats)
+    # nfeats = normalizer.transform(feats)
+    # std_scale = preprocessing.StandardScaler().fit(feats)
+    #
+    # std_feats = {}
+    # for key in feats_orig.keys():
+    #     nfeats = normalizer.transform(feats_orig[key])
+    #     std_feats[key] = std_scale.transform(nfeats)
+    #     # std_feats[key] = nfeats
 
-    f = open(os.path.join(pkl_dir,feats_out_pkl), 'wb')
-    try:
-        cPickle.dump(std_feats, f, protocol=cPickle.HIGHEST_PROTOCOL)
-    finally:
-        f.close()
+
+    if type=='scale':
+        scaled_feats = {}
+        for key in feats_orig.keys():
+            scaled_feats[key] = preprocessing.scale(feats_orig[key])
+            print str(i)+'/'+str(len(feats))
+
+        print 'processed: '+str(len(scaled_feats))+" features "
+
+        dump_pkl(scaled_feats,os.path.join(pkl_dir,feats_out_pkl))
+
+    elif type=='PCA':
+
+        pca = PCA(n_components=1024).fit(feats)
+
+        pca_feats = {}
+        for key in feats_orig.keys():
+            pca_feats[key] = pca.transform(feats_orig[key])
+            print str(i)+'/'+str(len(feats))
+
+        print 'processed: '+str(len(pca_feats))+" features "
+
+        dump_pkl(pca_feats,os.path.join(pkl_dir,feats_out_pkl))
 
 
 if __name__=='__main__':

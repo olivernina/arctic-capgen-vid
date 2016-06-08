@@ -46,21 +46,21 @@ def main(argv):
 
 
     feats = feats_orig[train_ids[0]]
-    for key in train_ids[1:]:
-        feat = feats_orig[key]
-        feats = np.concatenate((feats, feat), axis=0)
-
-    print 'original:'+str(len(feats))
+    # for key in train_ids[1:]:
+    #     feat = feats_orig[key]
+    #     feats = np.concatenate((feats, feat), axis=0)
+    #
+    # print 'original:'+str(len(feats))
 
     normalizer = preprocessing.Normalizer().fit(feats)
-    nfeats = normalizer.transform(feats)
-    std_scale = preprocessing.StandardScaler().fit(feats)
+    # nfeats = normalizer.transform(feats)
+    # std_scale = preprocessing.StandardScaler().fit(feats)
 
     std_feats = {}
     for key in feats_orig.keys():
         nfeats = normalizer.transform(feats_orig[key])
-        std_feats[key] = std_scale.transform(nfeats)
-        # std_feats[key] = nfeats
+        # std_feats[key] = std_scale.transform(nfeats)
+        std_feats[key] = nfeats
 
     print 'processed: '+str(len(std_feats))
 

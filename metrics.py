@@ -84,7 +84,7 @@ def build_sample_pairs(samples, vidIDs):
 
 def save_test_samples(samples_test, engine):
 
-    out_dir = 'submissions/'+engine.signature+'_'+engine.video_feature+' '+engine.model_type+'/'
+    out_dir = 'submissions/'+engine.signature+'_'+engine.video_feature+'_'+engine.model_type+'/'
 
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)

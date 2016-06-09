@@ -31,15 +31,44 @@ def load_pkl(path):
     finally:
         f.close()
     return rval
+def pad_frames(frames, limit):
+    last_frame = frames[-1]
+    padding = np.asarray([last_frame * 0.]*(limit-len(frames)))
+    frames_padded = np.concatenate([frames, padding], axis=0)
+    return frames_padded
+
+def extract_frames_equally_spaced(frames, K):
+    # chunk frames into 'how_many' segments and use the first frame
+    # from each segment
+    n_frames = len(frames)
+    splits = np.array_split(range(n_frames), K)
+    idx_taken = [s[0] for s in splits]
+    sub_frames = frames[idx_taken]
+    return sub_frames
+
+def get_sub_frames(frames):
+
+    K=28
+    if len(frames) < K:
+        frames_ = pad_frames(frames, K)
+    else:
+        frames_ = extract_frames_equally_spaced(frames, K)
+
+    return frames_
 
 def gather_feats(feats_orig,train_ids,pkl_dir):
     feats_pkl = os.path.join(pkl_dir,'train_feats.pkl')
+    sampling = True
     if os.path.exists(feats_pkl):
         feats = load_pkl(feats_pkl)
     else:
         feats = feats_orig[train_ids[0]]
+        if sampling:
+            feats = get_sub_frames(feats)
         for key in train_ids[1:]:
             feat = feats_orig[key]
+            if sampling:
+                feat = get_sub_frames(feat)
             feats = np.concatenate((feats, feat), axis=0)
         print "saving concatenated feats.."
         dump_pkl(feats,feats_pkl)

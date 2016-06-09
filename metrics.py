@@ -86,8 +86,8 @@ def save_test_samples(samples_test, engine):
 
     out_dir = 'submissions/'+engine.signature+'_'+engine.video_feature+'_'+engine.model_type+'/'
 
-    if not os.path.exists(out_dir):
-        os.mkdir(out_dir)
+    # if not os.path.exists(out_dir):
+    #     os.mkdir(out_dir)
 
     f=open(out_dir+'samplestest.csv','wr')
 

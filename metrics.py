@@ -173,9 +173,11 @@ def generate_sample_gpu_single_process(
             sample = sample[sidx]
             #print _seqs2words([sample])[0]
             samples.append(sample)
+
             # if i>10: # hack to test it is working OK
             #     samples = _seqs2words(samples)
             #     return samples
+            #i+=1
 
         samples = _seqs2words(samples)
         return samples

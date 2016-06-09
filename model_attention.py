@@ -1632,49 +1632,7 @@ class Attention(object):
 
 
 
-            if estop:
-                break
-            if debug:
-                break
 
-            # end for loop over minibatches
-            print 'This epoch has seen %d samples, train cost %.2f'%(
-                n_samples, numpy.mean(train_costs))
-        # end for loop over epochs
-        print 'Optimization ended.'
-        if best_p is not None:
-            zipp(best_p, tparams)
-
-        use_noise.set_value(0.)
-        valid_err = 0
-        test_err = 0
-        if not debug:
-            #if valid:
-            valid_err, valid_perp = self.pred_probs(
-                'valid', f_log_probs,
-                verbose=model_options['verbose'])
-            #if test:
-            #test_err, test_perp = self.pred_probs(
-            #    'test', f_log_probs,
-            #    verbose=model_options['verbose'])
-
-
-        print 'stopped at epoch %d, minibatch %d, '\
-          'curent Train %.2f, current Valid %.2f, current Test %.2f '%(
-              eidx,uidx,numpy.mean(train_err),numpy.mean(valid_err),numpy.mean(test_err))
-        params = copy.copy(best_p)
-        numpy.savez(save_model_dir+'model_best.npz',
-                    train_err=train_err,
-                    valid_err=valid_err, test_err=test_err, history_errs=history_errs,
-                    **params)
-
-        if history_errs != []:
-            history = numpy.asarray(history_errs)
-            best_valid_idx = history[:,6].argmin()
-            numpy.savetxt(save_model_dir+'train_valid_test.txt', history, fmt='%.4f')
-            print 'final best exp ', history[best_valid_idx]
-
-        return train_err, valid_err, test_err
 
 
 def train_from_scratch(state, channel):

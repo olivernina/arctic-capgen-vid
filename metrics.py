@@ -103,7 +103,7 @@ def save_test_samples(samples_test, engine):
         D = dict((y,x) for x,y in D.iteritems())
 
     samples = []
-    for vidID in engine.test_ids[0:9]:
+    for vidID in engine.test_ids:
         gts_test[vidID] = engine.CAP[vidID]
         # print samples_test[vidID]
         sample = OrderedDict()
@@ -166,7 +166,7 @@ def generate_sample_gpu_single_process(
     def sample(whichset):
         samples = []
         ctxs, ctx_masks = engine.prepare_data_for_blue(whichset)
-        i = 0
+        # i = 0
         for i, ctx, ctx_mask in zip(range(len(ctxs)), ctxs, ctx_masks):
             print 'sampling %d/%d'%(i,len(ctxs))
             sample, score, _, _ = model.gen_sample(
@@ -178,10 +178,10 @@ def generate_sample_gpu_single_process(
             #print _seqs2words([sample])[0]
             samples.append(sample)
 
-            if i>10: # hack to test it is working OK
-                samples = _seqs2words(samples)
-                return samples
-            i+=1
+            # if i>10: # hack to test it is working OK
+            #     samples = _seqs2words(samples)
+            #     return samples
+            # i+=1
 
         samples = _seqs2words(samples)
         return samples

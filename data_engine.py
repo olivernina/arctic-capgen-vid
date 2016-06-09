@@ -334,12 +334,15 @@ class Movie2Caption(object):
                 self.ctx_dim=2048
         else:
             raise NotImplementedError()
+
+        print "ctx_dim: "+str(self.ctx_dim)
         self.kf_train = common.generate_minibatch_idx(
             len(self.train), self.mb_size_train)
         self.kf_valid = common.generate_minibatch_idx(
             len(self.valid), self.mb_size_test)
         self.kf_test = common.generate_minibatch_idx(
             len(self.test), self.mb_size_test)
+
         
 def prepare_data(engine, IDs):
     # print "Preparing engine "+engine.dec

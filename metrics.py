@@ -103,17 +103,16 @@ def save_test_samples(samples_test, engine):
         D = dict((y,x) for x,y in D.iteritems())
 
     samples = []
-    for vidID in engine.test_ids:
+    for vidID in engine.test_ids[0:9]:
         gts_test[vidID] = engine.CAP[vidID]
         # print samples_test[vidID]
+        sample = OrderedDict()
+        sample['video_id']=vidID
+        sample['caption']=samples_test[vidID][0]['caption']
+        samples.append(sample)
+
         if engine.signature=='youtube2text':
-
             f.write(D[vidID]+','+ samples_test[vidID][0]['caption']+','+gts_test[vidID][0]['caption']+'\n')
-            sample = OrderedDict()
-            sample['video_id']=vidID
-            sample['caption']=samples_test[vidID][0]['caption']
-            samples.append(sample)
-
         else:
             f.write(vidID+','+ samples_test[vidID][0]['caption']+','+gts_test[vidID][0]['caption']+'\n')
 

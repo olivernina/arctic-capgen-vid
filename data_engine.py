@@ -288,12 +288,13 @@ class Movie2Caption(object):
             self.valid = common.load_pkl(os.path.join(dataset_path ,'valid.pkl'))
             self.test = common.load_pkl(os.path.join(dataset_path ,'test.pkl'))
             self.CAP = common.load_pkl(os.path.join(dataset_path , 'CAP.pkl'))
-            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_'+self.proc+'.pkl'))
+
 
             if self.video_feature=='c3d_resnet':
-                # self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d.pkl'))
+                self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d.pkl'))
                 self.FEAT2 = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_resnet.pkl'))
-
+            else:
+                self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_'+self.proc+'.pkl'))
 
             self.train_ids = ['video%s'%i for i in range(0,6513)] #0-6512 This indexes are taken from the json provided
             self.valid_ids = ['video%s'%i for i in range(6513,7010)]#6513-7009 confirmed

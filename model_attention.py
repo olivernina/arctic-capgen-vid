@@ -884,7 +884,8 @@ class Attention(object):
               OutOf=240,
               verbose=True,
               debug=True,
-              dec='standard'
+              dec='standard',
+              mode='train'
               ):
         self.rng_numpy, self.rng_theano = common.get_two_rngs()
 
@@ -1369,7 +1370,8 @@ class Attention(object):
               OutOf=240,
               verbose=True,
               debug=True,
-              dec='standard'
+              dec='standard',
+              mode='predict'
               ):
         self.rng_numpy, self.rng_theano = common.get_two_rngs()
 
@@ -1820,5 +1822,10 @@ def train_from_scratch(state, channel):
     t0 = time.time()
     print 'training an attention model'
     model = Attention(channel)
-    model.train(**state.attention)
+
+    if state.attention['mode']=='train':
+        model.train(**state.attention)
+    if state.attention['mode']=='predict':
+        model.predict(**state.attention)
+
     print 'training time in total %.4f sec'%(time.time()-t0)

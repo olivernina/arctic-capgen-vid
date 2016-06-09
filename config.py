@@ -51,6 +51,8 @@ config = DD({
         'debug': False,
         'dec':'standard',
         'encoder':None,
+        'mode':'train',
+        'proc':'nostd'
         }),
     'iLSTM': DD({
         'reload_': False,

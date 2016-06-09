@@ -22,7 +22,7 @@ hostname = socket.gethostname()
 class Movie2Caption(object):
             
     def __init__(self, model_type, signature, video_feature,
-                 mb_size_train, mb_size_test, maxlen, n_words,dec,
+                 mb_size_train, mb_size_test, maxlen, n_words,dec,proc,
                  n_frames=None, outof=None
                  ):
         self.signature = signature
@@ -37,6 +37,7 @@ class Movie2Caption(object):
         self.mb_size_train = mb_size_train
         self.mb_size_test = mb_size_test
         self.non_pickable = []
+        self.proc = proc
 
         # self.test_mode = 0 #don't chage this when in production
         self.load_data()
@@ -206,7 +207,7 @@ class Movie2Caption(object):
             self.valid = common.load_pkl(os.path.join(dataset_path ,'valid.pkl'))
             self.test = common.load_pkl(os.path.join(dataset_path ,'test.pkl'))
             self.CAP = common.load_pkl(os.path.join(dataset_path , 'CAP.pkl'))
-            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
+            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_'+self.proc+'.pkl'))
 
             self.train_ids = ['vid%s'%i for i in range(1,1201)]
             self.valid_ids = ['vid%s'%i for i in range(1201,1301)]
@@ -277,7 +278,7 @@ class Movie2Caption(object):
             self.valid = common.load_pkl(os.path.join(dataset_path ,'valid.pkl'))
             self.test = common.load_pkl(os.path.join(dataset_path ,'test.pkl'))
             self.CAP = common.load_pkl(os.path.join(dataset_path , 'CAP.pkl'))
-            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features.pkl'))
+            self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_'+self.proc+'.pkl'))
 
             if self.video_feature=='c3d_resnet':
                 # self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d.pkl'))
@@ -304,7 +305,7 @@ class Movie2Caption(object):
         if self.video_feature == 'googlenet':
             self.ctx_dim = 1024
         elif self.video_feature == 'resnet':
-            self.ctx_dim = 1024#2048
+            self.ctx_dim = 2048
         elif self.video_feature == 'c3d':
             self.ctx_dim = 4101
         else:

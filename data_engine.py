@@ -55,6 +55,17 @@ class Movie2Caption(object):
         feat = self.get_sub_frames(feat)
         return feat
 
+    def _filter_c3d_resnet(self, vidID):
+        feat = self.FEAT[vidID]
+        feat2 = self.FEAT2[vidID]
+        # print vidID
+        # print feat
+        feat = self.get_sub_frames(feat)
+        feat2 = self.get_sub_frames(feat2)
+
+        cfeat =np.concatenate((feat,feat2),axis=1)
+        return cfeat
+
     def _load_feat_file(self, vidID):
 
         # feats_dir =os.path.join(data_dir,'features_chal')
@@ -68,7 +79,6 @@ class Movie2Caption(object):
         else:
             print 'error feature file doesnt exist'+feat_file_path
 
-        # feat = self.FEAT[vidID]
         feat = self.get_sub_frames(feat)
         return feat
 
@@ -308,6 +318,8 @@ class Movie2Caption(object):
             self.ctx_dim = 2048
         elif self.video_feature == 'c3d':
             self.ctx_dim = 4101
+        elif self.video_feature == 'c3d_resnet':
+            self.ctx_dim = 6149
         else:
             raise NotImplementedError()
         self.kf_train = common.generate_minibatch_idx(

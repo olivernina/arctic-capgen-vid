@@ -84,10 +84,12 @@ def build_sample_pairs(samples, vidIDs):
 
 def save_test_samples(samples_test, engine):
 
-    if not os.path.exists('submissions'):
-        os.mkdir('submissions')
+    out_dir = 'submissions/'+engine.signature+'_'+engine.model_type+'/'
 
-    f=open('submissions/'+engine.signature+'_'+engine.model_type+'/'+'samplestest.csv','wr')
+    if not os.path.exists(out_dir):
+        os.mkdir(out_dir)
+
+    f=open(out_dir+'samplestest.csv','wr')
 
     gts_test = OrderedDict()
 
@@ -121,7 +123,7 @@ def save_test_samples(samples_test, engine):
     results['external_data']={'used': 'true','details':'First fully connected of C3D pretrained on Sports1M'}
 
     import json
-    with open('submissions/'+engine.signature+'_'+engine.model_type+'/'+'submission.json', 'w') as outfile:
+    with open(out_dir+'submission.json', 'w') as outfile:
         json.dump(results, outfile, indent=4)
 
 def score_with_cocoeval(samples_valid, samples_test, engine):

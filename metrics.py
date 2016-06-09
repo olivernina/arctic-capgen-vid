@@ -88,22 +88,38 @@ def save_test_samples(samples_test, engine):
 
     gts_test = OrderedDict()
 
+    results = OrderedDict()
+    results['version'] = "1"
+    D= None
     if engine.signature=='youtube2text':
         import cPickle
-        d= open('data/youtube2text_iccv15/dict_youtube_mapping.pkl','rb')
+        d= open('data/youtube2text_iccv15/original/dict_youtube_mapping.pkl','rb')
         D = cPickle.load(d)
         D = dict((y,x) for x,y in D.iteritems())
 
-    for vidID in engine.test_ids:
+    samples = []
+    for vidID in engine.test_ids[0:5]:
         gts_test[vidID] = engine.CAP[vidID]
         # print samples_test[vidID]
         if engine.signature=='youtube2text':
 
             f.write(D[vidID]+','+ samples_test[vidID][0]['caption']+','+gts_test[vidID][0]['caption']+'\n')
+            sample = OrderedDict()
+            sample['video_id']=vidID
+            sample['caption']=samples_test[vidID][0]['caption']
+            samples.append(sample)
+
         else:
             f.write(vidID+','+ samples_test[vidID][0]['caption']+','+gts_test[vidID][0]['caption']+'\n')
 
     f.close()
+
+    results['result']= samples
+    results['external_data']={'used': 'true','details':'First fully connected of C3D pretrained on Sports1M'}
+
+    import json
+    with open('submission.json', 'w') as outfile:
+        json.dump(results, outfile, indent=4)
 
 def score_with_cocoeval(samples_valid, samples_test, engine):
     scorer = COCOScorer()
@@ -146,6 +162,7 @@ def generate_sample_gpu_single_process(
     def sample(whichset):
         samples = []
         ctxs, ctx_masks = engine.prepare_data_for_blue(whichset)
+        # i = 0
         for i, ctx, ctx_mask in zip(range(len(ctxs)), ctxs, ctx_masks):
             print 'sampling %d/%d'%(i,len(ctxs))
             sample, score, _, _ = model.gen_sample(
@@ -156,8 +173,15 @@ def generate_sample_gpu_single_process(
             sample = sample[sidx]
             #print _seqs2words([sample])[0]
             samples.append(sample)
+            # if i>10: # hack to test it is working OK
+            #     samples = _seqs2words(samples)
+            #     return samples
+
         samples = _seqs2words(samples)
         return samples
+
+    samples_valid=None
+    samples_test=None
 
     if whichset == 'valid' or whichset == 'both':
         print 'Valid Set...',
@@ -170,9 +194,9 @@ def generate_sample_gpu_single_process(
         with open(save_dir+'/test_samples.txt', 'w') as f:
             print >>f, '\n'.join(samples_test)
 
-    if samples_valid:
+    if samples_valid!=None:
         samples_valid = build_sample_pairs(samples_valid, engine.valid_ids)
-    if samples_test:
+    if samples_test!=None:
         samples_test = build_sample_pairs(samples_test, engine.test_ids)
     return samples_valid, samples_test
     

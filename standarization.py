@@ -17,14 +17,32 @@ def dump_pkl(obj, path):
         cPickle.dump(obj, f, protocol=cPickle.HIGHEST_PROTOCOL)
     finally:
         f.close()
+def load_pkl(path):
+    """
+    Load a pickled file.
+
+    :param path: Path to the pickled file.
+
+    :return: The unpickled Python object.
+    """
+    f = open(path, 'rb')
+    try:
+        rval = cPickle.load(f)
+    finally:
+        f.close()
+    return rval
 
 def gather_feats(feats_orig,train_ids,pkl_dir):
-    feats = feats_orig[train_ids[0]]
-    for key in train_ids[1:]:
-        feat = feats_orig[key]
-        feats = np.concatenate((feats, feat), axis=0)
-    print "saving concatenated feats.."
-    dump_pkl(feats,os.path.join(pkl_dir,'train_feats.pkl'))
+    feats_pkl = os.path.join(pkl_dir,'train_feats.pkl')
+    if os.path.exists(feats_pkl):
+        feats = load_pkl(feats_pkl)
+    else:
+        feats = feats_orig[train_ids[0]]
+        for key in train_ids[1:]:
+            feat = feats_orig[key]
+            feats = np.concatenate((feats, feat), axis=0)
+        print "saving concatenated feats.."
+        dump_pkl(feats,feats_pkl)
     return feats
 
 def main(argv):
@@ -100,7 +118,14 @@ def main(argv):
 
     elif type=='pca':
         feats = gather_feats(feats_orig,train_ids,pkl_dir)
-        pca = PCA(n_components=1024).fit(feats)
+
+        pca_file = os.path.join(pkl_dir,'pca.pkl')
+        pca = None
+        if os.path.exists(pca_file):
+            pca = load_pkl(pca_file)
+        else:
+            pca = PCA(n_components=1024).fit(feats)
+            dump_pkl(pca,pca_file)
 
         pca_feats = {}
         i=0

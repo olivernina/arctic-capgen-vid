@@ -1820,5 +1820,5 @@ def train_from_scratch(state, channel):
     t0 = time.time()
     print 'training an attention model'
     model = Attention(channel)
-    model.predict(**state.attention)
+    model.train(**state.attention)
     print 'training time in total %.4f sec'%(time.time()-t0)

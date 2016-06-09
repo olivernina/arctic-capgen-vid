@@ -139,6 +139,8 @@ config = DD({
         'dim':3518, # lstm dim # 536
         'video_feature': 'googlenet',
         'validFreq': 2000,
+        'mode':'train',
+        'proc':'nostd'
     }),
     'nf': DD({
         'reload_': False,

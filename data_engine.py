@@ -116,6 +116,8 @@ class Movie2Caption(object):
             #     y = self._load_c3d_feat_file(vidID)
             else:
                 raise NotImplementedError()
+        elif self.video_feature == 'c3d_resnet':
+            y = self._filter_c3d_resnet(vidID)
         else:
             raise NotImplementedError()
         return y

@@ -80,7 +80,7 @@ def bleu_plot():
 
     pyplot.legend(loc='upper right', shadow=True, fontsize='medium')
     # pyplot.show()
-    pyplot.savefig(os.path.join(work_dir,'blue.eps'))
+    pyplot.savefig(os.path.join(work_dir,'bleu.eps'))
 
 
 

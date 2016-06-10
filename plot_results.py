@@ -14,7 +14,7 @@ import math
 from numpy import genfromtxt
 import os
 import six
-
+from random import shuffle
 # First arg is file to de-pickle, second arg is "isTest"
 work_dir = ''
 xmin = 20000
@@ -33,7 +33,7 @@ for name, rgb in six.iteritems(colors.ColorConverter.colors):
 
 # Transform to hex color values.
 hex_ = [color[1] for color in colors_]
-
+shuffle(hex_)
 
 def bleu_plot():
 

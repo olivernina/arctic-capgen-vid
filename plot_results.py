@@ -44,7 +44,7 @@ def bleu_plot():
 
     column_num = -4 #cider = 5, blue4=6, ..., ROUGE= 10,METEOR=11
 
-    files = os.listdir(work_dir+'/vtt*')
+    files = os.listdir(work_dir)
     dirs = []
     res_files = [os.path.join(work_dir,file,'train_valid_test.txt') for file in files  if os.path.exists(os.path.join(work_dir,file,'train_valid_test.txt'))]
 

@@ -61,7 +61,7 @@ def bleu_plot():
                 max_x = data[init_val:,0].max()
 
                 # axes.set_ylim([0, max_y])
-                axes.set_ylim([.30,.45])
+                axes.set_ylim([0,.40])
                 # axes.set_xlim([xmin, max_x])
                 axes.set_xlim([0, 100])
                 pyplot.xlabel('Iterations')

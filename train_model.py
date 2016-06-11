@@ -73,6 +73,7 @@ def train_from_scratch(config, state, channel):
         print 'save dir ',save_dir_backup
         print 'from_dir ',from_dir_backup
         print 'setting current model config with the old one'
+
         if config[config.model].mode=='train':
             model_config_old = common.load_pkl(from_dir_backup+'/model_config.pkl')
             set_config(config, model_config_old)

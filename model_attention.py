@@ -1639,6 +1639,7 @@ def train_from_scratch(state, channel):
     t0 = time.time()
 
     model = Attention(channel)
+
     if state.attention['mode']=='train':
         print 'training an attention model'
         model.train(**state.attention)

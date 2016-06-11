@@ -167,6 +167,28 @@ def main(argv):
 
         dump_pkl(pca_feats,os.path.join(pkl_dir,feats_out_pkl))
 
+    elif type=='pca512':
+        feats = gather_feats(feats_orig,train_ids,pkl_dir)
+
+        pca_file = os.path.join(pkl_dir,'pca512.pkl')
+        pca = None
+        if os.path.exists(pca_file):
+            pca = load_pkl(pca_file)
+        else:
+            pca = PCA(n_components=512).fit(feats)
+            dump_pkl(pca,pca_file)
+
+        pca_feats = {}
+        i=0
+        for key in feats_orig.keys():
+            pca_feats[key] = pca.transform(feats_orig[key])
+            print str(i)+'/'+str(len(feats))
+            i+=1
+
+        print 'processed: '+str(len(pca_feats))+" features "
+
+        dump_pkl(pca_feats,os.path.join(pkl_dir,feats_out_pkl))
+
 
 if __name__=='__main__':
     main(sys.argv)

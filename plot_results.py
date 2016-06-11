@@ -119,7 +119,7 @@ def cider_plot():
 
             pyplot.plot(data[init_val:,0], data[init_val:,column_num], linewidth=2, label=filename.split('/')[-2], color=hex_[i])
 
-    pyplot.legend(loc='upper right', shadow=True, fontsize='medium')
+    pyplot.legend(loc='bottom right', shadow=True, fontsize='medium')
     pyplot.savefig(os.path.join(work_dir,'cider.eps'))
 
 if __name__=="__main__":

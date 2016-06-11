@@ -1467,6 +1467,7 @@ class Attention(object):
         # reloading
         if reload_:
             model_saved = from_dir+'/model_best_so_far.npz'
+            print model_saved
             assert os.path.isfile(model_saved)
             print "Reloading model params..."
             params = load_params(model_saved, params)

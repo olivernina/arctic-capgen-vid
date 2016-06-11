@@ -73,8 +73,9 @@ def train_from_scratch(config, state, channel):
         print 'save dir ',save_dir_backup
         print 'from_dir ',from_dir_backup
         print 'setting current model config with the old one'
-        model_config_old = common.load_pkl(from_dir_backup+'/model_config.pkl')
-        set_config(config, model_config_old)
+        if config[config.model].mode=='train':
+            model_config_old = common.load_pkl(from_dir_backup+'/model_config.pkl')
+            set_config(config, model_config_old)
         config[config.model].save_model_dir = save_dir_backup
         config[config.model].from_dir = from_dir_backup
         config[config.model].reload_ = True

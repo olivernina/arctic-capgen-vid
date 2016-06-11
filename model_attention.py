@@ -1637,12 +1637,13 @@ class Attention(object):
 
 def train_from_scratch(state, channel):
     t0 = time.time()
-    print 'training an attention model'
-    model = Attention(channel)
 
+    model = Attention(channel)
     if state.attention['mode']=='train':
+        print 'training an attention model'
         model.train(**state.attention)
     if state.attention['mode']=='predict':
+        print 'predicting an attention model'
         model.predict(**state.attention)
 
     print 'training time in total %.4f sec'%(time.time()-t0)

@@ -130,6 +130,7 @@ config = DD({
     'lstmdd': DD({
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'reload_': False,
+        'from_dir': '',
         'dec':'multi-stdi',
         'encoder':None,
         'encoder_dim': 300,

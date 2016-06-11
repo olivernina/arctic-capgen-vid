@@ -1450,7 +1450,7 @@ class Attention(object):
         self.engine = data_engine.Movie2Caption('attention_mod', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
-                                           maxlen, n_words,dec,
+                                           maxlen, n_words,dec,proc,
                                            K, OutOf)
         model_options['ctx_dim'] = self.engine.ctx_dim
 
@@ -1700,6 +1700,7 @@ def train_from_scratch(state, channel):
     t0 = time.time()
 
     model = Attention(channel)
+    print state.lstmdd
 
     if state.lstmdd['mode']=='train':
         print 'training an attention model'

@@ -56,7 +56,7 @@ def bleu_plot():
                 max_x = data[init_val:,0].max()
 
                 # axes.set_ylim([0, max_y])
-                axes.set_ylim([.25,.40])
+                axes.set_ylim([.15,.40])
                 # axes.set_xlim([xmin, max_x])
                 axes.set_xlim([0, 25])
                 pyplot.xlabel('Iterations')
@@ -102,7 +102,7 @@ def cider_plot():
                 max_x = data[init_val:,0].max()
 
                 # axes.set_ylim([0, max_y])
-                axes.set_ylim([.25,.40])
+                axes.set_ylim([.25,.50])
                 # axes.set_xlim([xmin, max_x])
                 axes.set_xlim([0, 25])
                 pyplot.xlabel('Iterations')

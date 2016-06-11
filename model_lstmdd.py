@@ -1244,7 +1244,7 @@ class Attention(object):
                         else:
                             valid_err = 0.
                             valid_perp = 0.
-                        if 1:
+                        if 0:
                             print 'testing...'
                             test_err, test_perp = self.pred_probs(
                                 'test', f_log_probs,
@@ -1258,13 +1258,13 @@ class Attention(object):
                     blue_t0 = time.time()
                     scores, processes, queue, rqueue, shared_params = \
                         metrics.compute_score(
-                        model_type='attention',
+                        model_type='lstmdd',
                         model_archive=current_params,
                         options=model_options,
                         engine=self.engine,
                         save_dir=save_model_dir,
                         beam=5, n_process=5,
-                        whichset='both',
+                        whichset='valid',
                         on_cpu=False,
                         processes=processes, queue=queue, rqueue=rqueue,
                         shared_params=shared_params, metric=metric,

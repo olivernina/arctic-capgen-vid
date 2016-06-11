@@ -296,6 +296,9 @@ class Movie2Caption(object):
                 if self.proc=='pca':
                     self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d_'+self.proc+'.pkl'))
                     self.FEAT2 = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_resnet_'+self.proc+'.pkl'))
+                elif self.proc=='pca512':
+                    self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d_'+self.proc+'.pkl'))
+                    self.FEAT2 = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_resnet_'+self.proc+'.pkl'))
                 else:
                     self.FEAT = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_c3d.pkl'))
                     self.FEAT2 = common.load_pkl(os.path.join(dataset_path , 'FEAT_key_vidID_value_features_resnet.pkl'))
@@ -336,6 +339,8 @@ class Movie2Caption(object):
                 self.ctx_dim = 6149
             elif self.proc=='pca':
                 self.ctx_dim=2048
+            elif self.proc=='pca512':
+                self.ctx_dim=1024
         else:
             raise NotImplementedError()
 

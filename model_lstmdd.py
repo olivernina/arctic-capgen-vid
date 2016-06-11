@@ -988,7 +988,7 @@ class Attention(object):
             pkl.dump(model_options, f)
 
         print 'Loading data'
-        self.engine = data_engine.Movie2Caption('attention_mod', dataset,
+        self.engine = data_engine.Movie2Caption('lstmdd', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
                                            maxlen, n_words,dec,proc,
@@ -1447,7 +1447,7 @@ class Attention(object):
             pkl.dump(model_options, f)
 
         print 'Loading data'
-        self.engine = data_engine.Movie2Caption('attention_mod', dataset,
+        self.engine = data_engine.Movie2Caption('lstmdd', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
                                            maxlen, n_words,dec,proc,

@@ -1701,10 +1701,10 @@ def train_from_scratch(state, channel):
 
     model = Attention(channel)
 
-    if state.attention['mode']=='train':
+    if state.lstmdd['mode']=='train':
         print 'training an attention model'
         model.train(**state.lstmdd)
-    if state.attention['mode']=='predict':
+    if state.lstmdd['mode']=='predict':
         print 'predicting an attention model'
         model.predict(**state.lstmdd)
 

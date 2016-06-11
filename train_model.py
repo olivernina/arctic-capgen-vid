@@ -74,6 +74,7 @@ def train_from_scratch(config, state, channel):
         print 'from_dir ',from_dir_backup
         print 'setting current model config with the old one'
 
+
         if config[config.model].mode=='train':
             model_config_old = common.load_pkl(from_dir_backup+'/model_config.pkl')
             set_config(config, model_config_old)
@@ -84,6 +85,8 @@ def train_from_scratch(config, state, channel):
         print 'erasing everything in ',save_model_dir
         os.system('rm %s/*'%save_model_dir)
 
+
+
     # for stdout file logging
     #sys.stdout = Unbuffered(sys.stdout, state.save_model_path + 'stdout.log')
     print 'saving model config into %s'%save_path
@@ -91,6 +94,8 @@ def train_from_scratch(config, state, channel):
     # Also copy back from config into state.
     for key in config:
         setattr(state, key, config[key])
+
+
     model_type = config.model
     print 'Model Type: %s'%model_type
     print 'Host:    %s' % socket.gethostname()

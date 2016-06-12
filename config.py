@@ -141,7 +141,8 @@ config = DD({
         'video_feature': 'googlenet',
         'validFreq': 2000,
         'mode':'train',
-        'proc':'nostd'
+        'proc':'nostd',
+        'K':28, # 26 when compare
     }),
     'nf': DD({
         'reload_': False,

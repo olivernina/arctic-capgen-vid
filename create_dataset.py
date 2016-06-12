@@ -1047,7 +1047,7 @@ def vtt_c3d(params):
         test_list_path = 'annotations/test_videodatainfo_nosen.json'
 
     else:
-        train_val_list_path = 'train_val_annotation/train_val_videodatainfo.json'
+        train_val_list_path = 'annotations/train_val_videodatainfo.json'
         test_list_path = 'annotations/test_videodatainfo_nosen.json'
 
     annotations = {}

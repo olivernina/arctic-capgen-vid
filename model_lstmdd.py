@@ -991,7 +991,7 @@ class Attention(object):
         self.engine = data_engine.Movie2Caption('lstmdd', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
-                                           maxlen, n_words,dec,proc,
+                                           maxlen, n_words,dec,proc,mode,
                                            K, OutOf)
         model_options['ctx_dim'] = self.engine.ctx_dim
 
@@ -1446,7 +1446,9 @@ class Attention(object):
         with open('%smodel_options.pkl'%save_model_dir, 'wb') as f:
             pkl.dump(model_options, f)
 
+
         print 'Loading data'
+
         self.engine = data_engine.Movie2Caption('lstmdd', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
@@ -1456,8 +1458,8 @@ class Attention(object):
 
         # set test values, for debugging
         idx = self.engine.kf_train[0]
-        [self.x_tv, self.mask_tv,
-         self.ctx_tv, self.ctx_mask_tv, self.y_tv,self.y_mask_tv] = data_engine.prepare_data(
+
+        [self.x_tv, self.mask_tv, self.ctx_tv, self.ctx_mask_tv, self.y_tv,self.y_mask_tv] = data_engine.prepare_data(
             self.engine, [self.engine.train[index] for index in idx])
 
         print 'init params'

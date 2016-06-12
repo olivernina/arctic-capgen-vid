@@ -991,7 +991,7 @@ class Attention(object):
         self.engine = data_engine.Movie2Caption('lstmdd', dataset,
                                            video_feature,
                                            batch_size, valid_batch_size,
-                                           maxlen, n_words,dec,proc,mode,
+                                           maxlen, n_words,dec,proc,
                                            K, OutOf)
         model_options['ctx_dim'] = self.engine.ctx_dim
 

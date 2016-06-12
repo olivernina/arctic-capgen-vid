@@ -1289,13 +1289,20 @@ class Attention(object):
                     valid_Rouge = scores['valid']['ROUGE_L']
                     valid_Cider = scores['valid']['CIDEr']
                     valid_meteor = scores['valid']['METEOR']
-                    test_B1 = scores['test']['Bleu_1']
-                    test_B2 = scores['test']['Bleu_2']
-                    test_B3 = scores['test']['Bleu_3']
-                    test_B4 = scores['test']['Bleu_4']
-                    test_Rouge = scores['test']['ROUGE_L']
-                    test_Cider = scores['test']['CIDEr']
-                    test_meteor = scores['test']['METEOR']
+                    # test_B1 = scores['test']['Bleu_1']
+                    # test_B2 = scores['test']['Bleu_2']
+                    # test_B3 = scores['test']['Bleu_3']
+                    # test_B4 = scores['test']['Bleu_4']
+                    # test_Rouge = scores['test']['ROUGE_L']
+                    # test_Cider = scores['test']['CIDEr']
+                    # test_meteor = scores['test']['METEOR']
+                    test_B1 = 0
+                    test_B2 = 0
+                    test_B3 = 0
+                    test_B4 = 0
+                    test_Rouge = 0
+                    test_Cider = 0
+                    test_meteor = 0
                     print 'computing meteor/blue score used %.4f sec, '\
                       'blue score: %.1f, meteor score: %.1f'%(
                     time.time()-blue_t0, valid_B4, valid_meteor)

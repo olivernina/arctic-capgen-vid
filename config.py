@@ -12,7 +12,7 @@ config = DD({
         'reload_': False,
         'save_model_dir': exp_path + 'arctic-capgen-vid/test_non/',
         'from_dir': '',
-        'dataset': 'lsmdc',
+        'dataset': 'youtube2text',
         'video_feature': 'googlenet',
         'dim_word':468, # 474
         'ctx_dim':-1,# auto set 
@@ -33,7 +33,7 @@ config = DD({
         'maxlen':30, # max length of the descprition
         'optimizer':'adadelta',
         'clip_c': 10.,
-        'batch_size': 64, # for trees use 25
+        'batch_size': 32, # for trees use 25
         # 'batch_size': 5, # for trees use 25
         'valid_batch_size':200,
         # 'valid_batch_size':5,

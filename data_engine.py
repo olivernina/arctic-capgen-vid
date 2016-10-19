@@ -57,8 +57,8 @@ class Movie2Caption(object):
 
     def get_video_features(self, vidID):
         if self.video_feature == 'googlenet':
-            # y = self._filter_googlenet(vidID)
-            y = self._load_feat_file(vidID)
+            y = self._filter_googlenet(vidID)
+            #y = self._load_feat_file(vidID)
         else:
             raise NotImplementedError()
         return y
